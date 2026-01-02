@@ -1,0 +1,101 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon>favicon.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Resources\Images\Flag\ca-Es.png" />
+		<None Remove="Resources\Images\Flag\cn.png" />
+		<None Remove="Resources\Images\Flag\en.png" />
+		<None Remove="Resources\Images\Flag\es.png" />
+		<None Remove="Resources\Images\Flag\fa.png" />
+		<None Remove="Resources\Images\Flag\fr.png" />
+		<None Remove="Resources\Images\Flag\ja.png" />
+		<None Remove="Resources\Images\Flag\ko-KR.png" />
+		<None Remove="Resources\Images\Flag\pl.png" />
+		<None Remove="Resources\Images\Flag\pt-BR.png" />
+		<None Remove="Resources\Images\Flag\ru.png" />
+		<None Remove="Resources\Images\Flag\tr.png" />
+		<None Remove="Resources\Images\login.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="favicon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Images\Flag\ca-Es.png" />
+		<Resource Include="Resources\Images\Flag\cn.png" />
+		<Resource Include="Resources\Images\Flag\en.png" />
+		<Resource Include="Resources\Images\Flag\es.png" />
+		<Resource Include="Resources\Images\Flag\fa.png" />
+		<Resource Include="Resources\Images\Flag\fr.png" />
+		<Resource Include="Resources\Images\Flag\ja.png" />
+		<Resource Include="Resources\Images\Flag\ko-KR.png" />
+		<Resource Include="Resources\Images\Flag\pl.png" />
+		<Resource Include="Resources\Images\Flag\pt-BR.png" />
+		<Resource Include="Resources\Images\Flag\ru.png" />
+		<Resource Include="Resources\Images\Flag\tr.png" />
+		<Resource Include="Resources\Images\login.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="HandyControl" Version="3.5.1" />
+		<PackageReference Include="HandyControl.Lang.en" Version="3.5.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
+		<PackageReference Include="ValueConverters" Version="3.1.22" />
+		<PackageReference Include="Volo.Abp.Autofac" Version="10.0.1" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Admin.Application\Admin.Application.csproj" />
+		<ProjectReference Include="..\Admin.EntityFrameworkCore\Admin.EntityFrameworkCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Resources\Icons\" />
+		<Folder Include="UserControls\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Resources\Langs\LangProviderTemplate.tt">
+	    <Generator>TextTemplatingFilePreprocessor</Generator>
+	    <LastGenOutput>LangProviderTemplate.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Resources\Langs\Lang.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Lang.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Resources\Langs\LangProviderTemplate.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>LangProviderTemplate.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Langs\Lang.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Lang.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+</Project>

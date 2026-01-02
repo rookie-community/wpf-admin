@@ -1,0 +1,155 @@
+﻿<hc:Window
+    x:Class="Admin.Desktop.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ex="clr-namespace:Admin.Desktop.Tools.Extension"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:langs="clr-namespace:Admin.Desktop.Resources.Langs"
+    xmlns:local="clr-namespace:Admin.Desktop.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel"
+    Title="Admin"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=viewmodel:MainVM}"
+    Background="{DynamicResource RegionBrush}"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <hc:Window.NonClientAreaContent>
+        <Grid Height="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Name="ButtonConfig"
+                Grid.Column="1"
+                hc:IconElement.Geometry="{StaticResource ConfigGeometry}"
+                Click="ButtonConfig_OnClick"
+                Style="{StaticResource ButtonIcon}" />
+            <Popup
+                Name="PopupConfig"
+                Grid.Column="1"
+                AllowsTransparency="True"
+                HorizontalOffset="-200"
+                Placement="Right"
+                PlacementTarget="{Binding ElementName=ButtonConfig}"
+                StaysOpen="False"
+                VerticalOffset="25">
+                <Border
+                    Margin="16"
+                    Background="{DynamicResource SecondaryRegionBrush}"
+                    CornerRadius="4"
+                    Effect="{StaticResource EffectShadow2}">
+                    <StackPanel Orientation="Horizontal">
+                        <hc:UniformSpacingPanel
+                            MaxHeight="85"
+                            Margin="10"
+                            Button.Click="ButtonLangs_OnClick"
+                            ChildWrapping="Wrap"
+                            Orientation="Vertical"
+                            Spacing="10">
+                            <Button Style="{StaticResource ButtonCustom}" Tag="zh-cn">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/cn.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="en">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/en.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="fa">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/fa.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="fr">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/fr.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="ca-ES">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ca-Es.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="ja">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ja.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="ko-KR">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ko-KR.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="ru">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ru.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="tr">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/tr.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="pt-BR">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/pt-BR.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="pl">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/pl.png" />
+                            </Button>
+                            <Button Style="{StaticResource ButtonCustom}" Tag="es">
+                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/es.png" />
+                            </Button>
+                        </hc:UniformSpacingPanel>
+                        <hc:Divider
+                            Margin="0,20"
+                            LineStrokeDashArray="2,2"
+                            LineStrokeThickness="2"
+                            Orientation="Vertical" />
+                        <StackPanel Margin="10" Button.Click="ButtonSkins_OnClick">
+                            <Button Style="{StaticResource ButtonCustom}" Tag="{x:Static hc:SkinType.Default}">
+                                <Border
+                                    Width="32"
+                                    Height="21"
+                                    Background="White"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="2" />
+                            </Button>
+                            <Button
+                                Margin="0,10,0,0"
+                                Style="{StaticResource ButtonCustom}"
+                                Tag="{x:Static hc:SkinType.Dark}">
+                                <Border
+                                    Width="32"
+                                    Height="21"
+                                    Background="Black"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="2" />
+                            </Button>
+                            <Button
+                                Margin="0,10,0,0"
+                                Style="{StaticResource ButtonCustom}"
+                                Tag="{x:Static hc:SkinType.Violet}">
+                                <Border
+                                    Width="32"
+                                    Height="21"
+                                    Background="DarkViolet"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="2" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </Grid>
+    </hc:Window.NonClientAreaContent>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="150"
+                MinWidth="120"
+                MaxWidth="300" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TreeView Grid.Column="0" />
+        <GridSplitter
+            Grid.Column="1"
+            Margin="0,0,2,0"
+            HorizontalAlignment="Stretch" />
+        <hc:TabControl Grid.Column="2">
+            <hc:TabItem Header="Tab1" />
+            <hc:TabItem Header="Tab2" />
+        </hc:TabControl>
+    </Grid>
+</hc:Window>

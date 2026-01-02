@@ -1,0 +1,20 @@
+﻿<Application
+    x:Class="Admin.Desktop.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:langs="clr-namespace:Admin.Desktop.Resources.Langs"
+    xmlns:local="clr-namespace:Admin.Desktop"
+    Startup="Application_Startup"
+    StartupUri="View/Accounts/Login.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/SideMenuStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <langs:LangProvider x:Key="AdminLangs" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
