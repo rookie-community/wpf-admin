@@ -1,7 +1,7 @@
 ﻿using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.View;
 using Admin.Desktop.View.Accounts;
-using Admin.Identity;
+using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Tools;
@@ -38,13 +38,14 @@ namespace Admin.Desktop.ViewModel.Accounts
 
         [ObservableProperty]
         private bool isUploading;
-
+        private readonly IUserApplicationService _userApplicationService;
         private readonly ILogger<LoginVM> _logger;
 
         public Login Owner { get; private set; } = null!;
 
-        public LoginVM(ILogger<LoginVM> logger)
+        public LoginVM(IUserApplicationService userApplicationService, ILogger<LoginVM> logger)
         {
+            _userApplicationService = userApplicationService;
             _logger = logger;
         }
 
@@ -101,7 +102,12 @@ namespace Admin.Desktop.ViewModel.Accounts
                     MessageBox.Error($"账号或密码错误！", "登录失败");
                     return;
                 }
-                var user = new User();
+                var user = await _userApplicationService.Login(new LoginDto
+                {
+                    Account = UserName,
+                    Password = Password,
+                    Tenant = Tenant,
+                });
                 App.SetCurrentUser(user);
                 var view = new MainWindow();
                 view.Show();
@@ -110,6 +116,7 @@ namespace Admin.Desktop.ViewModel.Accounts
             catch (Exception ex)
             {
                 MessageBox.Error(ex.Message, "登录失败");
+                _logger.LogError(ex.Message);
             }
             finally
             {

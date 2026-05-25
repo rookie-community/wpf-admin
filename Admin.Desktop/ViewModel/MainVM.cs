@@ -8,7 +8,7 @@ namespace Admin.Desktop.ViewModel
     {
         public MainWindow Owner { get; private set; } = null!;
 
-        public void Initial(MainWindow owner) 
+        public void Initial(MainWindow owner)
         {
             Owner = owner;
         }

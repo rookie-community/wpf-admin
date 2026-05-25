@@ -1,10 +1,10 @@
 ﻿using Admin.DbMigrator;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 class Program
 {
@@ -15,9 +15,9 @@ class Program
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("Volo.Abp", LogEventLevel.Warning)
 #if DEBUG
-                .MinimumLevel.Override("DataAcquisition", LogEventLevel.Debug)
+                .MinimumLevel.Override("Admin", LogEventLevel.Debug)
 #else
-                .MinimumLevel.Override("DataAcquisition", LogEventLevel.Information)
+                .MinimumLevel.Override("Admin", LogEventLevel.Information)
 #endif
                 .Enrich.FromLogContext()
             .WriteTo.Async(c => c.File("Logs/logs.txt"))

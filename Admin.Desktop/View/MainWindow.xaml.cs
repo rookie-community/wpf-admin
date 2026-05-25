@@ -4,12 +4,11 @@ using HandyControl.Data;
 using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
-using System.Configuration;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using Window = HandyControl.Controls.Window;
 using MessageBox = HandyControl.Controls.MessageBox;
+using Window = HandyControl.Controls.Window;
 
 namespace Admin.Desktop.View
 {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.Desktop", "Admin.Desktop\Admin.Desktop.csproj", "{63178CF1-6E72-429E-89F3-9D4B98A7354C}"
 EndProject
@@ -18,6 +18,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.Test", "Admin.Test\Admin.Test.csproj", "{19115055-BE29-4DB2-9D67-CD5F7706BD20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.DbMigrator", "Admin.DbMigrator\Admin.DbMigrator.csproj", "{A9B01CB4-4490-4405-91F5-E49E3F04DF7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.HttpApi", "Admin.HttpApi\Admin.HttpApi.csproj", "{2F15D8FF-F1E3-4A5F-AB21-75293BC9FE43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.HttpApi.Client", "Admin.HttpApi.Client\Admin.HttpApi.Client.csproj", "{E78F2787-2825-4664-88EF-B403B5EABC78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.HttpApi.Host", "Admin.HttpApi.Host\Admin.HttpApi.Host.csproj", "{D588C051-1DA6-4217-8B5A-21739D9E31DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,18 @@ Global
 		{A9B01CB4-4490-4405-91F5-E49E3F04DF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9B01CB4-4490-4405-91F5-E49E3F04DF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9B01CB4-4490-4405-91F5-E49E3F04DF7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F15D8FF-F1E3-4A5F-AB21-75293BC9FE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F15D8FF-F1E3-4A5F-AB21-75293BC9FE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F15D8FF-F1E3-4A5F-AB21-75293BC9FE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F15D8FF-F1E3-4A5F-AB21-75293BC9FE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E78F2787-2825-4664-88EF-B403B5EABC78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E78F2787-2825-4664-88EF-B403B5EABC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E78F2787-2825-4664-88EF-B403B5EABC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E78F2787-2825-4664-88EF-B403B5EABC78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

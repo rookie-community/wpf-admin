@@ -1,6 +1,6 @@
 ﻿using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.View.Accounts;
-using Admin.Identity;
+using Admin.Users;
 using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +22,7 @@ namespace Admin.Desktop
     /// </summary>
     public partial class App : Application
     {
-        public static User CurrentUser { get; private set; } = new User();
+        public static UserDto CurrentUser { get; private set; } = new UserDto();
 
         /// <summary>
         /// Gets the current <see cref="App"/> instance in use
@@ -60,7 +60,7 @@ namespace Admin.Desktop
         protected override async void OnStartup(StartupEventArgs e)
         {
             try
-            {     
+            {
                 Log.Information("Starting WPF host.");
                 await _host.StartAsync();
                 Initialize(_host.Services);
@@ -111,7 +111,7 @@ namespace Admin.Desktop
                 }).Build();
         }
 
-        internal static void SetCurrentUser(User user) => CurrentUser = user;
+        internal static void SetCurrentUser(UserDto user) => CurrentUser = user;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {

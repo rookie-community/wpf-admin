@@ -9,7 +9,7 @@ namespace Admin
         typeof(AbpTenantManagementDomainModule),
         typeof(AdminDomainSharedModule)
         )]
-    public class AdminDomainModule: AbpModule
+    public class AdminDomainModule : AbpModule
     {
 
     }
