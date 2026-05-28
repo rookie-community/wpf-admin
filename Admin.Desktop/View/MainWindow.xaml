@@ -134,7 +134,12 @@
         </Grid>
     </hc:Window.NonClientAreaContent>
     <Grid>
-        <Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="18" />
+        </Grid.RowDefinitions>
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="150"
                 MinWidth="120"
@@ -146,10 +151,40 @@
         <GridSplitter
             Grid.Column="1"
             Margin="0,0,2,0"
-            HorizontalAlignment="Stretch" />
-        <hc:TabControl Grid.Column="2">
+            HorizontalAlignment="Stretch" />-->
+        <Menu Grid.Row="0" ItemsSource="{Binding MenuItems}" />
+        <hc:TabControl Grid.Row="1">
             <hc:TabItem Header="Tab1" />
             <hc:TabItem Header="Tab2" />
         </hc:TabControl>
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{StaticResource DarkDefaultBrush}">
+            <TextBlock
+                Padding="0,1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{StaticResource SecondaryTextBrush}"
+                Text="Copyright © 2026 Admin Sample" />
+        </StackPanel>
+        <hc:NotifyIcon
+            x:Name="NotifyIconContextContent"
+            Text="Admin Sample"
+            Visibility="Visible">
+            <hc:NotifyIcon.ContextMenu>
+                <ContextMenu Width="140">
+                    <MenuItem Command="{Binding CurrentViewShowCommand}" Header="打开主页" />
+                    <Separator />
+                    <MenuItem Command="hc:ControlCommands.ShutdownApp" Header="退出" />
+                </ContextMenu>
+            </hc:NotifyIcon.ContextMenu>
+            <hc:Interaction.Triggers>
+                <hc:EventTrigger EventName="Click">
+                    <hc:EventToCommand Command="hc:ControlCommands.PushMainWindow2Top" />
+                </hc:EventTrigger>
+            </hc:Interaction.Triggers>
+        </hc:NotifyIcon>
     </Grid>
 </hc:Window>

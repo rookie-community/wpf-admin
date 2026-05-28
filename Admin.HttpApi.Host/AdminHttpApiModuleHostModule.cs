@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json.Serialization;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
@@ -69,18 +71,33 @@ namespace Admin.HttpApi.Host
 
         private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
         {
-            context.Services.AddAbpSwaggerGenWithOAuth(
-                configuration["AuthServer:Authority"]!,
-                new Dictionary<string, string>
+            context.Services.AddAbpSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin API", Version = "v1" });
+                options.DocInclusionPredicate((docName, description) => true);
+                options.CustomSchemaIds(type => type.FullName);
+
+                // 支持 JWT Bearer 认证
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    {"Admin", "Admin API"}
-                },
-                options =>
-                {
-                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin API", Version = "v1" });
-                    options.DocInclusionPredicate((docName, description) => true);
-                    options.CustomSchemaIds(type => type.FullName);
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header
                 });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
         }
 
         private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
@@ -156,9 +173,15 @@ namespace Admin.HttpApi.Host
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.Authority = configuration["AuthServer:Authority"];
-                options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
-                options.Audience = "Admin";
+
+                var jwtConfig = configuration.GetSection("Authentication:JwtBearer");
+                var securityKey = jwtConfig["SecurityKey"]!;
+                var issuer = jwtConfig["Issuer"];
+                var audience = jwtConfig["Audience"];
+                int expires = jwtConfig.GetValue<int>("ExpirationTime");
+
+                options.ClaimsIssuer = issuer;
+                options.Audience = audience;
                 options.MapInboundClaims = false;
 
                 // 配置Token验证参数
@@ -166,9 +189,16 @@ namespace Admin.HttpApi.Host
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
+                    ValidateLifetime = true,//是否验证失效时间
                     ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.Default.GetBytes(securityKey)),
+                    ClockSkew = TimeSpan.Zero,
+
+                    //映射
+                    NameClaimType = ClaimTypes.NameIdentifier,
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
         }

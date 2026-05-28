@@ -101,6 +101,6 @@
             Grid.Column="1"
             FontSize="12"
             Style="{StaticResource TextBlockDefaultSecLight}"
-            Text="Copyright ©  2022 - 2025 Admin Sample" />
+            Text="Copyright © 2026 Admin Sample" />
     </Grid>
 </hc:Window>

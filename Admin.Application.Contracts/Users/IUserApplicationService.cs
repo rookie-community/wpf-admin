@@ -4,6 +4,8 @@ namespace Admin.Users
 {
     public interface IUserApplicationService : IApplicationService
     {
-        Task<LoginResultDto> Login(LoginDto input);
+        Task<LoginResultDto> LoginAsunc(LoginDto input);
+
+        Task<LoginResultDto> RefreshTokenAsync(Guid refreshToken);
     }
 }

@@ -102,13 +102,14 @@ namespace Admin.Desktop.ViewModel.Accounts
                     MessageBox.Error($"账号或密码错误！", "登录失败");
                     return;
                 }
-                var user = await _userApplicationService.Login(new LoginDto
+                var userResult = await _userApplicationService.LoginAsunc(new LoginDto
                 {
                     Account = UserName,
                     Password = Password,
                     Tenant = Tenant,
                 });
-                App.SetCurrentUser(user);
+                App.SetCurrentUser(userResult);
+                TokenManager.SetTokens(userResult.AccessToken, userResult.RefreshToken);
                 var view = new MainWindow();
                 view.Show();
                 Owner.Close();

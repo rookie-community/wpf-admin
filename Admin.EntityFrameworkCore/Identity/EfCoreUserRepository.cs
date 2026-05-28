@@ -5,9 +5,9 @@ using Volo.Abp.EntityFrameworkCore;
 
 namespace Admin.EntityFrameworkCore.Identity
 {
-    public class UserRepository : EfCoreRepository<AdminEfCoreDbContext, User, Guid>, IUserRepository
+    public class EfCoreUserRepository : EfCoreRepository<AdminEfCoreDbContext, User, Guid>, IUserRepository
     {
-        public UserRepository(IDbContextProvider<AdminEfCoreDbContext> dbContextProvider) : base(dbContextProvider)
+        public EfCoreUserRepository(IDbContextProvider<AdminEfCoreDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
     }
