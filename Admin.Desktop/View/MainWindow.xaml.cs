@@ -1,4 +1,5 @@
-﻿using Admin.Desktop.Resources.Langs;
+﻿using Admin.Commons;
+using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.ViewModel;
 using HandyControl.Data;
 using HandyControl.Tools;
@@ -90,6 +91,23 @@ namespace Admin.Desktop.View
                 }
                 ;
                 Application.Current.MainWindow?.OnApplyTemplate();
+            }
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is NavDto navItem)
+            {
+                // 在这里可以处理选中项的数据
+                vm.SwitchItemCommand.Execute(navItem);
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 1 && e.AddedItems[0] is TabItem tabItem)
+            {
+                //vm.SetCurrentTreeViewSelectdItemCommand.Execute(tabItem);
             }
         }
     }

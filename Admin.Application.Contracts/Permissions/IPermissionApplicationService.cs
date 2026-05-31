@@ -4,6 +4,6 @@ namespace Admin.Permissions
 {
     public interface IPermissionApplicationService : IApplicationService
     {
-        Task<string> Test();
+        Task<IReadOnlyList<PermissionDefinitionDto>> GetPermissionDefinitions();
     }
 }

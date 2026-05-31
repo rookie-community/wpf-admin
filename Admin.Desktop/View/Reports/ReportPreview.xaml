@@ -1,0 +1,21 @@
+﻿<hc:Window
+    x:Class="Admin.Desktop.View.Reports.ReportPreview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Preview="clr-namespace:FastReport.Preview;assembly=FastReport.WPF"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.View.Reports"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
+    Title="ReportPreview"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=viewmodel:ReportPreviewVM}"
+    Icon="pack://application:,,,/Resources/Images/Icons/Logo.png"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <Grid>
+        <Preview:WpfPreviewControl x:Name="previewControl" />
+    </Grid>
+</hc:Window>

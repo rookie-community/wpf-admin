@@ -3,7 +3,7 @@
 namespace Admin.Localization
 {
     [LocalizationResourceName("AdminApp")]
-    public class AdminAppResource
+    public class AdminResource
     {
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.View.Accounts;
 using Admin.Users;
+using FastReport.Utils;
 using HandyControl.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,7 +71,7 @@ namespace Admin.Desktop
                 ConfigHelper.Instance.SetWindowDefaultStyle();
                 ConfigHelper.Instance.SetNavigationWindowDefaultStyle();
                 LangProvider.Culture = new CultureInfo(langName);
-
+                Res.LoadLocale(LangProvider.Culture);
                 _host.Services.GetService<Login>()?.Show();
 
                 //调试环境下编译多语言环境

@@ -8,12 +8,10 @@ namespace Admin.Identity
     /// </summary>
     public class Role : AggregateRoot<Guid>, IMultiTenant
     {
-        public string Code { get; set; } = null!;
-
+        public Guid? TenantId { get; set; }
         public string Name { get; set; } = null!;
 
-        public string Description { get; set; } = null!;
+        public bool IsDefault { get; set; }
 
-        public Guid? TenantId { get; set; }
     }
 }

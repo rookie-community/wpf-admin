@@ -14,6 +14,7 @@
     Height="450"
     d:DataContext="{d:DesignInstance Type=viewmodel:LoginVM}"
     Background="{DynamicResource RegionBrush}"
+    Icon="pack://application:,,,/Resources/Images/Icons/Logo.png"
     ResizeMode="CanMinimize"
     ShowInTaskbar="True"
     WindowStartupLocation="CenterScreen"

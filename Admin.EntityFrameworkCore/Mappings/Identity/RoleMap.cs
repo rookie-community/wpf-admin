@@ -9,7 +9,7 @@ namespace Admin.EntityFrameworkCore.Mappings.Identity
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable(AdminStoreConsts.DbTablePrefix + "Role", AdminStoreConsts.DbSchema, e => e.HasComment("角色表"));
+            builder.ToTable(AdminStoreConsts.DbTablePrefix + "Roles", AdminStoreConsts.DbSchema, e => e.HasComment("角色"));
             builder.ConfigureByConvention();
         }
     }

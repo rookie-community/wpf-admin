@@ -1,4 +1,5 @@
 ﻿using Admin.Desktop.Resources.Langs;
+using Admin.Desktop.Tools;
 using Admin.Desktop.View;
 using Admin.Desktop.View.Accounts;
 using Admin.Users;
@@ -102,7 +103,7 @@ namespace Admin.Desktop.ViewModel.Accounts
                     MessageBox.Error($"账号或密码错误！", "登录失败");
                     return;
                 }
-                var userResult = await _userApplicationService.LoginAsunc(new LoginDto
+                var userResult = await _userApplicationService.LoginAsync(new LoginDto
                 {
                     Account = UserName,
                     Password = Password,

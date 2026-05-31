@@ -7,7 +7,7 @@ namespace Admin
     {
         protected AdminAppService()
         {
-            LocalizationResource = typeof(AdminAppResource);
+            LocalizationResource = typeof(AdminResource);
         }
     }
 }

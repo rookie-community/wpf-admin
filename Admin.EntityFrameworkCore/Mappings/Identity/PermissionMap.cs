@@ -9,9 +9,9 @@ namespace Admin.EntityFrameworkCore.Mappings.Identity
     {
         public void Configure(EntityTypeBuilder<Permission> builder)
         {
-            builder.ToTable(AdminStoreConsts.DbTablePrefix + "Permission", AdminStoreConsts.DbSchema, e => e.HasComment("权限表"));
+            builder.ToTable(AdminStoreConsts.DbTablePrefix + "Permissions", AdminStoreConsts.DbSchema, e => e.HasComment("权限"));
             builder.ConfigureByConvention();
-            builder.Property(p => p.PermissionType).HasConversion<string>();
+            //builder.Property(p => p.PermissionType).HasConversion<string>();
         }
     }
 }

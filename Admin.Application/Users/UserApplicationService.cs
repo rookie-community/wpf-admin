@@ -25,19 +25,19 @@ namespace Admin.Users
             _configuration = configuration;
         }
 
-        public async Task<LoginResultDto> LoginAsunc(LoginDto input)
+        public async Task<LoginResultDto> LoginAsync(LoginDto input)
         {
-            var user = await _userRepository.FindAsync(x => x.Account == input.Account && x.Password == input.Password);
-            if (user == null)
-            {
-                throw new AbpAuthorizationException("用户不存在");
-            }
-            //var user = new User
+            //var user = await _userRepository.FindAsync(x => x.Account == input.Account && x.Password == input.Password);
+            //if (user == null)
             //{
-            //    Account = input.Account,
-            //    UserName = "Admin",
-            //    Password = input.Password
-            //};
+            //    throw new AbpAuthorizationException("用户不存在");
+            //}
+            var user = new User
+            {
+                Account = input.Account,
+                UserName = "Admin",
+                Password = input.Password
+            };
             return await GenerateToken(user);
         }
 

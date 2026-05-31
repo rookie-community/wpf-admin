@@ -24,14 +24,14 @@ namespace Admin.Identity
         public string Password { get; set; } = null!;
 
         /// <summary>
-        /// 是否启用
+        /// 是否激活
         /// </summary>
-        public bool Enable { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
-        /// 描述
+        /// 邮箱
         /// </summary>
-        public string Description { get; set; } = null!;
+        public string Email { get; set; } = null!;
 
         public Guid? TenantId { get; set; }
     }

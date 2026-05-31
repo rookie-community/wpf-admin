@@ -9,11 +9,12 @@
     xmlns:local="clr-namespace:Admin.Desktop.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel"
-    Title="Admin"
+    Title="{Binding Title}"
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance Type=viewmodel:MainVM}"
     Background="{DynamicResource RegionBrush}"
+    Icon="pack://application:,,,/Resources/Images/Icons/Logo.png"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
@@ -134,12 +135,7 @@
         </Grid>
     </hc:Window.NonClientAreaContent>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="18" />
-        </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="150"
                 MinWidth="120"
@@ -147,28 +143,51 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TreeView Grid.Column="0" />
+        <TreeView
+            Grid.Column="0"
+            ItemsSource="{Binding NavItems}"
+            SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                    <TextBlock Tag="{Binding Id}">
+                        <Run
+                            FontSize="12"
+                            Foreground="{DynamicResource DarkInfoBrush}"
+                            Style="{DynamicResource FontAwesome}"
+                            Text="{Binding Icon}" />
+                        <Run Text="{Binding Name}" />
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
         <GridSplitter
             Grid.Column="1"
-            Margin="0,0,2,0"
-            HorizontalAlignment="Stretch" />-->
-        <Menu Grid.Row="0" ItemsSource="{Binding MenuItems}" />
-        <hc:TabControl Grid.Row="1">
-            <hc:TabItem Header="Tab1" />
-            <hc:TabItem Header="Tab2" />
-        </hc:TabControl>
-        <StackPanel
-            Grid.Row="2"
+            Margin="1,0"
+            HorizontalAlignment="Stretch"
+            Background="{DynamicResource DefaultBrush}" />
+        <DockPanel
+            Grid.Column="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{StaticResource DarkDefaultBrush}">
             <TextBlock
-                Padding="0,1"
+                Padding="0,2"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                DockPanel.Dock="Bottom"
                 Foreground="{StaticResource SecondaryTextBrush}"
                 Text="Copyright © 2026 Admin Sample" />
-        </StackPanel>
+            <hc:TabControl
+                IsScrollable="True"
+                ItemsSource="{Binding TabItems}"
+                OverflowMenuDisplayMemberPath="Header"
+                SelectedIndex="{Binding TabSelectedIndex}"
+                SelectionChanged="TabControl_SelectionChanged"
+                ShowCloseButton="True"
+                ShowOverflowButton="False"
+                ShowScrollButton="True" />
+        </DockPanel>
+        <!--  状态栏  -->
         <hc:NotifyIcon
             x:Name="NotifyIconContextContent"
             Text="Admin Sample"

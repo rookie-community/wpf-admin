@@ -78,13 +78,14 @@ namespace Admin.HttpApi.Host
                 options.CustomSchemaIds(type => type.FullName);
 
                 // 支持 JWT Bearer 认证
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
                     BearerFormat = "JWT",
                     Name = "Authorization",
-                    In = ParameterLocation.Header
+                    In = ParameterLocation.Header,
+                    Description = "Please Enter Bearer Token"
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -92,7 +93,11 @@ namespace Admin.HttpApi.Host
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id =  JwtBearerDefaults.AuthenticationScheme,
+                            }
                         },
                         Array.Empty<string>()
                     }
