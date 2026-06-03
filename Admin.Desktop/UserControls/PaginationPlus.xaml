@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Class="Admin.Desktop.UserControls.PaginationPlus"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="80"
+    d:DesignWidth="500"
+    Background="{DynamicResource RegionBrush}"
+    mc:Ignorable="d">
+    <StackPanel
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        Orientation="Horizontal">
+        <!--  原生分页（内部封装，不对外暴露）  -->
+        <hc:Pagination
+            x:Name="PaginationMain"
+            IsJumpEnabled="True"
+            Visibility="Visible" />
+
+        <!--  总数量  -->
+        <TextBlock Margin="10,0" VerticalAlignment="Center">
+            <Run Text="共 " />
+            <Run Text="{Binding TotalCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Run Text=" 条" />
+        </TextBlock>
+
+        <!--  每页数量选择  -->
+        <hc:ComboBox
+            ItemStringFormat="{}{0} 条/页"
+            ItemsSource="{Binding PageSizeOptions, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            SelectedValue="{Binding PageSize, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+            SelectionChanged="ComboBox_SelectionChanged" />
+    </StackPanel>
+</UserControl>

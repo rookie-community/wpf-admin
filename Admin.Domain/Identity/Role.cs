@@ -6,12 +6,11 @@ namespace Admin.Identity
     /// <summary>
     /// 角色表
     /// </summary>
-    public class Role : AggregateRoot<Guid>, IMultiTenant
+    public class Role : Entity<Guid>, IMultiTenant
     {
         public Guid? TenantId { get; set; }
         public string Name { get; set; } = null!;
 
         public bool IsDefault { get; set; }
-
     }
 }

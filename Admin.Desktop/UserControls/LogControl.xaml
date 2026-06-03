@@ -18,6 +18,11 @@
         PreviewKeyDown="ListBox_PreviewKeyDown"
         Style="{StaticResource ListBox.Small}"
         VirtualizingPanel.IsVirtualizing="True">
+        <ListBox.ContextMenu>
+            <ContextMenu Width="100">
+                <MenuItem Click="CopyLogMenuItem_Click" Header="复制" />
+            </ContextMenu>
+        </ListBox.ContextMenu>
         <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem">
                 <Style.Triggers>

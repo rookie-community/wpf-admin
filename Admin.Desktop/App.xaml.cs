@@ -3,6 +3,8 @@ using Admin.Desktop.View.Accounts;
 using Admin.Users;
 using FastReport.Utils;
 using HandyControl.Tools;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -23,7 +25,7 @@ namespace Admin.Desktop
     /// </summary>
     public partial class App : Application
     {
-        public static UserDto CurrentUser { get; private set; } = new UserDto();
+        public static CurrentUserDto CurrentUser { get; private set; } = new CurrentUserDto();
 
         /// <summary>
         /// Gets the current <see cref="App"/> instance in use
@@ -74,6 +76,10 @@ namespace Admin.Desktop
                 Res.LoadLocale(LangProvider.Culture);
                 _host.Services.GetService<Login>()?.Show();
 
+                LiveCharts.Configure(cfg => cfg.AddSkiaSharp()
+                                               .AddDefaultMappers()
+                                               .AddDefaultTheme()
+                                            );
                 //调试环境下编译多语言环境
                 if (Debugger.IsAttached)
                 {
@@ -112,7 +118,7 @@ namespace Admin.Desktop
                 }).Build();
         }
 
-        internal static void SetCurrentUser(UserDto user) => CurrentUser = user;
+        internal static void SetCurrentUser(CurrentUserDto user) => CurrentUser = user;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {

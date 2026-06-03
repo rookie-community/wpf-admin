@@ -5,7 +5,7 @@ namespace Admin.Identity
     /// <summary>
     /// 权限表/菜单表
     /// </summary>
-    public class Permission : AggregateRoot<Guid>
+    public class Permission : Entity<Guid>
     {
         public string GroupName { get; set; } = null!;
 

@@ -1,11 +1,16 @@
-﻿using Volo.Abp.Application.Services;
+﻿using Volo.Abp.Application.Dtos;
+using Volo.Abp.Application.Services;
 
 namespace Admin.Users
 {
     public interface IUserApplicationService : IApplicationService
     {
-        Task<LoginResultDto> LoginAsync(LoginDto input);
+        Task<TokenResultDto> LoginAsync(LoginDto input);
 
-        Task<LoginResultDto> RefreshTokenAsync(Guid refreshToken);
+        Task<TokenResultDto> RefreshTokenAsync(Guid refreshToken);
+
+        Task<CurrentUserDto> GetCurrentUserInfoAsync();
+
+        Task<PagedResultDto<UserDto>> GetListAsync(GetUserListDto input);
     }
 }

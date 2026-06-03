@@ -45,6 +45,33 @@ namespace Admin.Desktop.UserControls
                 e.Handled = true; // 防止其他控件处理此事件
             }
         }
+
+        private void CopyLogMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selectedItem = lst_log.SelectedItem;
+                if (selectedItem == null)
+                {
+                    MessageBox.Show("未选中任何日志", "提示");
+                    return;
+                }
+
+                // 获取选中的日志实体
+                if (selectedItem is LogInfo log)
+                {
+                    string logText = log.LogMessages;
+                    if (!string.IsNullOrEmpty(logText))
+                    {
+                        Clipboard.SetText(logText); // 复制到剪贴板
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"复制失败：{ex.Message}");
+            }
+        }
     }
 
     public sealed class LogInfo : LogDto

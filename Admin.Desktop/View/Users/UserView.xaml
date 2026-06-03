@@ -6,168 +6,150 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Users"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
     xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Users"
     d:DataContext="{d:DesignInstance Type=viewmodel:UserVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
     <Grid>
-        <hc:LoadingCircle Panel.ZIndex="1" Visibility="{Binding LoadVisibility, UpdateSourceTrigger=PropertyChanged}" />
-        <DockPanel>
-            <StackPanel DockPanel.Dock="Top">
-                <Expander Header="搜索条件" IsExpanded="True">
-                    <Border
-                        Background="{DynamicResource RegionBrush}"
-                        BorderBrush="{DynamicResource BorderBrush}"
-                        BorderThickness="1,0,1,1"
-                        CornerRadius="0,0,4,4">
-                        <hc:UniformSpacingPanel
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            ChildWrapping="Wrap"
-                            Spacing="5">
-                            <hc:TextBox
-                                Width="180"
-                                hc:InfoElement.Placeholder="请输入用户名"
-                                hc:InfoElement.ShowClearButton="True"
-                                hc:InfoElement.Title="用户名"
-                                hc:InfoElement.TitlePlacement="Left"
-                                Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <hc:TextBox
-                                Width="180"
-                                hc:InfoElement.Placeholder="请输入邮箱"
-                                hc:InfoElement.ShowClearButton="True"
-                                hc:InfoElement.Title="邮箱"
-                                hc:InfoElement.TitlePlacement="Left"
-                                Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <hc:TextBox
-                                Width="180"
-                                hc:InfoElement.Placeholder="请输入手机号"
-                                hc:InfoElement.ShowClearButton="True"
-                                hc:InfoElement.Title="手机号"
-                                hc:InfoElement.TitlePlacement="Left"
-                                Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                                hc:IconElement.Geometry="{StaticResource SearchGeometry}"
-                                Command="{Binding SerachCommand}"
-                                Content="搜索"
-                                Style="{StaticResource ButtonPrimary}"
-                                Visibility="{Binding Buttons[Serach]}" />
-                            <Button
-                                hc:IconElement.Geometry="{StaticResource RotateLeftGeometry}"
-                                Command="{Binding ResetCommand}"
-                                Content="重置"
-                                Style="{StaticResource ButtonInfo}" />
-                        </hc:UniformSpacingPanel>
-                    </Border>
-                </Expander>
-                <ToolBar
-                    Margin="0,1"
-                    Padding="4"
-                    HorizontalAlignment="Right">
-                    <hc:UniformSpacingPanel Spacing="5">
-                        <Button
-                            hc:IconElement.Geometry="{StaticResource AddGeometry}"
-                            Command="{Binding AddCommand}"
-                            Content="新增"
-                            Style="{StaticResource ButtonDefault}"
-                            Visibility="{Binding Buttons[Create]}" />
-                        <Button
-                            hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                            Command="{Binding BatchDeleteCommand}"
-                            CommandParameter="{Binding ElementName=DG, Path=SelectedItems}"
-                            Content="批量删除"
-                            Style="{StaticResource ButtonDanger}"
-                            Visibility="{Binding Buttons[BatchDelete]}" />
-                    </hc:UniformSpacingPanel>
-                </ToolBar>
-            </StackPanel>
-            <StackPanel
-                Margin="2"
-                DockPanel.Dock="Bottom"
-                Orientation="Horizontal">
-                <hc:Pagination
-                    DataCountPerPage="{Binding PageSize}"
-                    IsJumpEnabled="True"
-                    MaxPageCount="{Binding MaxPage}"
-                    Visibility="Visible"
-                    PageIndex="{Binding PageIndex}">
-                    <hc:Interaction.Triggers>
-                        <hc:EventTrigger EventName="PageUpdated">
-                            <hc:EventToCommand Command="{Binding PageUpdatedCommand}" PassEventArgsToCommand="True" />
-                        </hc:EventTrigger>
-                    </hc:Interaction.Triggers>
-                </hc:Pagination>
-                <!--  总数量  -->
-                <TextBlock Margin="10,0" VerticalAlignment="Center">
-                    <Run Text="共 " />
-                    <Run Text="{Binding TotalCount}" />
-                    <Run Text=" 条" />
-                </TextBlock>
-                <!--  每页条数选择  -->
-                <hc:ComboBox
-                    Width="120"
-                    Margin="0,0,15,0"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Expander
+            Grid.Row="0"
+            Header="搜索条件"
+            IsExpanded="True">
+            <Border
+                Background="{DynamicResource RegionBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1,0,1,1"
+                CornerRadius="0,0,4,4">
+                <hc:UniformSpacingPanel
+                    Margin="5"
                     VerticalAlignment="Center"
-                    SelectedValue="{Binding PageSize, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="10 条/页" Tag="10" />
-                    <ComboBoxItem Content="20 条/页" Tag="20" />
-                    <ComboBoxItem Content="30 条/页" />
-                    <ComboBoxItem Content="50 条/页" />
-                </hc:ComboBox>
-            </StackPanel>
-            <DataGrid
-                Name="DG"
-                hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
-                AutoGenerateColumns="False"
-                HeadersVisibility="All"
-                IsReadOnly="True"
-                ItemsSource="{Binding Users}"
-                RowHeaderWidth="60"
-                Style="{StaticResource DataGrid.Small}">
-                <DataGrid.RowHeaderTemplate>
-                    <DataTemplate>
-                        <CheckBox IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
-                    </DataTemplate>
-                </DataGrid.RowHeaderTemplate>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Binding="{Binding Id}"
-                        Header="Id"
-                        Visibility="Hidden" />
-                    <DataGridTextColumn Binding="{Binding Account}" Header="账号" />
-                    <DataGridTextColumn Binding="{Binding UserName}" Header="用户名称" />
-                    <DataGridTextColumn Binding="{Binding Enable}" Header="是否启用" />
-                    <DataGridTextColumn Binding="{Binding Description}" Header="备注" />
-                    <DataGridTextColumn Binding="{Binding Created, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="创建时间" />
-                    <DataGridTextColumn Binding="{Binding Updated, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="修改时间" />
-                    <DataGridTemplateColumn Header="操作">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <hc:UniformSpacingPanel Spacing="5">
-                                    <Button
-                                        hc:IconElement.Geometry="{StaticResource DropperGeometry}"
-                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding Id}"
-                                        Content="编辑"
-                                        Style="{StaticResource ButtonDefault.Small}"
-                                        Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                    <Button
-                                        hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding Id}"
-                                        Content="删除"
-                                        Style="{StaticResource ButtonDanger.Small}"
-                                        Visibility="{Binding Path=DataContext.BtnPairs[DeleteBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                </hc:UniformSpacingPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
+                    ChildWrapping="Wrap"
+                    Spacing="5">
+                    <hc:TextBox
+                        Width="180"
+                        hc:InfoElement.Placeholder="请输入用户名"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="用户名"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <hc:TextBox
+                        Width="180"
+                        hc:InfoElement.Placeholder="请输入手机号"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="手机号"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <hc:TextBox
+                        Width="180"
+                        hc:InfoElement.Placeholder="请输入邮箱"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="邮箱"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource SearchGeometry}"
+                        Command="{Binding SearchCommand}"
+                        Content="搜索"
+                        Style="{StaticResource ButtonPrimary}"
+                        Visibility="{Binding Buttons[Serach]}" />
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource RotateLeftGeometry}"
+                        Command="{Binding ResetCommand}"
+                        Content="重置" />
+                </hc:UniformSpacingPanel>
+            </Border>
+        </Expander>
+        <ToolBar
+            Grid.Row="1"
+            Margin="0,2"
+            Padding="0,5"
+            HorizontalAlignment="Right">
+            <hc:UniformSpacingPanel Spacing="5">
+                <Button
+                    hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                    Command="{Binding AddCommand}"
+                    Content="新增"
+                    Style="{StaticResource ButtonDefault}"
+                    Visibility="{Binding Buttons[Create]}" />
+                <Button
+                    hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                    Command="{Binding BatchDeleteCommand}"
+                    CommandParameter="{Binding ElementName=DG, Path=SelectedItems}"
+                    Content="批量删除"
+                    Style="{StaticResource ButtonDanger}"
+                    Visibility="{Binding Buttons[BatchDelete]}" />
+            </hc:UniformSpacingPanel>
+        </ToolBar>
+        <hc:DialogContainer Grid.Row="2">
+            <DockPanel>
+                <uc:PaginationPlus
+                    Margin="1"
+                    DockPanel.Dock="Bottom"
+                    PageChanged="PaginationPlus_PageChanged"
+                    PageSize="{Binding PageSize}"
+                    TotalCount="{Binding TotalCount}"
+                    PageIndex="{Binding PageIndex}" />
+                <DataGrid
+                    Name="DG"
+                    hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="All"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Users}"
+                    RowHeaderWidth="60"
+                    Style="{StaticResource DataGrid.Small}">
+                    <DataGrid.RowHeaderTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
+                        </DataTemplate>
+                    </DataGrid.RowHeaderTemplate>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Binding="{Binding Id}"
+                            Header="Id"
+                            Visibility="Hidden" />
+                        <DataGridTextColumn Binding="{Binding Account}" Header="账号" />
+                        <DataGridTextColumn Binding="{Binding UserName}" Header="用户名称" />
+                        <DataGridTextColumn Binding="{Binding Enable}" Header="是否启用" />
+                        <DataGridTextColumn Binding="{Binding Description}" Header="备注" />
+                        <DataGridTextColumn Binding="{Binding CreationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="创建时间" />
+                        <DataGridTextColumn Binding="{Binding LastModificationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="修改时间" />
+                        <DataGridTemplateColumn Header="操作">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <hc:UniformSpacingPanel Spacing="5">
+                                        <Button
+                                            hc:IconElement.Geometry="{StaticResource DropperGeometry}"
+                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding Id}"
+                                            Content="编辑"
+                                            Style="{StaticResource ButtonDefault.Small}"
+                                            Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <Button
+                                            hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding Id}"
+                                            Content="删除"
+                                            Style="{StaticResource ButtonDanger.Small}"
+                                            Visibility="{Binding Path=DataContext.BtnPairs[DeleteBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                    </hc:UniformSpacingPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </hc:DialogContainer>
     </Grid>
 </UserControl>

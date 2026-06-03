@@ -120,7 +120,7 @@ namespace Admin.Desktop.Tools
                 Icon = "\xf05a",
                 Name = "关于",
                 Type = NavType.Url,
-                Content = "https://gitee.com/tzm22270969436",
+                Content = "https://gitee.com/tzm2270969436",
             };
         }
     }

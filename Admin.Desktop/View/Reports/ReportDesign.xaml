@@ -9,8 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
     d:DataContext="{d:DesignInstance Type=viewmodel:ReportDesignVM}"
+    Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
-    <Grid>
-        <Design:WpfDesignerControl x:Name="designerControl" />
-    </Grid>
+    <Design:WpfDesignerControl x:Name="designerControl" />
 </UserControl>

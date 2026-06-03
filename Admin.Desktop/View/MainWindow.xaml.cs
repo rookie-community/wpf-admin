@@ -1,8 +1,9 @@
-﻿using Admin.Commons;
-using Admin.Desktop.Resources.Langs;
+﻿using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.ViewModel;
 using HandyControl.Data;
 using HandyControl.Tools;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Globalization;
@@ -89,17 +90,17 @@ namespace Admin.Desktop.View
                         app.Resources.MergedDictionaries.Add(item);
                     }
                 }
-                ;
+                // 夜间深色
+                if (skinType == SkinType.Dark)
+                {
+                    LiveCharts.DefaultSettings.AddDarkTheme();
+                }
+                else
+                {
+                    // 白天浅色
+                    LiveCharts.DefaultSettings.AddLightTheme();
+                }
                 Application.Current.MainWindow?.OnApplyTemplate();
-            }
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (e.NewValue is NavDto navItem)
-            {
-                // 在这里可以处理选中项的数据
-                vm.SwitchItemCommand.Execute(navItem);
             }
         }
 

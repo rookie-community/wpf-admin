@@ -1,14 +1,16 @@
 ﻿using Admin.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Authorization;
 using Volo.Abp.Caching;
 using Volo.Abp.Security.Claims;
-using Volo.Abp.Users;
 
 namespace Admin.Users
 {
@@ -18,14 +20,14 @@ namespace Admin.Users
         private readonly IDistributedCache<string> _distributedCache;
         private readonly IConfiguration _configuration;
 
-        public UserApplicationService(ICurrentUser currentUser, IUserRepository userRepository, IDistributedCache<string> distributedCache, IConfiguration configuration)
+        public UserApplicationService(IUserRepository userRepository, IDistributedCache<string> distributedCache, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _distributedCache = distributedCache;
             _configuration = configuration;
         }
 
-        public async Task<LoginResultDto> LoginAsync(LoginDto input)
+        public async Task<TokenResultDto> LoginAsync(LoginDto input)
         {
             //var user = await _userRepository.FindAsync(x => x.Account == input.Account && x.Password == input.Password);
             //if (user == null)
@@ -41,7 +43,21 @@ namespace Admin.Users
             return await GenerateToken(user);
         }
 
-        public async Task<LoginResultDto> RefreshTokenAsync(Guid refreshToken)
+        [Authorize]
+        public Task<CurrentUserDto> GetCurrentUserInfoAsync()
+        {
+            var userDto = new CurrentUserDto
+            {
+                Id = CurrentUser.Id ?? Guid.Empty,
+                TenantId = CurrentUser.TenantId,
+                UserName = CurrentUser.UserName ?? string.Empty,
+                PhoneNumber = CurrentUser.PhoneNumber,
+                Email = CurrentUser.Email ?? string.Empty,
+            };
+            return Task.FromResult(userDto);
+        }
+
+        public async Task<TokenResultDto> RefreshTokenAsync(Guid refreshToken)
         {
             var cacheToken = _distributedCache.Get(refreshToken.ToString());
             if (string.IsNullOrEmpty(cacheToken))
@@ -66,7 +82,7 @@ namespace Admin.Users
             return await GenerateToken(user);
         }
 
-        private async Task<LoginResultDto> GenerateToken(User user)
+        private async Task<TokenResultDto> GenerateToken(User user)
         {
             var jwtConfig = _configuration.GetSection("Authentication:JwtBearer");
             var securityKey = jwtConfig["SecurityKey"]!;
@@ -88,6 +104,7 @@ namespace Admin.Users
                 new Claim(AbpClaimTypes.TenantId, Guid.NewGuid().ToString()),
             };
 
+            var expiresTime = TimeSpan.FromMinutes(expires);
             //sign the token using a secret key.This secret will be shared between your API and anything that needs to check that the token is legit.
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -102,20 +119,21 @@ namespace Admin.Users
                 claims,
                 notBefore: DateTime.Now,
                 //过期时间
-                expires: DateTime.Now.AddMinutes(expires),
+                expires: DateTime.Now.Add(expiresTime),
                 //签名证书
                 signingCredentials: creds
             );
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
             var refreshToken = Guid.NewGuid();
-            var result = new LoginResultDto
+            var result = new TokenResultDto
             {
                 Id = user.Id,
-                Account = user.Account,
                 UserName = user.UserName,
+                TokenType = "Bearer",
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                ExpiresIn = expiresTime.TotalSeconds
             };
 
             var options = new DistributedCacheEntryOptions
@@ -124,6 +142,29 @@ namespace Admin.Users
             };
             await _distributedCache.SetAsync(refreshToken.ToString(), accessToken, options);
             return result;
+        }
+
+        public async Task<PagedResultDto<UserDto>> GetListAsync(GetUserListDto input)
+        {
+            if (input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(User.Id);
+            }
+
+            var predicate = GetListFilter(input);
+            var authors = await _userRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, predicate);
+            var totalCount = await _userRepository.CountAsync(predicate);
+            return new PagedResultDto<UserDto>(totalCount, ObjectMapper.Map<List<User>, List<UserDto>>(authors));
+        }
+
+        private Expression<Func<User, bool>> GetListFilter(GetUserListDto model)
+        {
+            var filter = PredicateBuilder.New<User>(true);
+            if (!string.IsNullOrWhiteSpace(model.UserName))
+            {
+                filter = filter.And(x => x.UserName.Equals(model.UserName));
+            }
+            return filter;
         }
     }
 }

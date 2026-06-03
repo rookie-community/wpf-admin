@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ex="clr-namespace:Admin.Desktop.Tools.Extension"
     xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:langs="clr-namespace:Admin.Desktop.Resources.Langs"
     xmlns:local="clr-namespace:Admin.Desktop.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -143,10 +144,12 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TreeView
-            Grid.Column="0"
-            ItemsSource="{Binding NavItems}"
-            SelectedItemChanged="TreeView_SelectedItemChanged">
+        <TreeView Grid.Column="0" ItemsSource="{Binding NavItems}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectedItemChanged">
+                    <i:InvokeCommandAction Command="{Binding SwitchItemCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                     <TextBlock Tag="{Binding Id}">
@@ -169,13 +172,12 @@
             Grid.Column="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Background="{StaticResource DarkDefaultBrush}">
+            Background="{DynamicResource DarkDefaultBrush}">
             <TextBlock
-                Padding="0,2"
+                Padding="0,5"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Bottom"
-                Foreground="{StaticResource SecondaryTextBrush}"
                 Text="Copyright © 2026 Admin Sample" />
             <hc:TabControl
                 IsScrollable="True"
@@ -194,9 +196,15 @@
             Visibility="Visible">
             <hc:NotifyIcon.ContextMenu>
                 <ContextMenu Width="140">
-                    <MenuItem Command="{Binding CurrentViewShowCommand}" Header="打开主页" />
+                    <MenuItem
+                        hc:IconElement.Geometry="{StaticResource WindowsGeometry}"
+                        Command="{Binding CurrentViewShowCommand}"
+                        Header="打开主页" />
                     <Separator />
-                    <MenuItem Command="hc:ControlCommands.ShutdownApp" Header="退出" />
+                    <MenuItem
+                        hc:IconElement.Geometry="{StaticResource CloseGeometry}"
+                        Command="hc:ControlCommands.ShutdownApp"
+                        Header="退出" />
                 </ContextMenu>
             </hc:NotifyIcon.ContextMenu>
             <hc:Interaction.Triggers>

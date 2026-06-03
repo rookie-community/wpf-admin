@@ -1,4 +1,4 @@
-﻿using Volo.Abp.Domain.Entities;
+﻿using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
 
 namespace Admin.Identity
@@ -6,8 +6,10 @@ namespace Admin.Identity
     /// <summary>
     /// 用户表
     /// </summary>
-    public class User : AggregateRoot<Guid>, IMultiTenant
+    public class User : FullAuditedAggregateRoot<Guid>, IMultiTenant
     {
+        public Guid? TenantId { get; set; }
+
         /// <summary>
         /// 账户
         /// </summary>
@@ -32,7 +34,5 @@ namespace Admin.Identity
         /// 邮箱
         /// </summary>
         public string Email { get; set; } = null!;
-
-        public Guid? TenantId { get; set; }
     }
 }

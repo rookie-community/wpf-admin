@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.6.11806.211 stable
+VisualStudioVersion = 18.6.11806.211
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.Desktop", "Admin.Desktop\Admin.Desktop.csproj", "{63178CF1-6E72-429E-89F3-9D4B98A7354C}"
 EndProject
@@ -24,6 +24,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.HttpApi.Client", "Admin.HttpApi.Client\Admin.HttpApi.Client.csproj", "{E78F2787-2825-4664-88EF-B403B5EABC78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.HttpApi.Host", "Admin.HttpApi.Host\Admin.HttpApi.Host.csproj", "{D588C051-1DA6-4217-8B5A-21739D9E31DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{2D4EF04E-2B5E-4CD7-B6EB-D4BA27D9C5A0}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

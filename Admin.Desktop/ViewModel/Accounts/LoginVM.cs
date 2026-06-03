@@ -5,6 +5,7 @@ using Admin.Desktop.View.Accounts;
 using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FastReport.Utils;
 using HandyControl.Tools;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
@@ -103,14 +104,15 @@ namespace Admin.Desktop.ViewModel.Accounts
                     MessageBox.Error($"账号或密码错误！", "登录失败");
                     return;
                 }
-                var userResult = await _userApplicationService.LoginAsync(new LoginDto
+                var tokenResult = await _userApplicationService.LoginAsync(new LoginDto
                 {
                     Account = UserName,
                     Password = Password,
                     Tenant = Tenant,
                 });
-                App.SetCurrentUser(userResult);
-                TokenManager.SetTokens(userResult.AccessToken, userResult.RefreshToken);
+                TokenManager.SetTokens(tokenResult.AccessToken, tokenResult.RefreshToken);
+                var userInfo = await _userApplicationService.GetCurrentUserInfoAsync();
+                App.SetCurrentUser(userInfo);
                 var view = new MainWindow();
                 view.Show();
                 Owner.Close();
@@ -139,6 +141,7 @@ namespace Admin.Desktop.ViewModel.Accounts
                 //更新语言
                 ConfigHelper.Instance.SetLang(value);
                 LangProvider.Culture = new CultureInfo(value);
+                Res.LoadLocale(LangProvider.Culture);
                 var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 config.AppSettings.Settings["Language"].Value = value;
                 config.Save(ConfigurationSaveMode.Modified);

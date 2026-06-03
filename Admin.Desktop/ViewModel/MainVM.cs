@@ -188,31 +188,26 @@ namespace Admin.Desktop.ViewModel
                     }
                 };
 
-                if (navItem.Type == NavType.UserControl)
+                if (navItem.Type == NavType.UserControl || navItem.Type == NavType.Page)
                 {
                     var contentType = Type.GetType(navItem.Content);
                     var constructor = contentType?.GetConstructor(Type.EmptyTypes);
                     if (typeof(UserControl).IsAssignableFrom(contentType))
                     {
-                        tabItem.Content = (FrameworkElement)constructor?.Invoke(parameters)!;
+                        tabItem.Content = (UserControl)constructor?.Invoke(parameters)!;
                     }
-                    Title = $"{TitalPrefix} - {navItem.Name}";
-                    TabItems.Add(tabItem);
-                    TabSelectedIndex = TabItems.IndexOf(tabItem);
-                    return;
-                }
-
-                if (navItem.Type == NavType.Page)
-                {
-                    var contentType = Type.GetType(navItem.Content);
-                    var constructor = contentType?.GetConstructor(Type.EmptyTypes);
-                    if (typeof(Page).IsAssignableFrom(contentType))
+                    else if (typeof(Page).IsAssignableFrom(contentType))
                     {
                         tabItem.Content = new Frame
                         {
-                            Content = (Page)Activator.CreateInstance(contentType, parameters)!,
+                            Content = (Page)constructor?.Invoke(parameters)!,
                             NavigationUIVisibility = NavigationUIVisibility.Hidden,
                         };
+                    }
+                    else
+                    {
+                        Growl.Error($"无法打开页面，类型错误：{navItem.Content}");
+                        return;
                     }
                     Title = $"{TitalPrefix} - {navItem.Name}";
                     TabItems.Add(tabItem);
