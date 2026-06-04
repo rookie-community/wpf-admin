@@ -199,12 +199,23 @@
                     <MenuItem
                         hc:IconElement.Geometry="{StaticResource WindowsGeometry}"
                         Command="{Binding CurrentViewShowCommand}"
-                        Header="打开主页" />
+                        Header="打开主页">
+                        <MenuItem.Icon>
+                            <TextBlock
+                                Foreground="{DynamicResource DarkInfoBrush}"
+                                Style="{StaticResource FontAwesome}"
+                                Text="&#xf015;" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator />
-                    <MenuItem
-                        hc:IconElement.Geometry="{StaticResource CloseGeometry}"
-                        Command="hc:ControlCommands.ShutdownApp"
-                        Header="退出" />
+                    <MenuItem Command="hc:ControlCommands.ShutdownApp" Header="退出">
+                        <MenuItem.Icon>
+                            <TextBlock
+                                Foreground="{DynamicResource DarkDangerBrush}"
+                                Style="{StaticResource FontAwesome}"
+                                Text="&#xf057;" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </hc:NotifyIcon.ContextMenu>
             <hc:Interaction.Triggers>

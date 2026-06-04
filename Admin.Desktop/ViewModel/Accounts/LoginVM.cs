@@ -98,12 +98,6 @@ namespace Admin.Desktop.ViewModel.Accounts
                     return;
                 }
 
-                await Task.Delay(1);
-                if (UserName != "admin" || Password != "1q2w3E*")
-                {
-                    MessageBox.Error($"账号或密码错误！", "登录失败");
-                    return;
-                }
                 var tokenResult = await _userApplicationService.LoginAsync(new LoginDto
                 {
                     Account = UserName,

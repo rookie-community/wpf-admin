@@ -121,8 +121,9 @@
                             Visibility="Hidden" />
                         <DataGridTextColumn Binding="{Binding Account}" Header="账号" />
                         <DataGridTextColumn Binding="{Binding UserName}" Header="用户名称" />
-                        <DataGridTextColumn Binding="{Binding Enable}" Header="是否启用" />
-                        <DataGridTextColumn Binding="{Binding Description}" Header="备注" />
+                        <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="是否激活" />
+                        <DataGridTextColumn Binding="{Binding PhoneNumber}" Header="电话" />
+                        <DataGridTextColumn Binding="{Binding Email}" Header="邮箱" />
                         <DataGridTextColumn Binding="{Binding CreationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="创建时间" />
                         <DataGridTextColumn Binding="{Binding LastModificationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="修改时间" />
                         <DataGridTemplateColumn Header="操作">

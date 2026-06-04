@@ -4,7 +4,13 @@ namespace Admin.Users
 {
     public class UserDto : EntityDto<Guid>
     {
+        public string Account { get; set; } = null!;
+
         public string UserName { get; set; } = null!;
+
+        public bool IsActive { get; set; }
+
+        public string? PhoneNumber { get; set; }
 
         public string? Email { get; set; }
 

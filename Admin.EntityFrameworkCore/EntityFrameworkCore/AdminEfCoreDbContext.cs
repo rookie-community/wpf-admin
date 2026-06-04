@@ -1,5 +1,4 @@
 ﻿using Admin.Identity;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Volo.Abp.Data;
@@ -47,7 +46,7 @@ namespace Admin.EntityFrameworkCore.EntityFrameworkCore
             // 没有配置选项时配置SQLite内存数据库
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite(new SqliteConnection("Data Source=file::memory:?cache=shared"));
+                //optionsBuilder.UseSqlite(new SqliteConnection("Data Source=file::memory:?cache=shared"));
             }
         }
     }

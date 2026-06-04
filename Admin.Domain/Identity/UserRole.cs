@@ -8,8 +8,8 @@ namespace Admin.Identity
     /// </summary>
     public class UserRole : Entity, IMultiTenant
     {
-        public int UserId { get; set; }
-        public int RoleId { get; set; }
+        public Guid UserId { get; set; }
+        public Guid RoleId { get; set; }
         public Guid? TenantId { get; set; }
 
         public override object[] GetKeys()

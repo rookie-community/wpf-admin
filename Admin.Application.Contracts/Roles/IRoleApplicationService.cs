@@ -2,7 +2,7 @@
 
 namespace Admin.Roles
 {
-    public interface IRoleApplicationService: IApplicationService
+    public interface IRoleApplicationService : IApplicationService
     {
     }
 }

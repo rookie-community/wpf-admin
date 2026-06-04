@@ -16,32 +16,28 @@
         Margin="10"
         Orientation="Vertical"
         Spacing="10">
-
         <hc:TextBox
             hc:InfoElement.Title="租户"
             hc:InfoElement.TitlePlacement="Left"
             hc:InfoElement.TitleWidth="80"
-            IsEnabled="False"
             IsReadOnly="True"
-            Text="{Binding TenantId}" />
+            Text="{Binding TenantName}" />
         <hc:TextBox
             hc:InfoElement.Title="账号"
             hc:InfoElement.TitlePlacement="Left"
             hc:InfoElement.TitleWidth="80"
-            IsEnabled="False"
-            IsReadOnly="True" />
+            IsReadOnly="True"
+            Text="{Binding Account}" />
         <hc:TextBox
             hc:InfoElement.Title="用户名"
             hc:InfoElement.TitlePlacement="Left"
             hc:InfoElement.TitleWidth="80"
             Text="{Binding UserName}" />
-        <hc:ComboBox
-            hc:InfoElement.Title="是否激活"
-            hc:InfoElement.TitlePlacement="Left"
-            hc:InfoElement.TitleWidth="80">
-            <ComboBoxItem Content="已激活" Foreground="{DynamicResource DarkSuccessBrush}" />
-            <ComboBoxItem Content="未激活" Foreground="{DynamicResource DarkDangerBrush}" />
-        </hc:ComboBox>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Width="80" Text="是否激活" />
+            <CheckBox IsChecked="{Binding IsActive}" />
+        </StackPanel>
+
         <hc:TextBox
             hc:InfoElement.Title="电话"
             hc:InfoElement.TitlePlacement="Left"

@@ -1,14 +1,14 @@
 ﻿using Admin.EntityFrameworkCore.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.Sqlite;
+using Volo.Abp.EntityFrameworkCore.SqlServer;
 using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 
 namespace Admin.EntityFrameworkCore
 {
     [DependsOn(
-        typeof(AbpEntityFrameworkCoreSqliteModule),
+        typeof(AbpEntityFrameworkCoreSqlServerModule),
         typeof(AbpTenantManagementEntityFrameworkCoreModule),
         typeof(AdminDomainModule)
         )]
@@ -27,7 +27,7 @@ namespace Admin.EntityFrameworkCore
             {
                 /* The main point to change your DBMS.
                  * See also FmpMigrationsDbContextFactory for EF Core tooling. */
-                options.UseSqlite();
+                options.UseSqlServer();
 
                 //如果使用的是mysql,需要在EntityFrameworkCore层的module下添加一下配置
                 //https://github.com/abpframework/abp/issues/21879

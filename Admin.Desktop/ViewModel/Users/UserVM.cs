@@ -26,10 +26,10 @@ namespace Admin.Desktop.ViewModel.Users
         private ObservableCollection<UserDto> users = new ObservableCollection<UserDto>();
 
         [ObservableProperty]
-        private int pageIndex = 0;
+        private int pageIndex = 1;
 
         [ObservableProperty]
-        private int totalCount;
+        private long totalCount;
 
         [ObservableProperty]
         private int pageSize = 30;
@@ -66,6 +66,7 @@ namespace Admin.Desktop.ViewModel.Users
                     SkipCount = (PageIndex - 1) * PageSize,
                     MaxResultCount = PageSize
                 });
+                TotalCount = result.TotalCount;
                 Users = new ObservableCollection<UserDto>(result.Items);
             }
             catch (AbpValidationException abpEx)

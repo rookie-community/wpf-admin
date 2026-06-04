@@ -22,7 +22,7 @@ namespace Admin.Desktop.ViewModel.Roles
         private int pageIndex = 0;
 
         [ObservableProperty]
-        private int totalCount;
+        private long totalCount;
 
         [ObservableProperty]
         private int pageSize = 30;

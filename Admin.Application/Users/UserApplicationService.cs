@@ -1,4 +1,5 @@
-﻿using Admin.Identity;
+﻿using Admin.Commons;
+using Admin.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -10,51 +11,64 @@ using System.Text;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Authorization;
 using Volo.Abp.Caching;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.TenantManagement;
 
 namespace Admin.Users
 {
     public class UserApplicationService : AdminAppService, IUserApplicationService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRepository<Tenant, Guid> _tenantRepository;
         private readonly IDistributedCache<string> _distributedCache;
         private readonly IConfiguration _configuration;
 
-        public UserApplicationService(IUserRepository userRepository, IDistributedCache<string> distributedCache, IConfiguration configuration)
+        public UserApplicationService(IUserRepository userRepository, IRepository<Tenant, Guid> tenantRepository, IDistributedCache<string> distributedCache, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _tenantRepository = tenantRepository;
             _distributedCache = distributedCache;
             _configuration = configuration;
         }
 
         public async Task<TokenResultDto> LoginAsync(LoginDto input)
         {
-            //var user = await _userRepository.FindAsync(x => x.Account == input.Account && x.Password == input.Password);
-            //if (user == null)
-            //{
-            //    throw new AbpAuthorizationException("用户不存在");
-            //}
-            var user = new User
+            var md5Password = MD5Helper.GetMD5(input.Password);
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Account == input.Account && x.Password == md5Password);
+            if (user == null)
             {
-                Account = input.Account,
-                UserName = "Admin",
-                Password = input.Password
-            };
+                throw new AbpAuthorizationException("用户不存在");
+            }
             return await GenerateToken(user);
         }
 
         [Authorize]
-        public Task<CurrentUserDto> GetCurrentUserInfoAsync()
+        public async Task<CurrentUserDto> GetCurrentUserInfoAsync()
         {
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == CurrentUser.Id);
+            if (user == null)
+            {
+                throw new AbpAuthorizationException("获取用户数据失败！");
+            }
+
             var userDto = new CurrentUserDto
             {
-                Id = CurrentUser.Id ?? Guid.Empty,
-                TenantId = CurrentUser.TenantId,
-                UserName = CurrentUser.UserName ?? string.Empty,
-                PhoneNumber = CurrentUser.PhoneNumber,
-                Email = CurrentUser.Email ?? string.Empty,
+                Id = user.Id,
+                Account = user.Account,
+                UserName = user.UserName,
+                IsActive = user.IsActive,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
             };
-            return Task.FromResult(userDto);
+
+            if (user.TenantId != default)
+            {
+                var tenant = await _tenantRepository.FirstOrDefaultAsync(x => x.Id == user.TenantId);
+                userDto.TenantName = tenant?.Name ?? string.Empty;
+            }
+
+            return userDto;
         }
 
         public async Task<TokenResultDto> RefreshTokenAsync(Guid refreshToken)
@@ -72,13 +86,8 @@ namespace Admin.Users
                 throw new AbpAuthorizationException("访问令牌格式错误");
             }
 
-            //var userId = Guid.NewGuid();
-            //var user = await _userRepository.GetAsync(userId);
-            var user = new User
-            {
-                Account = "Admin",
-                UserName = "Admin",
-            };
+            var userId = CurrentUser.Id ?? Guid.Empty;
+            var user = await _userRepository.GetAsync(userId);
             return await GenerateToken(user);
         }
 
@@ -94,12 +103,12 @@ namespace Admin.Users
                 //new Claim(JwtRegisteredClaimNames.Nbf, DateTimeOffset.Now.ToUnixTimeSeconds().ToString()) ,
                 //new Claim (JwtRegisteredClaimNames.Exp, DateTimeOffset.Now.AddMinutes(expires).ToUnixTimeSeconds().ToString()),
                 //new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-                new Claim(AbpClaimTypes.UserId, Guid.NewGuid().ToString()),
+                new Claim(AbpClaimTypes.UserId, user.Id.ToString()),
                 new Claim(AbpClaimTypes.Name, user.UserName),
                 new Claim(AbpClaimTypes.UserName, user.UserName),
                 new Claim(AbpClaimTypes.SurName, user.UserName),
-                new Claim(AbpClaimTypes.PhoneNumber, "1234567"),
-                new Claim(AbpClaimTypes.Email, "测试Email"),
+                new Claim(AbpClaimTypes.PhoneNumber, user.PhoneNumber ?? string.Empty),
+                new Claim(AbpClaimTypes.Email, user.Email),
                 new Claim(AbpClaimTypes.Role, "测试Role"),
                 new Claim(AbpClaimTypes.TenantId, Guid.NewGuid().ToString()),
             };
@@ -162,8 +171,19 @@ namespace Admin.Users
             var filter = PredicateBuilder.New<User>(true);
             if (!string.IsNullOrWhiteSpace(model.UserName))
             {
-                filter = filter.And(x => x.UserName.Equals(model.UserName));
+                filter = filter.And(x => x.UserName.Contains(model.UserName));
             }
+
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                filter = filter.And(x => x.PhoneNumber.Equals(model.PhoneNumber));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Email))
+            {
+                filter = filter.And(x => x.Email.Equals(model.Email));
+            }
+
             return filter;
         }
     }

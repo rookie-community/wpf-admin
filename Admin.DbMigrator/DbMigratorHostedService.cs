@@ -32,7 +32,7 @@ namespace Admin.DbMigrator
 
             await application
                 .ServiceProvider
-                .GetRequiredService<IdentityStoreDbMigrationService>()
+                .GetRequiredService<AdminStoreDbMigrationService>()
                 .MigrateAsync();
 
             await application.ShutdownAsync();

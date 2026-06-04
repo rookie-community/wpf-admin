@@ -9,12 +9,12 @@ namespace Admin.Desktop.UserControls
     /// </summary>
     public partial class PaginationPlus : UserControl
     {
-        public int TotalCount
+        public long TotalCount
         {
             get
             {
                 var val = (int)GetValue(TotalCountProperty);
-                if (val < 0) 
+                if (val < 0)
                 {
                     return 0;
                 }

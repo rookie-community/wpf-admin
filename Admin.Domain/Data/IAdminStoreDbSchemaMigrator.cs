@@ -1,6 +1,6 @@
 ﻿namespace Admin.Data
 {
-    public interface IIdentityStoreDbSchemaMigrator
+    public interface IAdminStoreDbSchemaMigrator
     {
         Task MigrateAsync();
     }

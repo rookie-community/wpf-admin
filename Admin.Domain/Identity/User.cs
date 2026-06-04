@@ -30,6 +30,8 @@ namespace Admin.Identity
         /// </summary>
         public bool IsActive { get; set; }
 
+        public string? PhoneNumber { get; set; }
+
         /// <summary>
         /// 邮箱
         /// </summary>

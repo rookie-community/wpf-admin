@@ -12,11 +12,17 @@ namespace Admin.Desktop.ViewModel.Users
     public partial class UserInfoVM : ObservableValidator, ITransientDependency
     {
         [ObservableProperty]
-        private Guid? tenantId;
+        private string tenantName;
+
+        [ObservableProperty]
+        private string account;
 
         [Required]
         [ObservableProperty]
         private string? userName;
+
+        [ObservableProperty]
+        private bool isActive;
 
         [ObservableProperty]
         private string? phoneNumber;
@@ -43,10 +49,12 @@ namespace Admin.Desktop.ViewModel.Users
         private void InitialUser()
         {
             var user = App.CurrentUser;
-            TenantId = user.TenantId;
+            TenantName = user.TenantName;
+            Account = user.Account;
             UserName = user.UserName;
-            Email = user.Email;
+            IsActive = user.IsActive;
             PhoneNumber = user.PhoneNumber;
+            Email = user.Email;
         }
 
         [RelayCommand]

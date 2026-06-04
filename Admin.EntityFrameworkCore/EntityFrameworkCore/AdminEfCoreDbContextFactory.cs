@@ -11,7 +11,7 @@ namespace Admin.EntityFrameworkCore.EntityFrameworkCore
         {
             var configuration = BuildConfiguration();
             var builder = new DbContextOptionsBuilder<AdminEfCoreDbContext>()
-                .UseSqlite(configuration.GetConnectionString("Default"));
+                .UseSqlServer(configuration.GetConnectionString("Default"));
 
             return new AdminEfCoreDbContext(builder.Options);
         }
@@ -19,7 +19,7 @@ namespace Admin.EntityFrameworkCore.EntityFrameworkCore
         private static IConfigurationRoot BuildConfiguration()
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Admin.Desktop/"))
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Admin.HttpApi.Host/"))
                 .AddJsonFile("appsettings.json", optional: false);
 
             return builder.Build();

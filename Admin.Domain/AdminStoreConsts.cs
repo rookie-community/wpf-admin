@@ -2,8 +2,7 @@
 {
     public static class AdminStoreConsts
     {
-        public const string DbTablePrefix = "App";
-
+        public const string DbTablePrefix = "Abp";
         public const string DbSchema = null;
     }
 }
