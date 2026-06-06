@@ -9,12 +9,22 @@ namespace Admin.Desktop.View.Users
     /// </summary>
     public partial class EditUserPasswordView : UserControl
     {
-        private EditUserPasswordVM vm;
+        private readonly EditUserPasswordVM vm;
+        private bool _isLoaded;
         public EditUserPasswordView()
         {
             InitializeComponent();
             vm = App.Current.Services.GetService<EditUserPasswordVM>()!;
-            vm.Initial(this);
+            Loaded += (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    // 避免重复加载数据
+                    return;
+                }
+                _isLoaded = true;
+                vm.Initial(this);
+            };
             DataContext = vm;
         }
     }

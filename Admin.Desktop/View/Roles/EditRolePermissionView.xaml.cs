@@ -1,20 +1,20 @@
-﻿using Admin.Desktop.ViewModel.Users;
+﻿using Admin.Desktop.ViewModel.Roles;
 using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
+using System.Windows;
 
-namespace Admin.Desktop.View.Users
+namespace Admin.Desktop.View.Roles
 {
     /// <summary>
-    /// UserView.xaml 的交互逻辑
+    /// EditRolePermissionView.xaml 的交互逻辑
     /// </summary>
-    public partial class UserView : UserControl
+    public partial class EditRolePermissionView : Window
     {
-        private readonly UserVM vm;
-        private bool _isLoaded;
-        public UserView()
+        private readonly EditRolePermissionVM vm;
+        private bool _isLoaded = false;
+        public EditRolePermissionView(Guid roleId)
         {
             InitializeComponent();
-            vm = App.Current.Services.GetService<UserVM>()!;
+            vm = App.Current.Services.GetService<EditRolePermissionVM>()!;
             Loaded += async (s, e) =>
             {
                 if (_isLoaded)

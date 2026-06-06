@@ -154,9 +154,9 @@
                 <HierarchicalDataTemplate ItemsSource="{Binding Items}">
                     <TextBlock Tag="{Binding Id}">
                         <Run
+                            FontFamily="{StaticResource FA_Regular}"
                             FontSize="12"
                             Foreground="{DynamicResource DarkInfoBrush}"
-                            Style="{DynamicResource FontAwesome}"
                             Text="{Binding Icon}" />
                         <Run Text="{Binding Name}" />
                     </TextBlock>
@@ -180,6 +180,8 @@
                 DockPanel.Dock="Bottom"
                 Text="Copyright © 2026 Admin Sample" />
             <hc:TabControl
+                IsAnimationEnabled="True"
+                IsDraggable="True"
                 IsScrollable="True"
                 ItemsSource="{Binding TabItems}"
                 OverflowMenuDisplayMemberPath="Header"
@@ -187,7 +189,8 @@
                 SelectionChanged="TabControl_SelectionChanged"
                 ShowCloseButton="True"
                 ShowOverflowButton="False"
-                ShowScrollButton="True" />
+                ShowScrollButton="True"
+                TabItemWidth="150" />
         </DockPanel>
         <!--  状态栏  -->
         <hc:NotifyIcon
@@ -202,8 +205,8 @@
                         Header="打开主页">
                         <MenuItem.Icon>
                             <TextBlock
+                                FontFamily="{StaticResource FA_Regular}"
                                 Foreground="{DynamicResource DarkInfoBrush}"
-                                Style="{StaticResource FontAwesome}"
                                 Text="&#xf015;" />
                         </MenuItem.Icon>
                     </MenuItem>
@@ -211,8 +214,8 @@
                     <MenuItem Command="hc:ControlCommands.ShutdownApp" Header="退出">
                         <MenuItem.Icon>
                             <TextBlock
+                                FontFamily="{StaticResource FA_Regular}"
                                 Foreground="{DynamicResource DarkDangerBrush}"
-                                Style="{StaticResource FontAwesome}"
                                 Text="&#xf057;" />
                         </MenuItem.Icon>
                     </MenuItem>

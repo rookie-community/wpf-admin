@@ -40,6 +40,17 @@ namespace Admin.Users
             {
                 throw new AbpAuthorizationException("用户不存在");
             }
+
+            if (!user.IsActive)
+            {
+                throw new AbpAuthorizationException("用户未激活，请联系系统管理员");
+            }
+
+            if (user.IsDeleted)
+            {
+                throw new AbpAuthorizationException("用户不存在");
+            }
+
             return await GenerateToken(user);
         }
 
@@ -153,6 +164,7 @@ namespace Admin.Users
             return result;
         }
 
+        [Authorize]
         public async Task<PagedResultDto<UserDto>> GetListAsync(GetUserListDto input)
         {
             if (input.Sorting.IsNullOrWhiteSpace())
@@ -161,9 +173,9 @@ namespace Admin.Users
             }
 
             var predicate = GetListFilter(input);
-            var authors = await _userRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, predicate);
+            var users = await _userRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount, predicate);
             var totalCount = await _userRepository.CountAsync(predicate);
-            return new PagedResultDto<UserDto>(totalCount, ObjectMapper.Map<List<User>, List<UserDto>>(authors));
+            return new PagedResultDto<UserDto>(totalCount, ObjectMapper.Map<List<User>, List<UserDto>>(users));
         }
 
         private Expression<Func<User, bool>> GetListFilter(GetUserListDto model)
@@ -184,7 +196,51 @@ namespace Admin.Users
                 filter = filter.And(x => x.Email.Equals(model.Email));
             }
 
-            return filter;
+            return filter!;
+        }
+
+        [Authorize]
+        public async Task UpdateCurrentUserPasswordAsync(UpdateCurrentPasswordDto input)
+        {
+            if (input.Id != CurrentUser.Id)
+            {
+                throw new AbpAuthorizationException("传递的用户标识与当前登录用户不一致");
+            }
+            var oldPaswordMd5 = MD5Helper.GetMD5(input.OldPassword);
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == input.Id && x.Password == oldPaswordMd5);
+            if (user == null)
+            {
+                throw new AbpAuthorizationException("用户密码错误");
+            }
+
+            user.Password = MD5Helper.GetMD5(input.NewPassword);
+            await _userRepository.UpdateAsync(user);
+        }
+
+        [Authorize]
+        public async Task UpdateCurrentUserAsync(UpdateCurrentUserDto input)
+        {
+            if (input.Id != CurrentUser.Id)
+            {
+                throw new AbpAuthorizationException("传递的用户标识与当前登录用户不一致");
+            }
+
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == input.Id);
+            if (user == null)
+            {
+                throw new AbpAuthorizationException("用户不存在");
+            }
+
+            user.UserName = input.UserName;
+            user.PhoneNumber = input.PhoneNumber;
+            user.Email = input.Email ?? string.Empty;
+
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public Task BatchDelete(IList<Guid> userIds)
+        {
+            throw new NotImplementedException();
         }
     }
 }

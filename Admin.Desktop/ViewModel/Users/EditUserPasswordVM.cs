@@ -2,6 +2,7 @@
 using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Volo.Abp.DependencyInjection;
@@ -13,17 +14,20 @@ namespace Admin.Desktop.ViewModel.Users
     {
         [Required]
         [ObservableProperty]
-        private string oldPassword;
+        private string oldPassword = null!;
 
         [Required(ErrorMessage = "请输入新密码")]
         [MinLength(6, ErrorMessage = "密码长度至少6位")]
         [ObservableProperty]
-        private string newPassword;
+        private string newPassword = null!;
 
         [Required]
         [CustomValidation(typeof(EditUserPasswordVM), nameof(ValidateConfirmPassword))]
         [ObservableProperty]
-        private string confirmPassword;
+        private string confirmPassword = null!;
+
+        [ObservableProperty]
+        private string dialogContainerToken = Guid.NewGuid().ToString();
 
         public EditUserPasswordView Owner { get; private set; } = null!;
 
@@ -44,12 +48,31 @@ namespace Admin.Desktop.ViewModel.Users
         [RelayCommand]
         private async Task SubmitAsync()
         {
-            ValidateAllProperties();
-            if (HasErrors)
+            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            try
             {
-                return;
+                ValidateAllProperties();
+                if (HasErrors)
+                {
+                    return;
+                }
+                await _userApplicationService.UpdateCurrentUserPasswordAsync(new UpdateCurrentPasswordDto
+                {
+                    Id = App.CurrentUser.Id,
+                    OldPassword = OldPassword,
+                    NewPassword = NewPassword,
+                });
+                MessageBox.Success("修改成功");
             }
-            MessageBox.Success("修改成功");
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
         }
 
         public static ValidationResult ValidateConfirmPassword(string confirmPasswordValue, ValidationContext context)

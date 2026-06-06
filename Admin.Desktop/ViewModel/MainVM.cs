@@ -149,7 +149,7 @@ namespace Admin.Desktop.ViewModel
                     {
                         Text = navItem.Icon,
                         Foreground = (Brush)Application.Current.TryFindResource("DarkInfoBrush"),
-                        Style = (Style)Application.Current.FindResource("FontAwesome"),
+                        FontFamily = (FontFamily)Application.Current.FindResource("FA_Regular"),
                     };
                     tabHeaderText.Inlines.Add(iconRun);
                     tabHeaderText.Inlines.Add(new Run
@@ -165,16 +165,10 @@ namespace Admin.Desktop.ViewModel
                 var tabItem = new TabItem
                 {
                     Header = tabHeaderText,
-                    //Header = new TextBlock
-                    //{
-                    //    Text = string.IsNullOrEmpty(navItem.Icon) ? navItem.Name : $"{navItem.Icon} {navItem.Name}",
-                    //    Style = string.IsNullOrEmpty(navItem.Icon) ? default : (Style)Application.Current.FindResource("FontAwesome"),
-                    //},
                     Tag = navItem.Id,
                     ShowCloseButton = !isHome,
                     ShowContextMenu = !isHome,
                 };
-
 
                 tabItem.Closing += (sender, args) =>
                 {
@@ -217,10 +211,6 @@ namespace Admin.Desktop.ViewModel
 
                 if (navItem.Type == NavType.Url)
                 {
-                    //tabItem.Content = new Frame
-                    //{
-                    //    Source = new Uri(navItem.Content),
-                    //};
                     tabItem.Content = new WebView2
                     {
                         Source = new Uri(navItem.Content),

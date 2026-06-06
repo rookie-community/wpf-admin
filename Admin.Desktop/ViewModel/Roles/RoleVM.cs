@@ -5,21 +5,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Windows;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Validation;
+using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace Admin.Desktop.ViewModel.Roles
 {
     public partial class RoleVM : ObservableObject, ITransientDependency
     {
         [ObservableProperty]
-        private string roleCode = string.Empty;
+        private string name = string.Empty;
 
         [ObservableProperty]
-        private string roleName = string.Empty;
-
-        [ObservableProperty]
-        private int pageIndex = 0;
+        private int pageIndex = 1;
 
         [ObservableProperty]
         private long totalCount;
@@ -28,7 +29,14 @@ namespace Admin.Desktop.ViewModel.Roles
         private int pageSize = 30;
 
         [ObservableProperty]
+        private ObservableCollection<RoleDto> roles = new ObservableCollection<RoleDto>();
+
+        [ObservableProperty]
         private string dialogContainerToken = Guid.NewGuid().ToString();
+
+        [ObservableProperty]
+        private Dictionary<string, Visibility> buttonVis = new Dictionary<string, Visibility>();
+
         private readonly IRoleApplicationService _roleApplicationService;
         private readonly IPermissionApplicationService _permissionApplicationService;
         private readonly ILogger<RoleVM> _logger;
@@ -42,9 +50,10 @@ namespace Admin.Desktop.ViewModel.Roles
             _logger = logger;
         }
 
-        internal void Initial(RoleView owner)
+        internal async Task InitialAsync(RoleView owner)
         {
             Owner = owner;
+            await SearchCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]
@@ -53,14 +62,14 @@ namespace Admin.Desktop.ViewModel.Roles
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                await Task.Delay(1000 * 5);
-                //var result = await _userApplicationService.GetListAsync(new GetUserListDto
-                //{
-                //    UserName = UserName,
-                //    PhoneNumber = PhoneNumber,
-                //    Email = Email
-                //});
-                //Users = new ObservableCollection<UserDto>(result.Items);
+                var result = await _roleApplicationService.GetListAsync(new GetRoleListDto
+                {
+                    Name = Name,
+                    SkipCount = (PageIndex - 1) * PageSize,
+                    MaxResultCount = PageSize
+                });
+                TotalCount = result.TotalCount;
+                Roles = new ObservableCollection<RoleDto>(result.Items);
             }
             catch (AbpValidationException abpEx)
             {
@@ -80,8 +89,105 @@ namespace Admin.Desktop.ViewModel.Roles
         [RelayCommand]
         private void Reset()
         {
-            RoleCode = string.Empty;
-            RoleName = string.Empty;
+            Name = string.Empty;
+        }
+
+        [RelayCommand]
+        private async Task AddAsync()
+        {
+            try
+            {
+                await SearchCommand.ExecuteAsync(null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+        }
+
+        [RelayCommand]
+        private async Task EditAsync(RoleDto role)
+        {
+            try
+            {
+                await SearchCommand.ExecuteAsync(null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+        }
+
+        [RelayCommand]
+        private void EditPerm(RoleDto role)
+        {
+            var view = new EditRolePermissionView(role.Id);
+            var result = view.ShowDialog();
+            if (result == true)
+            {
+                MessageBox.Success("更新权限成功");
+            }
+        }
+
+
+        [RelayCommand]
+        private async Task Delete(RoleDto role)
+        {
+            Dialog? loadDialog = null;
+            try
+            {
+                var result = MessageBox.Ask($"确认删除数据？");
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+                loadDialog = Dialog.Show<LoadingCircle>();
+                await _roleApplicationService.BatchDelete(new List<Guid> { role.Id });
+                await SearchCommand.ExecuteAsync(null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog?.Close();
+            }
+        }
+
+        [RelayCommand]
+        private async Task BatchDelete(IList sender)
+        {
+            Dialog? loadDialog = null;
+            try
+            {
+                var roleIds = sender.Cast<RoleDto>().Select(x => x.Id).ToList();
+                if (roleIds.Count == 0)
+                {
+                    MessageBox.Warning("未选中任何数据！");
+                    return;
+                }
+                var result = MessageBox.Ask($"确认删除选中数据？");
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+                loadDialog = Dialog.Show<LoadingCircle>();
+                await _roleApplicationService.BatchDelete(roleIds);
+                await SearchCommand.ExecuteAsync(null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog?.Close();
+            }
         }
     }
 }

@@ -10,11 +10,21 @@ namespace Admin.Desktop.View.Reports
     public partial class ReportDesign : UserControl
     {
         private readonly ReportDesignVM vm;
+        private bool _isLoaded = false;
         public ReportDesign()
         {
             InitializeComponent();
             vm = App.Current.Services.GetService<ReportDesignVM>()!;
-            vm.InitialVM(this);
+            Loaded += async (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    // 避免重复加载数据
+                    return;
+                }
+                _isLoaded = true;
+                await vm.InitialAsync(this);
+            };
             DataContext = vm;
         }
     }

@@ -6,8 +6,8 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="80"
-    d:DesignWidth="500"
+    d:DesignHeight="40"
+    d:DesignWidth="360"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
     <StackPanel
@@ -22,16 +22,23 @@
 
         <!--  总数量  -->
         <TextBlock Margin="10,0" VerticalAlignment="Center">
-            <Run Text="共 " />
+            <Run Text="共" />
+            <Run Text="&#x20;" />
             <Run Text="{Binding TotalCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-            <Run Text=" 条" />
+            <Run Text="&#x20;" />
+            <Run Text="条" />
         </TextBlock>
-
         <!--  每页数量选择  -->
-        <hc:ComboBox
-            ItemStringFormat="{}{0} 条/页"
-            ItemsSource="{Binding PageSizeOptions, RelativeSource={RelativeSource AncestorType=UserControl}}"
-            SelectedValue="{Binding PageSize, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
-            SelectionChanged="ComboBox_SelectionChanged" />
+        <hc:ComboBox ItemsSource="{Binding PageSizeOptions, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValue="{Binding PageSize, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}">
+            <hc:ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding}" />
+                        <TextBlock Text="&#x20;" />
+                        <TextBlock Text="条/页" />
+                    </StackPanel>
+                </DataTemplate>
+            </hc:ComboBox.ItemTemplate>
+        </hc:ComboBox>
     </StackPanel>
 </UserControl>

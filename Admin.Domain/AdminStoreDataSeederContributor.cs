@@ -60,6 +60,4 @@ public class AdminStoreDataSeederContributor : IDataSeedContributor, ITransientD
             RoleId = role.Id
         });
     }
-
-
 }

@@ -12,5 +12,11 @@ namespace Admin.Users
         Task<CurrentUserDto> GetCurrentUserInfoAsync();
 
         Task<PagedResultDto<UserDto>> GetListAsync(GetUserListDto input);
+
+        Task UpdateCurrentUserPasswordAsync(UpdateCurrentPasswordDto input);
+
+        Task UpdateCurrentUserAsync(UpdateCurrentUserDto input);
+
+        Task BatchDelete(IList<Guid> userIds);
     }
 }

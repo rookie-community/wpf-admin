@@ -9,15 +9,14 @@
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<Content Include="favicon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\Fonts\Font Awesome 6 Brands-Regular-400.otf" />
-		<Resource Include="Resources\Fonts\Font Awesome 6 Free-Regular-400.otf" />
-		<Resource Include="Resources\Fonts\Font Awesome 6 Free-Solid-900.otf" />
+		<Resource Include="Resources\Fonts\Font Awesome 7 Brands-Regular-400.otf" />
+		<Resource Include="Resources\Fonts\Font Awesome 7 Free-Regular-400.otf" />
+		<Resource Include="Resources\Fonts\Font Awesome 7 Free-Solid-900.otf" />
 		<Resource Include="Resources\Images\Flag\ca-Es.png" />
 		<Resource Include="Resources\Images\Flag\cn.png" />
 		<Resource Include="Resources\Images\Flag\en.png" />

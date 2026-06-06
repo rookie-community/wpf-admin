@@ -1,0 +1,18 @@
+﻿<Window
+    x:Class="Admin.Desktop.View.Roles.EditRolePermissionView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.View.Roles"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="权限配置"
+    Width="800"
+    Height="450"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <hc:DialogContainer>
+        <Grid />
+    </hc:DialogContainer>
+</Window>

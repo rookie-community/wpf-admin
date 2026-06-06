@@ -1,4 +1,5 @@
 ﻿using Admin.Identity;
+using Admin.Roles;
 using Admin.Users;
 using AutoMapper;
 
@@ -13,6 +14,7 @@ namespace Admin
             //    .ForMember(dest => dest.DisplayPrice, opt => opt.MapFrom(src => $"${src.Price:F2}")); // 自定义映射规则
 
             CreateMap<User, UserDto>();
+            CreateMap<Role, RoleDto>();
         }
     }
 }

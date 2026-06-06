@@ -9,12 +9,22 @@ namespace Admin.Desktop.View.Roles
     /// </summary>
     public partial class RoleView : UserControl
     {
-        private RoleVM vm;
+        private readonly RoleVM vm;
+        private bool _isLoaded = false; // 标记是否已经加载过数据
         public RoleView()
         {
             InitializeComponent();
             vm = App.Current.Services.GetService<RoleVM>()!;
-            vm.Initial(this);
+            Loaded += async (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    // 避免重复加载数据
+                    return;
+                }
+                _isLoaded = true;
+                await vm.InitialAsync(this);
+            };
             DataContext = vm;
         }
     }

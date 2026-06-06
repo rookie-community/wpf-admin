@@ -9,10 +9,10 @@ using Volo.Abp.Modularity;
 namespace Admin.Desktop
 {
     [DependsOn(
-        typeof(AdminHttpApiClientModule),
-        typeof(AdminApplicationContractsModule),
         typeof(AbpAutofacModule),
-        typeof(AbpHttpClientModule)
+        typeof(AbpHttpClientModule),
+        typeof(AdminHttpApiClientModule),
+        typeof(AdminApplicationContractsModule)
     )]
     public class AdminDesktopModule : AbpModule
     {
@@ -23,7 +23,7 @@ namespace Admin.Desktop
                 options.ProxyClientBuildActions.Add((remoteServiceName, clientBuilder) =>
                 {
                     clientBuilder.AddTransientHttpErrorPolicy(
-                        policyBuilder => policyBuilder.WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(Math.Pow(2, i)))
+                        policyBuilder => policyBuilder.WaitAndRetryAsync(2, i => TimeSpan.FromSeconds(Math.Pow(2, i)))
                     );
                 });
             });

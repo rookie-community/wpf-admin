@@ -9,7 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
     d:DataContext="{d:DesignInstance Type=viewmodel:ReportDesignVM}"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
-    <Design:WpfDesignerControl x:Name="designerControl" />
+    <hc:DialogContainer>
+        <Design:WpfDesignerControl x:Name="designerControl" />
+    </hc:DialogContainer>
 </UserControl>

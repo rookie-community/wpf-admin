@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin.Quartz", "Admin.Quartz\Admin.Quartz.csproj", "{FCC80ABA-2F5D-441A-8AAC-BF48F90B45E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D588C051-1DA6-4217-8B5A-21739D9E31DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCC80ABA-2F5D-441A-8AAC-BF48F90B45E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCC80ABA-2F5D-441A-8AAC-BF48F90B45E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCC80ABA-2F5D-441A-8AAC-BF48F90B45E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCC80ABA-2F5D-441A-8AAC-BF48F90B45E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

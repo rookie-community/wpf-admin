@@ -5,8 +5,8 @@ using Volo.Abp.Modularity;
 namespace Admin.HttpApi.Client
 {
     [DependsOn(
-        typeof(AdminApplicationContractsModule),
-        typeof(AbpHttpClientModule)
+        typeof(AbpHttpClientModule),
+        typeof(AdminApplicationContractsModule)
        )]
     public class AdminHttpApiClientModule : AbpModule
     {

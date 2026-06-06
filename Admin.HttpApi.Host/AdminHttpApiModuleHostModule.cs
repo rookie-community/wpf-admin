@@ -21,14 +21,15 @@ using Volo.Abp.Swashbuckle;
 namespace Admin.HttpApi.Host
 {
     [DependsOn(
-         typeof(AdminHttpApiModule),
-         typeof(AdminApplicationModule),
-         typeof(AdminEntityFrameworkCoreModule),
-         typeof(AbpAutofacModule),
-         typeof(AbpAspNetCoreSerilogModule),
-         typeof(AbpSwashbuckleModule),
-         typeof(AbpAspNetCoreSignalRModule)
-     )]
+        typeof(AbpAutofacModule),
+        typeof(AbpAspNetCoreSerilogModule),
+        typeof(AbpSwashbuckleModule),
+        typeof(AbpAspNetCoreSignalRModule),
+        typeof(AdminHttpApiModule),
+        typeof(AdminApplicationModule),
+        typeof(AdminQuartzModule),
+        typeof(AdminEntityFrameworkCoreModule)
+        )]
     public class AdminHttpApiModuleHostModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -85,7 +86,6 @@ namespace Admin.HttpApi.Host
                     BearerFormat = "JWT",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Description = "Please Enter Bearer Token"
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
