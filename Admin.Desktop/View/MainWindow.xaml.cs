@@ -21,12 +21,22 @@ namespace Admin.Desktop.View
     {
         private string currentLang;
         private readonly MainVM vm;
+        private bool _isLoaded;
 
         public MainWindow()
         {
             InitializeComponent();
             vm = App.Current.Services.GetService<MainVM>()!;
-            vm.Initial(this);
+            Loaded += async (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    // 避免重复加载数据
+                    return;
+                }
+                _isLoaded = true;
+                await vm.InitialAsync(this);
+            };
             DataContext = vm;
             currentLang = LangProvider.Culture.Name;
         }

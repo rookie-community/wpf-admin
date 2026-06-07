@@ -1,5 +1,6 @@
 ﻿using Admin.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
 using Volo.Abp.Authorization.Permissions;
 
 namespace Admin.Permissions
@@ -7,20 +8,30 @@ namespace Admin.Permissions
     public class PermissionApplicationService : AdminAppService, IPermissionApplicationService
     {
         private readonly IPermissionRepository _permissionRepository;
-        private readonly IPermissionDefinitionManager permissionDefinitionManager;
+        private readonly IPermissionDefinitionManager _permissionDefinitionManager;
+        private readonly IStringLocalizerFactory _stringLocalizerFactory;
 
-        public PermissionApplicationService(IPermissionRepository permissionRepository, IPermissionDefinitionManager permissionDefinitionManager)
+        public PermissionApplicationService(
+            IPermissionRepository permissionRepository,
+            IPermissionDefinitionManager permissionDefinitionManager,
+            IStringLocalizerFactory stringLocalizerFactory
+            )
         {
             _permissionRepository = permissionRepository;
-            this.permissionDefinitionManager = permissionDefinitionManager;
+            _permissionDefinitionManager = permissionDefinitionManager;
+            _stringLocalizerFactory = stringLocalizerFactory;
         }
 
         [Authorize]
         public async Task<IReadOnlyList<PermissionDefinitionDto>> GetPermissionDefinitions()
         {
-            var permissionDefinitions = await permissionDefinitionManager.GetPermissionsAsync();
+            var permissionDefinitions = await _permissionDefinitionManager.GetPermissionsAsync();
             //var user = CurrentUser;
-            var permissions = new List<PermissionDefinitionDto>();
+            var permissions = permissionDefinitions.Select(x => new PermissionDefinitionDto
+            {
+                Name = x.Name,
+                DisplayName = x.DisplayName.Localize(_stringLocalizerFactory),
+            }).ToList();
             return await Task.FromResult(permissions);
         }
     }

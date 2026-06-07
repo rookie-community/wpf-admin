@@ -6,13 +6,54 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Roles"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Roles"
     Title="权限配置"
-    Width="800"
-    Height="450"
+    Width="600"
+    Height="400"
+    d:DataContext="{d:DesignInstance Type=viewmodel:EditRolePermissionVM}"
     hc:Dialog.Token="{Binding DialogContainerToken}"
+    Background="{DynamicResource RegionBrush}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <hc:DialogContainer>
-        <Grid />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+
+            <hc:ScrollViewer
+                Grid.Row="0"
+                Margin="10"
+                hc:ScrollViewerAttach.AutoHide="False"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <TreeView ItemsSource="{Binding Permissions}">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                            <CheckBox Content="{Binding Name}" IsChecked="{Binding CurrentNodeIsChanged}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </hc:ScrollViewer>
+
+            <hc:UniformSpacingPanel
+                Grid.Row="1"
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal"
+                Spacing="10">
+                <Button
+                    hc:IconElement.Geometry="{StaticResource SaveGeometry}"
+                    Command="{Binding SaveCommand}"
+                    Content="保存"
+                    Style="{StaticResource ButtonPrimary}" />
+                <Button
+                    hc:IconElement.Geometry="{StaticResource CloseGeometry}"
+                    Command="{Binding CancelCommand}"
+                    Content="取消"
+                    Style="{StaticResource ButtonDefault}" />
+            </hc:UniformSpacingPanel>
+        </Grid>
     </hc:DialogContainer>
 </Window>

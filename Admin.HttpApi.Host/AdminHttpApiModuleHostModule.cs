@@ -66,7 +66,6 @@ namespace Admin.HttpApi.Host
             ConfigureDistributedLocking(context, configuration);
             ConfigureCors(context, configuration);
             ConfigureSwaggerServices(context, configuration);
-
             ConfigureAutoMapper();
         }
 

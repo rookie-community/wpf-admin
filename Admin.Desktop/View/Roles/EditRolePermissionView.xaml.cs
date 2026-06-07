@@ -23,7 +23,7 @@ namespace Admin.Desktop.View.Roles
                     return;
                 }
                 _isLoaded = true;
-                await vm.InitialAsync(this);
+                await vm.InitialAsync(this, roleId);
             };
             DataContext = vm;
         }

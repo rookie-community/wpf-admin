@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Volo.Abp.DependencyInjection;
+using MessageBox = HandyControl.Controls.MessageBox;
 using TabItem = HandyControl.Controls.TabItem;
 
 namespace Admin.Desktop.ViewModel
@@ -34,53 +35,64 @@ namespace Admin.Desktop.ViewModel
         [ObservableProperty]
         private ObservableCollection<TabItem> tabItems = new ObservableCollection<TabItem>();
 
+        [ObservableProperty]
+        private string dialogContainerToken = Guid.NewGuid().ToString();
+
         public MainWindow Owner { get; private set; } = null!;
 
-        private readonly IPermissionApplicationService permissionApplicationService;
+        private readonly IPermissionApplicationService _permissionApplicationService;
 
         private readonly string TitalPrefix = "Admin";
         private ILogger<MainVM> _logger;
 
         public MainVM(IPermissionApplicationService permissionApplicationService, ILogger<MainVM> logger)
         {
-            this.permissionApplicationService = permissionApplicationService;
+            _permissionApplicationService = permissionApplicationService;
             _logger = logger;
         }
 
-        public void Initial(MainWindow owner)
+        public async Task InitialAsync(MainWindow owner)
         {
-            Owner = owner;
-            NavItems = BuiderNavItems();
-            InitialTabs();
+            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            try
+            {
+                Owner = owner;
+                await Task.Run(() =>
+                {
+                    NavItems = BuiderNavItems();
+                    var home = NavItems.FirstOrDefault(x => x.Type != NavType.Group);
+                    if (home != null)
+                    {
+                        SetCurrentTabItem(home);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
         }
 
         [RelayCommand]
         private void SwitchItem(NavDto navItem)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if (navItem.Content == null)
             {
-                if (navItem.Content == null)
-                {
-                    //菜单为空，不做处理
-                    return;
-                }
-                SetCurrentTabItem(navItem);
-            }, DispatcherPriority.Background);
+                //菜单为空，不做处理
+                return;
+            }
+            SetCurrentTabItem(navItem);
         }
 
         [RelayCommand]
         private void CurrentViewShow()
         {
             Owner.Show();
-        }
-
-        private void InitialTabs()
-        {
-            var home = NavItems.FirstOrDefault();
-            if (home != null)
-            {
-                SetCurrentTabItem(home);
-            }
         }
 
         private ObservableCollection<NavDto> BuiderNavItems()
@@ -117,109 +129,111 @@ namespace Admin.Desktop.ViewModel
             return result;
         }
 
-
         private void SetCurrentTabItem(NavDto navItem, object[]? parameters = null)
         {
             try
             {
-                if (navItem == null)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(navItem.Content))
-                {
-                    return;
-                }
-
-                //如果已经打开了，就切换到对应的Tab
-                var tabItemIdx = TabItems.FindIndex(x => x.Tag.ToString() == navItem.Id.ToString());
-                if (tabItemIdx >= 0)
-                {
-                    TabSelectedIndex = tabItemIdx;
-                    Title = $"{TitalPrefix} - {navItem.Name}";
-                    return;
-                }
-
-                var isHome = navItem.Content == typeof(ConsoleView).FullName;
-                var tabHeaderText = new TextBlock();
-                if (!string.IsNullOrEmpty(navItem.Icon))
-                {
-                    var iconRun = new Run
+                    if (navItem == null)
                     {
-                        Text = navItem.Icon,
-                        Foreground = (Brush)Application.Current.TryFindResource("DarkInfoBrush"),
-                        FontFamily = (FontFamily)Application.Current.FindResource("FA_Regular"),
-                    };
-                    tabHeaderText.Inlines.Add(iconRun);
-                    tabHeaderText.Inlines.Add(new Run
-                    {
-                        Text = "\u00A0",
-                    });
-                }
-
-                tabHeaderText.Inlines.Add(new Run
-                {
-                    Text = navItem.Name,
-                });
-                var tabItem = new TabItem
-                {
-                    Header = tabHeaderText,
-                    Tag = navItem.Id,
-                    ShowCloseButton = !isHome,
-                    ShowContextMenu = !isHome,
-                };
-
-                tabItem.Closing += (sender, args) =>
-                {
-                    if (sender is TabItem && args is CancelRoutedEventArgs cancelArgs)
-                    {
-                        if (isHome)
-                        {
-                            cancelArgs.Cancel = true;
-                            return;
-                        }
-                    }
-                };
-
-                if (navItem.Type == NavType.UserControl || navItem.Type == NavType.Page)
-                {
-                    var contentType = Type.GetType(navItem.Content);
-                    var constructor = contentType?.GetConstructor(Type.EmptyTypes);
-                    if (typeof(UserControl).IsAssignableFrom(contentType))
-                    {
-                        tabItem.Content = (UserControl)constructor?.Invoke(parameters)!;
-                    }
-                    else if (typeof(Page).IsAssignableFrom(contentType))
-                    {
-                        tabItem.Content = new Frame
-                        {
-                            Content = (Page)constructor?.Invoke(parameters)!,
-                            NavigationUIVisibility = NavigationUIVisibility.Hidden,
-                        };
-                    }
-                    else
-                    {
-                        Growl.Error($"无法打开页面，类型错误：{navItem.Content}");
                         return;
                     }
-                    Title = $"{TitalPrefix} - {navItem.Name}";
-                    TabItems.Add(tabItem);
-                    TabSelectedIndex = TabItems.IndexOf(tabItem);
-                    return;
-                }
 
-                if (navItem.Type == NavType.Url)
-                {
-                    tabItem.Content = new WebView2
+                    if (string.IsNullOrWhiteSpace(navItem.Content))
                     {
-                        Source = new Uri(navItem.Content),
+                        return;
+                    }
+
+                    //如果已经打开了，就切换到对应的Tab
+                    var tabItemIdx = TabItems.FindIndex(x => x.Tag.ToString() == navItem.Id.ToString());
+                    if (tabItemIdx >= 0)
+                    {
+                        TabSelectedIndex = tabItemIdx;
+                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        return;
+                    }
+
+                    var isHome = navItem.Content == typeof(ConsoleView).FullName;
+                    var tabHeaderText = new TextBlock();
+                    if (!string.IsNullOrEmpty(navItem.Icon))
+                    {
+                        var iconRun = new Run
+                        {
+                            Text = navItem.Icon,
+                            Foreground = (Brush)Application.Current.TryFindResource("DarkInfoBrush"),
+                            FontFamily = (FontFamily)Application.Current.FindResource("FA_Regular"),
+                        };
+                        tabHeaderText.Inlines.Add(iconRun);
+                        tabHeaderText.Inlines.Add(new Run
+                        {
+                            Text = "\u00A0",
+                        });
+                    }
+
+                    tabHeaderText.Inlines.Add(new Run
+                    {
+                        Text = navItem.Name,
+                    });
+                    var tabItem = new TabItem
+                    {
+                        Header = tabHeaderText,
+                        Tag = navItem.Id,
+                        ShowCloseButton = !isHome,
+                        ShowContextMenu = !isHome,
                     };
-                    Title = $"{TitalPrefix} - {navItem.Name}";
-                    TabItems.Add(tabItem);
-                    TabSelectedIndex = TabItems.IndexOf(tabItem);
-                    return;
-                }
+
+                    tabItem.Closing += (sender, args) =>
+                    {
+                        if (sender is TabItem && args is CancelRoutedEventArgs cancelArgs)
+                        {
+                            if (isHome)
+                            {
+                                cancelArgs.Cancel = true;
+                                return;
+                            }
+                        }
+                    };
+
+                    if (navItem.Type == NavType.UserControl || navItem.Type == NavType.Page)
+                    {
+                        var contentType = Type.GetType(navItem.Content);
+                        var constructor = contentType?.GetConstructor(Type.EmptyTypes);
+                        if (typeof(UserControl).IsAssignableFrom(contentType))
+                        {
+                            tabItem.Content = (UserControl)constructor?.Invoke(parameters)!;
+                        }
+                        else if (typeof(Page).IsAssignableFrom(contentType))
+                        {
+                            tabItem.Content = new Frame
+                            {
+                                Content = (Page)constructor?.Invoke(parameters)!,
+                                NavigationUIVisibility = NavigationUIVisibility.Hidden,
+                            };
+                        }
+                        else
+                        {
+                            Growl.Error($"无法打开页面，类型错误：{navItem.Content}");
+                            return;
+                        }
+                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        TabItems.Add(tabItem);
+                        TabSelectedIndex = TabItems.IndexOf(tabItem);
+                        return;
+                    }
+
+                    if (navItem.Type == NavType.Url)
+                    {
+                        tabItem.Content = new WebView2
+                        {
+                            Source = new Uri(navItem.Content),
+                        };
+                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        TabItems.Add(tabItem);
+                        TabSelectedIndex = TabItems.IndexOf(tabItem);
+                        return;
+                    }
+                }, DispatcherPriority.Background);
             }
             catch (Exception ex)
             {

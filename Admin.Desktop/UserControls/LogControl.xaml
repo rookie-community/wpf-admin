@@ -20,7 +20,11 @@
         VirtualizingPanel.IsVirtualizing="True">
         <ListBox.ContextMenu>
             <ContextMenu Width="100">
-                <MenuItem Click="CopyLogMenuItem_Click" Header="复制" />
+                <MenuItem Click="CopyLogMenuItem_Click" Header="复制">
+                    <MenuItem.Icon>
+                        <TextBlock FontFamily="{StaticResource FA_Regular}" Text="&#xf0c5;" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
         </ListBox.ContextMenu>
         <ListBox.ItemContainerStyle>

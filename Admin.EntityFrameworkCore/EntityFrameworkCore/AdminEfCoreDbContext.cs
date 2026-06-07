@@ -1,6 +1,7 @@
 ﻿using Admin.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
@@ -34,6 +35,7 @@ namespace Admin.EntityFrameworkCore.EntityFrameworkCore
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.ConfigureAuditLogging();
             builder.ConfigureTenantManagement();
 
             //实体配置

@@ -14,7 +14,10 @@ namespace Admin.Desktop.View.Accounts
         {
             InitializeComponent();
             vm = App.Current.Services.GetService<LoginVM>()!;
-            vm.Initial(this);
+            Loaded += (s, e) =>
+            {
+                vm.Initial(this);
+            };
             DataContext = vm;
         }
     }

@@ -12,96 +12,99 @@
     d:DataContext="{d:DesignInstance Type=viewmodel:ConsoleVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
-            <RowDefinition Height="*" />
-            <RowDefinition MinHeight="100" />
-        </Grid.RowDefinitions>
-        <UniformGrid
-            Grid.Row="0"
-            Margin="0,0,0,5"
-            Rows="1">
-            <Border Margin="5" Background="{DynamicResource PrimaryBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="这是内容" />
-            </Border>
-            <Border Margin="5" Background="{DynamicResource InfoBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="这是内容" />
-            </Border>
-            <Border Margin="5" Background="{DynamicResource WarningBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="这是内容" />
-            </Border>
-            <Border Margin="5" Background="{DynamicResource DangerBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="这是内容" />
-            </Border>
-            <Border Margin="5" Background="{DynamicResource AccentBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="这是内容" />
-            </Border>
-            <Border Margin="5" Background="{DynamicResource BorderBrush}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Text="这是内容" />
-            </Border>
-        </UniformGrid>
-        <Border
-            Grid.Row="1"
-            Margin="0,0,0,5"
-            Style="{StaticResource BorderRegion}">
-            <lvc:CartesianChart>
-                <lvc:CartesianChart.Title>
-                    <lvc:XamlDrawnLabelVisual
-                        Padding="15"
-                        Paint="#303030"
-                        Text="My chart title"
-                        TextSize="25" />
-                </lvc:CartesianChart.Title>
+    <hc:DialogContainer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="*" />
+                <RowDefinition MinHeight="100" />
+            </Grid.RowDefinitions>
+            <UniformGrid
+                Grid.Row="0"
+                Margin="0,0,0,5"
+                Rows="1">
+                <Border Margin="5" Background="{DynamicResource PrimaryBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="这是内容" />
+                </Border>
+                <Border Margin="5" Background="{DynamicResource InfoBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="这是内容" />
+                </Border>
+                <Border Margin="5" Background="{DynamicResource WarningBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="这是内容" />
+                </Border>
+                <Border Margin="5" Background="{DynamicResource DangerBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="这是内容" />
+                </Border>
+                <Border Margin="5" Background="{DynamicResource AccentBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="这是内容" />
+                </Border>
+                <Border Margin="5" Background="{DynamicResource BorderBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="这是内容" />
+                </Border>
+            </UniformGrid>
+            <Border
+                Grid.Row="1"
+                Margin="0,0,0,5"
+                Style="{StaticResource BorderRegion}">
+                <lvc:CartesianChart>
+                    <lvc:CartesianChart.Title>
+                        <lvc:XamlDrawnLabelVisual
+                            Padding="15"
+                            Paint="#303030"
+                            Text="My chart title"
+                            TextSize="25" />
+                    </lvc:CartesianChart.Title>
 
-                <lvc:CartesianChart.Series>
-                    <lvc:SeriesCollection>
-                        <lvc:XamlLineSeries
-                            Fill="{x:Null}"
-                            GeometrySize="20"
-                            Values="{Binding Values1}" />
-                        <lvc:XamlLineSeries
-                            Fill="{x:Null}"
-                            GeometrySize="20"
-                            Values="{Binding Values2}" />
-                    </lvc:SeriesCollection>
-                </lvc:CartesianChart.Series>
-            </lvc:CartesianChart>
-        </Border>
-        <GroupBox
-            Grid.Row="2"
-            Padding="1"
-            hc:TitleElement.TitlePlacement="Left"
-            Header="日志"
-            Style="{StaticResource GroupBoxTab.Small}">
-            <Border Background="{DynamicResource RegionBrush}" CornerRadius="4">
-                <uc:LogControl ItemsSource="{Binding Logs}" />
+                    <lvc:CartesianChart.Series>
+                        <lvc:SeriesCollection>
+                            <lvc:XamlLineSeries
+                                Fill="{x:Null}"
+                                GeometrySize="20"
+                                Values="{Binding Values1}" />
+                            <lvc:XamlLineSeries
+                                Fill="{x:Null}"
+                                GeometrySize="20"
+                                Values="{Binding Values2}" />
+                        </lvc:SeriesCollection>
+                    </lvc:CartesianChart.Series>
+                </lvc:CartesianChart>
             </Border>
-        </GroupBox>
-    </Grid>
+            <GroupBox
+                Grid.Row="2"
+                Padding="1"
+                hc:TitleElement.TitlePlacement="Left"
+                Header="日志"
+                Style="{StaticResource GroupBoxTab.Small}">
+                <Border Background="{DynamicResource RegionBrush}" CornerRadius="4">
+                    <uc:LogControl ItemsSource="{Binding Logs}" />
+                </Border>
+            </GroupBox>
+        </Grid>
+    </hc:DialogContainer>
 </UserControl>

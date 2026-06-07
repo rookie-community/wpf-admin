@@ -1,5 +1,6 @@
 ﻿using Admin.EntityFrameworkCore.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.SqlServer;
 using Volo.Abp.Modularity;
@@ -9,6 +10,7 @@ namespace Admin.EntityFrameworkCore
 {
     [DependsOn(
         typeof(AbpEntityFrameworkCoreSqlServerModule),
+        typeof(AbpAuditLoggingEntityFrameworkCoreModule),
         typeof(AbpTenantManagementEntityFrameworkCoreModule),
         typeof(AdminDomainModule)
         )]

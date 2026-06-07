@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Volo.Abp.Auditing.Contracts" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.TenantManagement.Application.Contracts" Version="8.3.4" />
   </ItemGroup>
