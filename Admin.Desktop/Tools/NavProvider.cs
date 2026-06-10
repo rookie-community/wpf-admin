@@ -3,7 +3,7 @@ using Admin.Desktop.View;
 using Admin.Desktop.View.Reports;
 using Admin.Desktop.View.Roles;
 using Admin.Desktop.View.Users;
-using Admin.Permissions.Configs;
+using Volo.Abp.Identity;
 
 namespace Admin.Desktop.Tools
 {
@@ -42,7 +42,7 @@ namespace Admin.Desktop.Tools
                 Icon = "\xf013",
                 Name = "系统设置",
                 Type = NavType.Group,
-                PermissionName = SystemPermissions.GroupName,
+                PermissionName = IdentityPermissions.GroupName,
                 Items = new List<NavDto>
                 {
                     new NavDto
@@ -51,7 +51,7 @@ namespace Admin.Desktop.Tools
                         Icon = "\xf007",
                         Name = "用户管理",
                         Type = NavType.UserControl,
-                        PermissionName = SystemPermissions.Users.Default,
+                        PermissionName = IdentityPermissions.Users.Default,
                         Content = typeof(UserView).FullName,
                     },
                     new NavDto
@@ -60,7 +60,7 @@ namespace Admin.Desktop.Tools
                         Icon = "\xf2b9",
                         Name = "角色管理",
                         Type = NavType.UserControl,
-                        PermissionName = SystemPermissions.Roles.Default,
+                        PermissionName = IdentityPermissions.Roles.Default,
                         Content = typeof(RoleView).FullName,
                     },
                 }
@@ -75,7 +75,7 @@ namespace Admin.Desktop.Tools
                 Icon = "\xf2bd",
                 Name = "个人中心",
                 Type = NavType.Group,
-                PermissionName = SystemPermissions.Users.Info,
+                //PermissionName = SystemPermissions.Users.Info,
                 Items = new List<NavDto>
                 {
                     new NavDto
@@ -84,7 +84,7 @@ namespace Admin.Desktop.Tools
                         Icon = "\xf007",
                         Name = "基本资料",
                         Type = NavType.UserControl,
-                        PermissionName = SystemPermissions.Users.EditInfo,
+                        //PermissionName = SystemPermissions.Users.EditInfo,
                         Content = typeof(UserInfoView).FullName,
                     },
                     new NavDto
@@ -93,7 +93,7 @@ namespace Admin.Desktop.Tools
                         Icon = "\xf084",
                         Name = "修改密码",
                         Type = NavType.UserControl,
-                        PermissionName = SystemPermissions.Users.ResetPassword,
+                        //PermissionName = SystemPermissions.Users.ResetPassword,
                         Content = typeof(EditUserPasswordView).FullName,
                     }
                 }

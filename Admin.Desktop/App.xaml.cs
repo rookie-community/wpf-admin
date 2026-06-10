@@ -1,6 +1,5 @@
 ﻿using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.View.Accounts;
-using Admin.Users;
 using FastReport.Utils;
 using HandyControl.Tools;
 using LiveChartsCore;
@@ -16,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Threading;
 using Volo.Abp;
+using Volo.Abp.Identity;
 using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace Admin.Desktop
@@ -25,7 +25,7 @@ namespace Admin.Desktop
     /// </summary>
     public partial class App : Application
     {
-        public static CurrentUserDto CurrentUser { get; private set; } = new CurrentUserDto();
+        public static IdentityUserDto CurrentUser { get; private set; } = null!;
 
         /// <summary>
         /// Gets the current <see cref="App"/> instance in use
@@ -118,7 +118,7 @@ namespace Admin.Desktop
                 }).Build();
         }
 
-        internal static void SetCurrentUser(CurrentUserDto user) => CurrentUser = user;
+        internal static void SetCurrentUser(IdentityUserDto user) => CurrentUser = user;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {

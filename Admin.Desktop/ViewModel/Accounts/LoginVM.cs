@@ -2,9 +2,9 @@
 using Admin.Desktop.Tools;
 using Admin.Desktop.View;
 using Admin.Desktop.View.Accounts;
-using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Duende.IdentityModel.Client;
 using FastReport.Utils;
 using HandyControl.Tools;
 using Microsoft.Extensions.Logging;
@@ -12,7 +12,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Identity;
 using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace Admin.Desktop.ViewModel.Accounts
@@ -21,33 +24,36 @@ namespace Admin.Desktop.ViewModel.Accounts
     {
         [ObservableProperty]
         [CustomValidation(typeof(LoginVM), nameof(ValidateTenant))]
-        private string tenant = null!;
+        public partial string Tenant { get; set; } = null!;
 
         [Required(ErrorMessage = "账号不能为空")]
         [ObservableProperty]
-        private string userName = null!;
+        public partial string UserName { get; set; } = null!;
 
         [Required(ErrorMessage = "密码不能为空")]
         [MinLength(6, ErrorMessage = "密码长度至少6位")]
         [ObservableProperty]
-        private string password = null!;
+        public partial string Password { get; set; } = null!;
 
         [ObservableProperty]
-        private IReadOnlyDictionary<string, string> langItems = new Dictionary<string, string>();
+        public partial IReadOnlyDictionary<string, string> LangItems { get; set; } = new Dictionary<string, string>();
 
         [ObservableProperty]
-        private string currentLang = LangProvider.Culture.Name;
+        public partial string CurrentLang { get; set; } = LangProvider.Culture.Name;
 
         [ObservableProperty]
-        private bool isUploading;
-        private readonly IUserApplicationService _userApplicationService;
+        public partial bool IsUploading { get; set; }
+
+        private readonly IIdentityUserAppService _userAppService;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<LoginVM> _logger;
 
         public Login Owner { get; private set; } = null!;
 
-        public LoginVM(IUserApplicationService userApplicationService, ILogger<LoginVM> logger)
+        public LoginVM(IIdentityUserAppService userAppService, IHttpClientFactory httpClientFactory, ILogger<LoginVM> logger)
         {
-            _userApplicationService = userApplicationService;
+            _userAppService = userAppService;
+            _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
 
@@ -63,27 +69,7 @@ namespace Admin.Desktop.ViewModel.Accounts
             {
                 { "简体中文", "zh-CN"},
                 // 英语本土名称
-                { "English", "en" },  
-                // 波斯语（法尔西语）本土名称
-                { "فارسی", "fa" },   
-                // 法语本土名称
-                { "Français", "fr" },   
-                // 加泰罗尼亚语本土名称（西班牙加泰罗尼亚）
-                { "Català", "ca-ES" },    
-                // 日语本土名称
-                { "日本語", "ja" },  
-                // 韩语（朝鲜语）本土名称
-                { "한국어", "ko-KR" },
-                // 俄语本土名称
-                { "Русский", "ru" }, 
-                // 土耳其语本土名称
-                { "Türkçe", "tr" },         
-                // 巴西葡萄牙语本土名称
-                { "Português (Brasil)", "pt-BR" },
-                // 波兰语本土名称
-                { "Polski", "pl" },
-                // 西班牙语本土名称
-                { "Español", "es" },
+                { "English", "en" }
             };
         }
 
@@ -98,15 +84,49 @@ namespace Admin.Desktop.ViewModel.Accounts
                     return;
                 }
 
-                var tokenResult = await _userApplicationService.LoginAsync(new LoginDto
+                using var httpClient = _httpClientFactory.CreateClient();
+                var identityServerUrl = ConfigurationManager.AppSettings["RemoteServices"];
+                // 1. 获取发现文档
+                var disco = await httpClient.GetDiscoveryDocumentAsync(identityServerUrl);
+                if (disco.IsError)
                 {
-                    Account = UserName,
+                    MessageBox.Error($"Failed to get discovery document: {disco.Error}", "登录失败");
+                    return;
+                }
+
+                // 2. 请求 token
+                var tokenRequest = new PasswordTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+                    ClientId = ConfigurationManager.AppSettings["ClientId"] ?? string.Empty,
+                    ClientSecret = null,//客户端密钥
+                    UserName = UserName,
                     Password = Password,
-                    Tenant = Tenant,
-                });
-                TokenManager.SetTokens(tokenResult.AccessToken, tokenResult.RefreshToken);
-                var userInfo = await _userApplicationService.GetCurrentUserInfoAsync();
-                App.SetCurrentUser(userInfo);
+                    //offline_access - 请求长期访问权限
+                    Scope = "Admin"// offline_access" //"YourApp"
+                };
+
+                var tokenResponse = await httpClient.RequestPasswordTokenAsync(tokenRequest);
+                if (tokenResponse.IsError)
+                {
+                    MessageBox.Error($"Failed to get token: {tokenResponse.Error} - {tokenResponse.ErrorDescription}", "登录失败");
+                    _logger.LogError("Failed to get token: {Error} - {ErrorDescription}", tokenResponse.Error, tokenResponse.ErrorDescription);
+                    return;
+                }
+
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(tokenResponse.AccessToken))
+                {
+                    MessageBox.Error("无法解析 JWT 字符串");
+                    return;
+                }
+                TokenManager.SetTokens(tokenResponse);
+
+                var jwtSecurityToken = handler.ReadJwtToken(tokenResponse.AccessToken);
+                _ = Guid.TryParse(jwtSecurityToken.Subject, out var userId);
+                var user = await _userAppService.GetAsync(userId);
+                App.SetCurrentUser(user);
                 var view = new MainWindow();
                 view.Show();
                 Owner.Close();

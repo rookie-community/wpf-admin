@@ -40,23 +40,8 @@
                         hc:InfoElement.ShowClearButton="True"
                         hc:InfoElement.Title="用户名"
                         hc:InfoElement.TitlePlacement="Left"
-                        Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <hc:TextBox
-                        Width="180"
-                        hc:InfoElement.Placeholder="请输入手机号"
-                        hc:InfoElement.ShowClearButton="True"
-                        hc:InfoElement.Title="手机号"
-                        hc:InfoElement.TitlePlacement="Left"
-                        Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <hc:TextBox
-                        Width="180"
-                        hc:InfoElement.Placeholder="请输入邮箱"
-                        hc:InfoElement.ShowClearButton="True"
-                        hc:InfoElement.Title="邮箱"
-                        hc:InfoElement.TitlePlacement="Left"
-                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
                     <Button
                         hc:IconElement.Geometry="{StaticResource SearchGeometry}"
                         Command="{Binding SearchCommand}"
@@ -119,11 +104,10 @@
                             Binding="{Binding Id}"
                             Header="Id"
                             Visibility="Hidden" />
-                        <DataGridTextColumn Binding="{Binding Account}" Header="账号" />
                         <DataGridTextColumn Binding="{Binding UserName}" Header="用户名称" />
-                        <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="是否激活" />
-                        <DataGridTextColumn Binding="{Binding PhoneNumber}" Header="电话" />
                         <DataGridTextColumn Binding="{Binding Email}" Header="邮箱" />
+                        <DataGridTextColumn Binding="{Binding PhoneNumber}" Header="电话" />
+                        <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="是否激活" />
                         <DataGridTextColumn Binding="{Binding CreationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="创建时间" />
                         <DataGridTextColumn Binding="{Binding LastModificationTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="修改时间" />
                         <DataGridTemplateColumn Header="操作">

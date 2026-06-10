@@ -1,23 +1,38 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Http.Client;
+using Volo.Abp.Account;
+using Volo.Abp.FeatureManagement;
+using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.TenantManagement;
+using Volo.Abp.VirtualFileSystem;
 
-namespace Admin.HttpApi.Client
+namespace Admin;
+
+[DependsOn(
+    typeof(AdminApplicationContractsModule),
+    typeof(AbpPermissionManagementHttpApiClientModule),
+    typeof(AbpFeatureManagementHttpApiClientModule),
+    typeof(AbpAccountHttpApiClientModule),
+    typeof(AbpIdentityHttpApiClientModule),
+    typeof(AbpTenantManagementHttpApiClientModule),
+    typeof(AbpSettingManagementHttpApiClientModule)
+)]
+public class AdminHttpApiClientModule : AbpModule
 {
-    [DependsOn(
-        typeof(AbpHttpClientModule),
-        typeof(AdminApplicationContractsModule)
-       )]
-    public class AdminHttpApiClientModule : AbpModule
-    {
-        public const string RemoteServiceName = "Default";
+    public const string RemoteServiceName = "Default";
 
-        public override void ConfigureServices(ServiceConfigurationContext context)
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        context.Services.AddHttpClientProxies(
+            typeof(AdminApplicationContractsModule).Assembly,
+            RemoteServiceName
+        );
+
+        Configure<AbpVirtualFileSystemOptions>(options =>
         {
-            context.Services.AddHttpClientProxies(
-                typeof(AdminApplicationContractsModule).Assembly,
-                RemoteServiceName
-            );
-        }
+            options.FileSets.AddEmbedded<AdminHttpApiClientModule>();
+        });
     }
 }

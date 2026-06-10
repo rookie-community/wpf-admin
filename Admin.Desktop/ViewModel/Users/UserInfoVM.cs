@@ -1,5 +1,4 @@
 ﻿using Admin.Desktop.View.Users;
-using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -34,14 +33,13 @@ namespace Admin.Desktop.ViewModel.Users
         [ObservableProperty]
         private string dialogContainerToken = Guid.NewGuid().ToString();
 
-        private readonly IUserApplicationService _userApplicationService;
+        //private readonly IUserApplicationService _userApplicationService;
         private readonly ILogger<UserInfoVM> _logger;
-        private CurrentUserDto _currentUser = null!;
+        //private CurrentUserDto _currentUser = null!;
         public UserInfoView Owner { get; private set; } = null!;
 
-        public UserInfoVM(IUserApplicationService userApplicationService, ILogger<UserInfoVM> logger)
+        public UserInfoVM( ILogger<UserInfoVM> logger)
         {
-            _userApplicationService = userApplicationService;
             _logger = logger;
         }
 
@@ -51,9 +49,9 @@ namespace Admin.Desktop.ViewModel.Users
             try
             {
                 Owner = owner;
-                var user = await _userApplicationService.GetCurrentUserInfoAsync();
-                _currentUser = user;
-                SetData(user);
+                //var user = await _userApplicationService.GetCurrentUserInfoAsync();
+                //_currentUser = user;
+                //SetData(user);
             }
             catch (Exception ex)
             {
@@ -77,17 +75,17 @@ namespace Admin.Desktop.ViewModel.Users
                 {
                     return;
                 }
-                await _userApplicationService.UpdateCurrentUserAsync(new UpdateCurrentUserDto
-                {
-                    Id = _currentUser.Id,
-                    UserName = UserName,
-                    PhoneNumber = PhoneNumber,
-                    Email = Email
-                });
+                //await _userApplicationService.UpdateCurrentUserAsync(new UpdateCurrentUserDto
+                //{
+                //    Id = _currentUser.Id,
+                //    UserName = UserName,
+                //    PhoneNumber = PhoneNumber,
+                //    Email = Email
+                //});
 
                 //修改成功后，更新本地数据
-                var user = await _userApplicationService.GetCurrentUserInfoAsync();
-                App.SetCurrentUser(user);
+                //var user = await _userApplicationService.GetCurrentUserInfoAsync();
+                //App.SetCurrentUser(user);
                 MessageBox.Success("修改成功");
             }
             catch (Exception ex)
@@ -104,22 +102,22 @@ namespace Admin.Desktop.ViewModel.Users
         [RelayCommand]
         private void Reset()
         {
-            SetData(_currentUser);
+            //SetData(_currentUser);
         }
 
-        private void SetData(CurrentUserDto user)
-        {
-            if (user == null)
-            {
-                return;
-            }
+        //private void SetData(CurrentUserDto user)
+        //{
+        //    if (user == null)
+        //    {
+        //        return;
+        //    }
 
-            TenantName = user.TenantName;
-            Account = user.Account;
-            UserName = user.UserName;
-            IsActive = user.IsActive;
-            PhoneNumber = user.PhoneNumber;
-            Email = user.Email;
-        }
+        //    TenantName = user.TenantName;
+        //    Account = user.Account;
+        //    UserName = user.UserName;
+        //    IsActive = user.IsActive;
+        //    PhoneNumber = user.PhoneNumber;
+        //    Email = user.Email;
+        //}
     }
 }

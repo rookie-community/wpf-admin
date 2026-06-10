@@ -1,0 +1,18 @@
+<Solution>
+    <Folder Name="/解决方案项/">
+        <File Path="LICENSE.txt" />
+        <File Path="README.md" />
+    </Folder>
+    <Project Path="Admin.Application.Contracts/Admin.Application.Contracts.csproj" />
+    <Project Path="Admin.Application/Admin.Application.csproj" />
+    <Project Path="Admin.DbMigrator/Admin.DbMigrator.csproj" />
+    <Project Path="Admin.Desktop/Admin.Desktop.csproj" />
+    <Project Path="Admin.Domain.Shared/Admin.Domain.Shared.csproj" />
+    <Project Path="Admin.Domain/Admin.Domain.csproj" />
+    <Project Path="Admin.EntityFrameworkCore/Admin.EntityFrameworkCore.csproj" />
+    <Project Path="Admin.HttpApi.Client/Admin.HttpApi.Client.csproj" />
+    <Project Path="Admin.HttpApi.Host/Admin.HttpApi.Host.csproj" />
+    <Project Path="Admin.HttpApi/Admin.HttpApi.csproj" />
+    <Project Path="Admin.Quartz/Admin.Quartz.csproj" />
+    <Project Path="Admin.Test/Admin.Test.csproj" />
+</Solution>

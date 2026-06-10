@@ -1,5 +1,4 @@
-﻿using Admin.HttpApi.Client;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using System.Configuration;
 using Volo.Abp.Autofac;

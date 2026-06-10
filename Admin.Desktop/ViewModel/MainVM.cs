@@ -1,7 +1,6 @@
 ﻿using Admin.Commons;
 using Admin.Desktop.Tools;
 using Admin.Desktop.View;
-using Admin.Permissions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -40,14 +39,11 @@ namespace Admin.Desktop.ViewModel
 
         public MainWindow Owner { get; private set; } = null!;
 
-        private readonly IPermissionApplicationService _permissionApplicationService;
-
         private readonly string TitalPrefix = "Admin";
         private ILogger<MainVM> _logger;
 
-        public MainVM(IPermissionApplicationService permissionApplicationService, ILogger<MainVM> logger)
+        public MainVM( ILogger<MainVM> logger)
         {
-            _permissionApplicationService = permissionApplicationService;
             _logger = logger;
         }
 

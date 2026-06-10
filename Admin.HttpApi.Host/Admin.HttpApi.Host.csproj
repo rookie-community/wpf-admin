@@ -1,25 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+		<RootNamespace>Admin</RootNamespace>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Volo.Abp.Autofac" Version="8.3.4" />
-		<PackageReference Include="Volo.Abp.Swashbuckle" Version="8.3.4" />
-		<PackageReference Include="Volo.Abp.AspNetCore.SignalR" Version="8.3.4" />
-		<PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="8.3.4" />
+	<PropertyGroup Condition=" '$(RunConfiguration)' == 'Admin.HttpApi.Host' " />
 
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.7" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.AspNetCore.MultiTenancy" Version="10.4.1" />
+		<PackageReference Include="Volo.Abp.Autofac" Version="10.4.1" />
+		<PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="10.4.1" />
+		<PackageReference Include="Volo.Abp.Identity.AspNetCore" Version="10.4.1" />
+		<PackageReference Include="Volo.Abp.OpenIddict.AspNetCore" Version="10.4.1" />
+		<PackageReference Include="Volo.Abp.Swashbuckle" Version="10.4.1" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Admin.Application\Admin.Application.csproj" />
-		<ProjectReference Include="..\Admin.EntityFrameworkCore\Admin.EntityFrameworkCore.csproj" />
 		<ProjectReference Include="..\Admin.HttpApi\Admin.HttpApi.csproj" />
+		<ProjectReference Include="..\Admin.EntityFrameworkCore\Admin.EntityFrameworkCore.csproj" />
 		<ProjectReference Include="..\Admin.Quartz\Admin.Quartz.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Volo.Abp.Studio.Client.AspNetCore" Version="3.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Logs\**" />
+		<Content Remove="Logs\**" />
+		<EmbeddedResource Remove="Logs\**" />
+		<None Remove="Logs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 </Project>

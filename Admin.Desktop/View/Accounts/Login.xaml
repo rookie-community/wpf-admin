@@ -76,7 +76,11 @@
                     hc:InfoElement.TitlePlacement="Left"
                     IsSafeEnabled="False"
                     ShowEyeButton="True"
-                    UnsafePassword="{Binding Password}" />
+                    UnsafePassword="{Binding Password}">
+                    <hc:PasswordBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SubmitCommand}" />
+                    </hc:PasswordBox.InputBindings>
+                </hc:PasswordBox>
                 <hc:ComboBox
                     hc:InfoElement.Title="{ex:Lang Key={x:Static langs:LangKeys.Language}}"
                     hc:InfoElement.TitlePlacement="Left"

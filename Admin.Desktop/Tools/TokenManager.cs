@@ -1,14 +1,16 @@
-﻿namespace Admin.Desktop.Tools
+﻿using Duende.IdentityModel.Client;
+
+namespace Admin.Desktop.Tools
 {
     public static class TokenManager
     {
         public static string AccessToken { get; private set; } = null!;
-        public static Guid RefreshToken { get; private set; }
+        public static string RefreshToken { get; private set; } = null!;
 
-        public static void SetTokens(string accessToken, Guid refreshToken)
+        public static void SetTokens(TokenResponse tokenResponse)
         {
-            AccessToken = accessToken;
-            RefreshToken = refreshToken;
+            AccessToken = tokenResponse.AccessToken!;
+            RefreshToken = tokenResponse.RefreshToken!;
         }
     }
 }

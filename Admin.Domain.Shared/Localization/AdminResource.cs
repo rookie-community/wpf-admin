@@ -1,9 +1,9 @@
 ﻿using Volo.Abp.Localization;
 
-namespace Admin.Localization
+namespace Admin.Localization;
+
+[LocalizationResourceName("Admin")]
+public class AdminResource
 {
-    [LocalizationResourceName("Admin")]
-    public class AdminResource
-    {
-    }
+
 }

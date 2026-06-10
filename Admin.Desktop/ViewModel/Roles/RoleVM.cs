@@ -1,6 +1,4 @@
 ﻿using Admin.Desktop.View.Roles;
-using Admin.Permissions;
-using Admin.Roles;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -9,6 +7,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Identity;
 using Volo.Abp.Validation;
 using MessageBox = HandyControl.Controls.MessageBox;
 
@@ -17,36 +16,34 @@ namespace Admin.Desktop.ViewModel.Roles
     public partial class RoleVM : ObservableObject, ITransientDependency
     {
         [ObservableProperty]
-        private string name = string.Empty;
+        public partial string Name { get; set; } = string.Empty;
 
         [ObservableProperty]
-        private int pageIndex = 1;
+        public partial int PageIndex { get; set; } = 1;
 
         [ObservableProperty]
-        private long totalCount;
+        public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        private int pageSize = 30;
+        public partial int PageSize { get; set; } = 30;
 
         [ObservableProperty]
-        private ObservableCollection<RoleDto> roles = new ObservableCollection<RoleDto>();
+        public partial ObservableCollection<IdentityRoleDto> Roles { get; set; } = new ObservableCollection<IdentityRoleDto>();
 
         [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         [ObservableProperty]
-        private Dictionary<string, Visibility> buttonVis = new Dictionary<string, Visibility>();
+        public partial Dictionary<string, Visibility> ButtonVis { get; set; } = new Dictionary<string, Visibility>();
 
-        private readonly IRoleApplicationService _roleApplicationService;
-        private readonly IPermissionApplicationService _permissionApplicationService;
+        private readonly IIdentityRoleAppService _identityRoleAppService;
         private readonly ILogger<RoleVM> _logger;
 
         public RoleView Owner { get; private set; } = null!;
 
-        public RoleVM(IRoleApplicationService roleApplicationService, IPermissionApplicationService permissionApplicationService, ILogger<RoleVM> logger)
+        public RoleVM(IIdentityRoleAppService identityRoleAppService, ILogger<RoleVM> logger)
         {
-            _roleApplicationService = roleApplicationService;
-            _permissionApplicationService = permissionApplicationService;
+            _identityRoleAppService = identityRoleAppService;
             _logger = logger;
         }
 
@@ -62,14 +59,14 @@ namespace Admin.Desktop.ViewModel.Roles
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _roleApplicationService.GetListAsync(new GetRoleListDto
+                var result = await _identityRoleAppService.GetListAsync(new GetIdentityRolesInput
                 {
-                    Name = Name,
+                    Filter = Name,
                     SkipCount = (PageIndex - 1) * PageSize,
                     MaxResultCount = PageSize
                 });
                 TotalCount = result.TotalCount;
-                Roles = new ObservableCollection<RoleDto>(result.Items);
+                Roles = new ObservableCollection<IdentityRoleDto>(result.Items);
             }
             catch (AbpValidationException abpEx)
             {
@@ -107,7 +104,7 @@ namespace Admin.Desktop.ViewModel.Roles
         }
 
         [RelayCommand]
-        private async Task EditAsync(RoleDto role)
+        private async Task EditAsync(IdentityRoleDto role)
         {
             try
             {
@@ -121,7 +118,7 @@ namespace Admin.Desktop.ViewModel.Roles
         }
 
         [RelayCommand]
-        private void EditPerm(RoleDto role)
+        private void EditPerm(IdentityRoleDto role)
         {
             var view = new EditRolePermissionView(role.Id);
             var result = view.ShowDialog();
@@ -133,7 +130,7 @@ namespace Admin.Desktop.ViewModel.Roles
 
 
         [RelayCommand]
-        private async Task Delete(RoleDto role)
+        private async Task Delete(IdentityRoleDto role)
         {
             Dialog? loadDialog = null;
             try
@@ -144,7 +141,7 @@ namespace Admin.Desktop.ViewModel.Roles
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                await _roleApplicationService.BatchDelete(new List<Guid> { role.Id });
+                await _identityRoleAppService.DeleteAsync(role.Id);
                 await SearchCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
@@ -164,7 +161,7 @@ namespace Admin.Desktop.ViewModel.Roles
             Dialog? loadDialog = null;
             try
             {
-                var roleIds = sender.Cast<RoleDto>().Select(x => x.Id).ToList();
+                var roleIds = sender.Cast<IdentityRoleDto>().Select(x => x.Id).ToList();
                 if (roleIds.Count == 0)
                 {
                     MessageBox.Warning("未选中任何数据！");
@@ -176,7 +173,10 @@ namespace Admin.Desktop.ViewModel.Roles
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                await _roleApplicationService.BatchDelete(roleIds);
+                foreach (var roleId in roleIds)
+                {
+                    await _identityRoleAppService.DeleteAsync(roleId);
+                }
                 await SearchCommand.ExecuteAsync(null);
             }
             catch (Exception ex)

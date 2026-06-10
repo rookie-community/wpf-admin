@@ -1,5 +1,4 @@
 ﻿using Admin.Desktop.View.Users;
-using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -8,6 +7,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Identity;
 using Volo.Abp.Validation;
 using MessageBox = HandyControl.Controls.MessageBox;
 
@@ -16,39 +16,33 @@ namespace Admin.Desktop.ViewModel.Users
     public partial class UserVM : ObservableObject, ITransientDependency
     {
         [ObservableProperty]
-        private string userName = string.Empty;
+        public partial string Name { get; set; } = string.Empty;
 
         [ObservableProperty]
-        private string phoneNumber = string.Empty;
+        public partial ObservableCollection<IdentityUserDto> Users { get; set; } = new ObservableCollection<IdentityUserDto>();
 
         [ObservableProperty]
-        private string email = string.Empty;
+        public partial int PageIndex { get; set; } = 1;
 
         [ObservableProperty]
-        private ObservableCollection<UserDto> users = new ObservableCollection<UserDto>();
+        public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        private int pageIndex = 1;
+        public partial int PageSize { get; set; } = 30;
 
         [ObservableProperty]
-        private long totalCount;
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         [ObservableProperty]
-        private int pageSize = 30;
-
-        [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
-
-        [ObservableProperty]
-        private Dictionary<string, Visibility> buttonVis = new Dictionary<string, Visibility>();
+        public partial Dictionary<string, Visibility> ButtonVis { get; set; } = new Dictionary<string, Visibility>();
 
         public UserView Owner { get; private set; } = null!;
 
-        private readonly IUserApplicationService _userApplicationService;
+        private readonly IIdentityUserAppService _identityUserAppService;
         private readonly ILogger<UserVM> _logger;
-        public UserVM(IUserApplicationService userApplicationService, ILogger<UserVM> logger)
+        public UserVM(IIdentityUserAppService identityUserAppService, ILogger<UserVM> logger)
         {
-            _userApplicationService = userApplicationService;
+            _identityUserAppService = identityUserAppService;
             _logger = logger;
         }
 
@@ -64,17 +58,14 @@ namespace Admin.Desktop.ViewModel.Users
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _userApplicationService.GetListAsync(new GetUserListDto
+                var result = await _identityUserAppService.GetListAsync(new GetIdentityUsersInput
                 {
-                    UserName = UserName,
-                    PhoneNumber = PhoneNumber,
-                    Email = Email,
+                    Filter = Name,
                     SkipCount = (PageIndex - 1) * PageSize,
                     MaxResultCount = PageSize
                 });
-                //TotalCount = result.TotalCount;
-                TotalCount = 1000;
-                Users = new ObservableCollection<UserDto>(result.Items);
+                TotalCount = result.TotalCount;
+                Users = new ObservableCollection<IdentityUserDto>(result.Items);
             }
             catch (AbpValidationException abpEx)
             {
@@ -94,9 +85,7 @@ namespace Admin.Desktop.ViewModel.Users
         [RelayCommand]
         private void Reset()
         {
-            UserName = string.Empty;
-            PhoneNumber = string.Empty;
-            Email = string.Empty;
+            Name = string.Empty;
         }
 
         [RelayCommand]
@@ -114,7 +103,7 @@ namespace Admin.Desktop.ViewModel.Users
         }
 
         [RelayCommand]
-        private async Task EditAsync(UserDto user)
+        private async Task EditAsync(IdentityUserDto user)
         {
             try
             {
@@ -128,7 +117,7 @@ namespace Admin.Desktop.ViewModel.Users
         }
 
         [RelayCommand]
-        private async Task Delete(UserDto user)
+        private async Task Delete(IdentityUserDto user)
         {
             Dialog? loadDialog = null;
             try
@@ -139,7 +128,7 @@ namespace Admin.Desktop.ViewModel.Users
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                await _userApplicationService.BatchDelete(new List<Guid> { user.Id });
+                await _identityUserAppService.DeleteAsync(user.Id);
                 await SearchCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
@@ -159,7 +148,7 @@ namespace Admin.Desktop.ViewModel.Users
             Dialog? loadDialog = null;
             try
             {
-                var userIds = sender.Cast<UserDto>().Select(x => x.Id).ToList();
+                var userIds = sender.Cast<IdentityUserDto>().Select(x => x.Id).ToList();
                 if (userIds.Count == 0)
                 {
                     MessageBox.Warning("未选中任何数据！");
@@ -171,7 +160,10 @@ namespace Admin.Desktop.ViewModel.Users
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                await _userApplicationService.BatchDelete(userIds);
+                foreach (var userId in userIds)
+                {
+                    await _identityUserAppService.DeleteAsync(userId);
+                }
                 await SearchCommand.ExecuteAsync(null);
             }
             catch (Exception ex)

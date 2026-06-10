@@ -1,8 +1,5 @@
-﻿using Admin.Commons;
-using Admin.Desktop.Tools;
+﻿using Admin.Desktop.Tools;
 using Admin.Desktop.View.Roles;
-using Admin.Permissions;
-using Admin.Roles;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -14,21 +11,17 @@ namespace Admin.Desktop.ViewModel.Roles
 {
     public partial class EditRolePermissionVM : ObservableObject, ITransientDependency
     {
-        [ObservableProperty]
-        private ObservableCollection<NavDto> permissions = new ObservableCollection<NavDto>();
+        //[ObservableProperty]
+        //private ObservableCollection<NavDto> permissions = new ObservableCollection<NavDto>();
 
         [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         public EditRolePermissionView Owner { get; private set; } = null!;
-        private readonly IRoleApplicationService _roleApplicationService;
-        private readonly IPermissionApplicationService _permissionApplicationService;
         private readonly ILogger<EditRolePermissionVM> _logger;
 
-        public EditRolePermissionVM(IRoleApplicationService roleApplicationService, IPermissionApplicationService permissionApplicationService, ILogger<EditRolePermissionVM> logger)
+        public EditRolePermissionVM(ILogger<EditRolePermissionVM> logger)
         {
-            _roleApplicationService = roleApplicationService;
-            _permissionApplicationService = permissionApplicationService;
             _logger = logger;
         }
 
@@ -38,9 +31,6 @@ namespace Admin.Desktop.ViewModel.Roles
             try
             {
                 Owner = owner;
-                var permissionResult = await _permissionApplicationService.GetPermissionDefinitions();
-                //Permissions = new ObservableCollection<PermissionDefinitionDto>(permissionResult);
-                Permissions = new ObservableCollection<NavDto>(NavProvider.GetNavConfigs());
             }
             catch (Exception ex)
             {

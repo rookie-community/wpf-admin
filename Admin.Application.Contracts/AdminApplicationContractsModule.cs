@@ -1,18 +1,26 @@
-﻿using Volo.Abp.Application;
-using Volo.Abp.Auditing;
+﻿using Volo.Abp.Account;
+using Volo.Abp.FeatureManagement;
+using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
-namespace Admin
-{
-    [DependsOn(
-        typeof(AbpDddApplicationContractsModule),
-        typeof(AbpAuditingContractsModule),
-        typeof(AbpTenantManagementApplicationContractsModule),
-        typeof(AdminDomainSharedModule)
-        )]
-    public class AdminApplicationContractsModule : AbpModule
-    {
+namespace Admin;
 
+[DependsOn(
+    typeof(AdminDomainSharedModule),
+    typeof(AbpFeatureManagementApplicationContractsModule),
+    typeof(AbpSettingManagementApplicationContractsModule),
+    typeof(AbpIdentityApplicationContractsModule),
+    typeof(AbpAccountApplicationContractsModule),
+    typeof(AbpTenantManagementApplicationContractsModule),
+    typeof(AbpPermissionManagementApplicationContractsModule)
+)]
+public class AdminApplicationContractsModule : AbpModule
+{
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        AdminDtoExtensions.Configure();
     }
 }

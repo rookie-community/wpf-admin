@@ -1,5 +1,4 @@
 ﻿using Admin.Desktop.View.Users;
-using Admin.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -14,29 +13,27 @@ namespace Admin.Desktop.ViewModel.Users
     {
         [Required]
         [ObservableProperty]
-        private string oldPassword = null!;
+        public partial string OldPassword { get; set; } = null!;
 
         [Required(ErrorMessage = "请输入新密码")]
         [MinLength(6, ErrorMessage = "密码长度至少6位")]
         [ObservableProperty]
-        private string newPassword = null!;
+        public partial string NewPassword { get; set; } = null!;
 
         [Required]
         [CustomValidation(typeof(EditUserPasswordVM), nameof(ValidateConfirmPassword))]
         [ObservableProperty]
-        private string confirmPassword = null!;
+        public partial string ConfirmPassword { get; set; } = null!;
 
         [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         public EditUserPasswordView Owner { get; private set; } = null!;
 
-        private readonly IUserApplicationService _userApplicationService;
         private readonly ILogger<EditUserPasswordVM> _logger;
 
-        public EditUserPasswordVM(IUserApplicationService userApplicationService, ILogger<EditUserPasswordVM> logger)
+        public EditUserPasswordVM(ILogger<EditUserPasswordVM> logger)
         {
-            _userApplicationService = userApplicationService;
             _logger = logger;
         }
 
@@ -56,12 +53,12 @@ namespace Admin.Desktop.ViewModel.Users
                 {
                     return;
                 }
-                await _userApplicationService.UpdateCurrentUserPasswordAsync(new UpdateCurrentPasswordDto
-                {
-                    Id = App.CurrentUser.Id,
-                    OldPassword = OldPassword,
-                    NewPassword = NewPassword,
-                });
+                //await _userApplicationService.UpdateCurrentUserPasswordAsync(new UpdateCurrentPasswordDto
+                //{
+                //    Id = App.CurrentUser.Id,
+                //    OldPassword = OldPassword,
+                //    NewPassword = NewPassword,
+                //});
                 MessageBox.Success("修改成功");
             }
             catch (Exception ex)
