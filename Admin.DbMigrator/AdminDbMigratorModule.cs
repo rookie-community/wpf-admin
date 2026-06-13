@@ -7,6 +7,7 @@ namespace Admin.DbMigrator;
 [DependsOn(
     typeof(AbpAutofacModule),
     typeof(AdminEntityFrameworkCoreModule),
+    //typeof(AdminMongoDbModule),
     typeof(AdminApplicationContractsModule)
 )]
 public class AdminDbMigratorModule : AbpModule

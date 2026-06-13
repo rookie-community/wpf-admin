@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
+using System.Reflection;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Identity;
 using MessageBox = HandyControl.Controls.MessageBox;
@@ -22,6 +23,10 @@ namespace Admin.Desktop.ViewModel.Accounts
 {
     public partial class LoginVM : ObservableValidator, ITransientDependency
     {
+        private readonly IIdentityUserAppService _userAppService;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<LoginVM> _logger;
+
         [ObservableProperty]
         [CustomValidation(typeof(LoginVM), nameof(ValidateTenant))]
         public partial string Tenant { get; set; } = null!;
@@ -36,6 +41,9 @@ namespace Admin.Desktop.ViewModel.Accounts
         public partial string Password { get; set; } = null!;
 
         [ObservableProperty]
+        public partial string Version { get; set; } = null!;
+
+        [ObservableProperty]
         public partial IReadOnlyDictionary<string, string> LangItems { get; set; } = new Dictionary<string, string>();
 
         [ObservableProperty]
@@ -43,10 +51,6 @@ namespace Admin.Desktop.ViewModel.Accounts
 
         [ObservableProperty]
         public partial bool IsUploading { get; set; }
-
-        private readonly IIdentityUserAppService _userAppService;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<LoginVM> _logger;
 
         public Login Owner { get; private set; } = null!;
 
@@ -71,11 +75,13 @@ namespace Admin.Desktop.ViewModel.Accounts
                 // 英语本土名称
                 { "English", "en" }
             };
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
         }
 
         [RelayCommand]
         private async Task SubmitAsync()
         {
+            IsUploading = true;
             try
             {
                 ValidateAllProperties();
@@ -133,8 +139,8 @@ namespace Admin.Desktop.ViewModel.Accounts
             }
             catch (Exception ex)
             {
+                _logger.LogException(ex);
                 MessageBox.Error(ex.Message, "登录失败");
-                _logger.LogError(ex.Message);
             }
             finally
             {

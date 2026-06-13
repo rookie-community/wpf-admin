@@ -10,13 +10,13 @@ namespace Admin.Desktop.ViewModel.Reports
 {
     public partial class ReportDesignVM : ObservableObject, ITransientDependency
     {
-        [ObservableProperty]
-        private Report report = new Report();
-
-        [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
-
         private readonly ILogger<ReportDesignVM> _logger;
+
+        [ObservableProperty]
+        public partial Report Report { get; set; } = new Report();
+
+        [ObservableProperty]
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         public ReportDesign Owner { get; private set; } = null!;
 
@@ -50,6 +50,7 @@ namespace Admin.Desktop.ViewModel.Reports
             }
             catch (Exception ex)
             {
+                _logger.LogException(ex);
                 MessageBox.Error(ex.Message);
             }
             finally

@@ -1,14 +1,14 @@
 ﻿<UserControl
-    x:Class="Admin.Desktop.View.Roles.RoleView"
+    x:Class="Admin.Desktop.View.Tenants.TenantView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hc="https://handyorg.github.io/handycontrol"
-    xmlns:local="clr-namespace:Admin.Desktop.View.Roles"
+    xmlns:local="clr-namespace:Admin.Desktop.View.Tenants"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Roles"
-    d:DataContext="{d:DesignInstance Type=viewmodel:RoleVM}"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Tenants"
+    d:DataContext="{d:DesignInstance Type=viewmodel:TenantVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     hc:Dialog.Token="{Binding DialogContainerToken}"
@@ -36,17 +36,18 @@
                     Spacing="5">
                     <hc:TextBox
                         Width="180"
-                        hc:InfoElement.Placeholder="请输入角色"
+                        hc:InfoElement.Placeholder="请输入租户名"
                         hc:InfoElement.ShowClearButton="True"
-                        hc:InfoElement.Title="角色"
+                        hc:InfoElement.Title="租户名"
                         hc:InfoElement.TitlePlacement="Left"
                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
                     <Button
                         hc:IconElement.Geometry="{StaticResource SearchGeometry}"
                         Command="{Binding SearchCommand}"
                         Content="搜索"
                         Style="{StaticResource ButtonPrimary}"
-                        Visibility="{Binding ButtonVis[Serach]}" />
+                        Visibility="{Binding Buttons[Serach]}" />
                     <Button
                         hc:IconElement.Geometry="{StaticResource RotateLeftGeometry}"
                         Command="{Binding ResetCommand}"
@@ -65,14 +66,14 @@
                     Command="{Binding AddCommand}"
                     Content="新增"
                     Style="{StaticResource ButtonDefault}"
-                    Visibility="{Binding ButtonVis[Create]}" />
+                    Visibility="{Binding Buttons[Create]}" />
                 <Button
                     hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
                     Command="{Binding BatchDeleteCommand}"
                     CommandParameter="{Binding ElementName=DG, Path=SelectedItems}"
                     Content="批量删除"
                     Style="{StaticResource ButtonDanger}"
-                    Visibility="{Binding ButtonVis[BatchDelete]}" />
+                    Visibility="{Binding Buttons[BatchDelete]}" />
             </hc:UniformSpacingPanel>
         </ToolBar>
         <hc:DialogContainer Grid.Row="2">
@@ -80,6 +81,7 @@
                 <uc:PaginationPlus
                     Margin="1"
                     DockPanel.Dock="Bottom"
+                    PageChangedCommand="{Binding PageChangedCommand}"
                     PageSize="{Binding PageSize}"
                     TotalCount="{Binding TotalCount}"
                     PageIndex="{Binding PageIndex}" />
@@ -89,7 +91,7 @@
                     AutoGenerateColumns="False"
                     HeadersVisibility="All"
                     IsReadOnly="True"
-                    ItemsSource="{Binding Roles}"
+                    ItemsSource="{Binding Users}"
                     RowHeaderWidth="60"
                     Style="{StaticResource DataGrid.Small}">
                     <DataGrid.RowHeaderTemplate>
@@ -102,8 +104,7 @@
                             Binding="{Binding Id}"
                             Header="Id"
                             Visibility="Hidden" />
-                        <DataGridTextColumn Binding="{Binding Name}" Header="角色" />
-                        <DataGridCheckBoxColumn Binding="{Binding IsDefault}" Header="是否默认" />
+                        <DataGridTextColumn Binding="{Binding UserName}" Header="租户名称" />
                         <DataGridTemplateColumn Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -114,24 +115,21 @@
                                             CommandParameter="{Binding}"
                                             Content="编辑"
                                             Style="{StaticResource ButtonDefault.Small}"
-                                            Visibility="{Binding Path=DataContext.ButtonVis[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                            Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                         <Button
-                                            Command="{Binding DataContext.EditPermCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            hc:IconElement.Geometry="{StaticResource DropperGeometry}"
+                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
-                                            Style="{StaticResource ButtonInfo.Small}"
-                                            Visibility="{Binding Path=DataContext.ButtonVis[EditPermBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}">
-                                            <hc:UniformSpacingPanel Spacing="6">
-                                                <TextBlock FontFamily="{StaticResource FA_Regular}" Text="&#xf505;" />
-                                                <TextBlock Text="权限" />
-                                            </hc:UniformSpacingPanel>
-                                        </Button>
+                                            Content="功能"
+                                            Style="{StaticResource ButtonDefault.Small}"
+                                            Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                         <Button
                                             hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
                                             Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             Content="删除"
                                             Style="{StaticResource ButtonDanger.Small}"
-                                            Visibility="{Binding Path=DataContext.ButtonVis[DeleteBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                            Visibility="{Binding Path=DataContext.BtnPairs[DeleteBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                     </hc:UniformSpacingPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

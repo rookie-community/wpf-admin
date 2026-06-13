@@ -1,13 +1,20 @@
 ﻿using Admin.Commons;
+using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.Tools;
 using Admin.Desktop.View;
+using Admin.Desktop.View.Accounts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using HandyControl.Data;
+using HandyControl.Tools;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Wpf;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -22,27 +29,31 @@ namespace Admin.Desktop.ViewModel
 {
     public partial class MainVM : ObservableRecipient, ITransientDependency
     {
-        [ObservableProperty]
-        private string title = string.Empty;
+        private readonly string TitalPrefix = "Admin";
+        private readonly ILogger<MainVM> _logger;
 
         [ObservableProperty]
-        private int tabSelectedIndex = 0;
+        public partial string Title { get; set; } = string.Empty;
 
         [ObservableProperty]
-        private ObservableCollection<NavDto> navItems = new ObservableCollection<NavDto>();
+        public partial int TabSelectedIndex { get; set; } = 0;
 
         [ObservableProperty]
-        private ObservableCollection<TabItem> tabItems = new ObservableCollection<TabItem>();
+        public partial string Version { get; set; } = null!;
 
         [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
+        public partial string UserName { get; set; } = string.Empty;
 
+        [ObservableProperty]
+        public partial ObservableCollection<NavDto> NavItems { get; set; } = new ObservableCollection<NavDto>();
+
+        [ObservableProperty]
+        public partial ObservableCollection<TabItem> TabItems { get; set; } = new ObservableCollection<TabItem>();
+        [ObservableProperty]
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
         public MainWindow Owner { get; private set; } = null!;
 
-        private readonly string TitalPrefix = "Admin";
-        private ILogger<MainVM> _logger;
-
-        public MainVM( ILogger<MainVM> logger)
+        public MainVM(ILogger<MainVM> logger)
         {
             _logger = logger;
         }
@@ -53,6 +64,8 @@ namespace Admin.Desktop.ViewModel
             try
             {
                 Owner = owner;
+                UserName = App.CurrentUser.UserName;
+                Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
                 await Task.Run(() =>
                 {
                     NavItems = BuiderNavItems();
@@ -89,6 +102,98 @@ namespace Admin.Desktop.ViewModel
         private void CurrentViewShow()
         {
             Owner.Show();
+        }
+
+        [RelayCommand]
+        private void SwitchTheme(SkinType skinType)
+        {
+            try
+            {
+                var app = (App)Application.Current;
+
+                var temps = app.Resources.MergedDictionaries.ToList();
+                app.Resources.MergedDictionaries.Clear();
+
+                app.Resources.MergedDictionaries.Add(ResourceHelper.GetSkin(skinType));
+                app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/HandyControl;component/Themes/Theme.xaml")
+                });
+
+                foreach (var item in temps)
+                {
+                    if (!item.Source.LocalPath.Contains("HandyControl"))
+                    {
+                        app.Resources.MergedDictionaries.Add(item);
+                    }
+                }
+                // 夜间深色
+                if (skinType == SkinType.Dark)
+                {
+                    LiveCharts.DefaultSettings.AddDarkTheme();
+                }
+                else
+                {
+                    // 白天浅色
+                    LiveCharts.DefaultSettings.AddLightTheme();
+                }
+                Application.Current.MainWindow?.OnApplyTemplate();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+        }
+
+        [RelayCommand]
+        private void SwitchLang(string langName)
+        {
+            try
+            {
+                if (langName == LangProvider.Culture.Name)
+                {
+                    return;
+                }
+
+                ConfigHelper.Instance.SetLang(langName);
+                LangProvider.Culture = new CultureInfo(langName);
+
+                //var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                //config.AppSettings.Settings["Language"].Value = langName;
+                //config.Save(ConfigurationSaveMode.Modified);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Warning(ex.InnerException?.Message ?? ex.Message, "切换语言失败");
+            }
+        }
+
+        [RelayCommand]
+        private void MyProfile()
+        {
+            var nav = new NavDto
+            {
+                Id = Guid.Parse("F12CD9F3-2F14-4D13-965B-EFA60F207C3B"),
+                Icon = "\xf013;",
+                Name = "我的账户",
+                Type = NavType.UserControl,
+                Content = typeof(MyProfileView).FullName,
+            };
+            SwitchItem(nav);
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            var view = new Login();
+            view.Show();
+
+            //NotifyIcon.ShowBalloonTip("HandyControl", "内容", NotifyIconInfoType.Info, "");
+            Owner.NotifyIconContextContent.Visibility = Visibility.Collapsed;
+            Owner.Close();
+            Owner = null!;
         }
 
         private ObservableCollection<NavDto> BuiderNavItems()

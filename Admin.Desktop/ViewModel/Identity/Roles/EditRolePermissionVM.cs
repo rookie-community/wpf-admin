@@ -1,16 +1,16 @@
-﻿using Admin.Desktop.Tools;
-using Admin.Desktop.View.Roles;
+﻿using Admin.Desktop.View.Roles;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
-using System.Collections.ObjectModel;
 using Volo.Abp.DependencyInjection;
 
 namespace Admin.Desktop.ViewModel.Roles
 {
     public partial class EditRolePermissionVM : ObservableObject, ITransientDependency
     {
+        private readonly ILogger<EditRolePermissionVM> _logger;
+
         //[ObservableProperty]
         //private ObservableCollection<NavDto> permissions = new ObservableCollection<NavDto>();
 
@@ -18,7 +18,6 @@ namespace Admin.Desktop.ViewModel.Roles
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         public EditRolePermissionView Owner { get; private set; } = null!;
-        private readonly ILogger<EditRolePermissionVM> _logger;
 
         public EditRolePermissionVM(ILogger<EditRolePermissionVM> logger)
         {

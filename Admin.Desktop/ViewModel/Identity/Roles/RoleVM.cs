@@ -1,4 +1,4 @@
-﻿using Admin.Desktop.View.Users;
+﻿using Admin.Desktop.View.Roles;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -11,15 +11,15 @@ using Volo.Abp.Identity;
 using Volo.Abp.Validation;
 using MessageBox = HandyControl.Controls.MessageBox;
 
-namespace Admin.Desktop.ViewModel.Users
+namespace Admin.Desktop.ViewModel.Roles
 {
-    public partial class UserVM : ObservableObject, ITransientDependency
+    public partial class RoleVM : ObservableObject, ITransientDependency
     {
-        [ObservableProperty]
-        public partial string Name { get; set; } = string.Empty;
+        private readonly IIdentityRoleAppService _identityRoleAppService;
+        private readonly ILogger<RoleVM> _logger;
 
         [ObservableProperty]
-        public partial ObservableCollection<IdentityUserDto> Users { get; set; } = new ObservableCollection<IdentityUserDto>();
+        public partial string Name { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial int PageIndex { get; set; } = 1;
@@ -31,22 +31,23 @@ namespace Admin.Desktop.ViewModel.Users
         public partial int PageSize { get; set; } = 30;
 
         [ObservableProperty]
+        public partial ObservableCollection<IdentityRoleDto> Roles { get; set; } = new ObservableCollection<IdentityRoleDto>();
+
+        [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         [ObservableProperty]
         public partial Dictionary<string, Visibility> ButtonVis { get; set; } = new Dictionary<string, Visibility>();
 
-        public UserView Owner { get; private set; } = null!;
+        public RoleView Owner { get; private set; } = null!;
 
-        private readonly IIdentityUserAppService _identityUserAppService;
-        private readonly ILogger<UserVM> _logger;
-        public UserVM(IIdentityUserAppService identityUserAppService, ILogger<UserVM> logger)
+        public RoleVM(IIdentityRoleAppService identityRoleAppService, ILogger<RoleVM> logger)
         {
-            _identityUserAppService = identityUserAppService;
+            _identityRoleAppService = identityRoleAppService;
             _logger = logger;
         }
 
-        internal async Task InitialAsync(UserView owner)
+        internal async Task InitialAsync(RoleView owner)
         {
             Owner = owner;
             await SearchCommand.ExecuteAsync(null);
@@ -58,14 +59,14 @@ namespace Admin.Desktop.ViewModel.Users
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _identityUserAppService.GetListAsync(new GetIdentityUsersInput
+                var result = await _identityRoleAppService.GetListAsync(new GetIdentityRolesInput
                 {
                     Filter = Name,
                     SkipCount = (PageIndex - 1) * PageSize,
                     MaxResultCount = PageSize
                 });
                 TotalCount = result.TotalCount;
-                Users = new ObservableCollection<IdentityUserDto>(result.Items);
+                Roles = new ObservableCollection<IdentityRoleDto>(result.Items);
             }
             catch (AbpValidationException abpEx)
             {
@@ -103,7 +104,7 @@ namespace Admin.Desktop.ViewModel.Users
         }
 
         [RelayCommand]
-        private async Task EditAsync(IdentityUserDto user)
+        private async Task EditAsync(IdentityRoleDto role)
         {
             try
             {
@@ -117,7 +118,19 @@ namespace Admin.Desktop.ViewModel.Users
         }
 
         [RelayCommand]
-        private async Task Delete(IdentityUserDto user)
+        private void EditPerm(IdentityRoleDto role)
+        {
+            var view = new EditRolePermissionView(role.Id);
+            var result = view.ShowDialog();
+            if (result == true)
+            {
+                MessageBox.Success("更新权限成功");
+            }
+        }
+
+
+        [RelayCommand]
+        private async Task Delete(IdentityRoleDto role)
         {
             Dialog? loadDialog = null;
             try
@@ -128,7 +141,7 @@ namespace Admin.Desktop.ViewModel.Users
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                await _identityUserAppService.DeleteAsync(user.Id);
+                await _identityRoleAppService.DeleteAsync(role.Id);
                 await SearchCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
@@ -148,8 +161,8 @@ namespace Admin.Desktop.ViewModel.Users
             Dialog? loadDialog = null;
             try
             {
-                var userIds = sender.Cast<IdentityUserDto>().Select(x => x.Id).ToList();
-                if (userIds.Count == 0)
+                var roleIds = sender.Cast<IdentityRoleDto>().Select(x => x.Id).ToList();
+                if (roleIds.Count == 0)
                 {
                     MessageBox.Warning("未选中任何数据！");
                     return;
@@ -160,9 +173,9 @@ namespace Admin.Desktop.ViewModel.Users
                     return;
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
-                foreach (var userId in userIds)
+                foreach (var roleId in roleIds)
                 {
-                    await _identityUserAppService.DeleteAsync(userId);
+                    await _identityRoleAppService.DeleteAsync(roleId);
                 }
                 await SearchCommand.ExecuteAsync(null);
             }
@@ -175,15 +188,6 @@ namespace Admin.Desktop.ViewModel.Users
             {
                 loadDialog?.Close();
             }
-        }
-
-        [RelayCommand]
-        private async Task PageChangedAsync(Tuple<int, int> pageArgs)
-        {
-            MessageBox.Show($"{pageArgs.Item1}_{pageArgs.Item2}");
-            PageIndex = pageArgs.Item1;
-            PageSize = pageArgs.Item2;
-            await SearchCommand.ExecuteAsync(null);
         }
     }
 }

@@ -2,8 +2,12 @@
 using Admin.Desktop.View;
 using Admin.Desktop.View.Reports;
 using Admin.Desktop.View.Roles;
+using Admin.Desktop.View.SettingManagement.EmailSettings;
+using Admin.Desktop.View.Tenants;
 using Admin.Desktop.View.Users;
 using Volo.Abp.Identity;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.TenantManagement;
 
 namespace Admin.Desktop.Tools
 {
@@ -16,7 +20,6 @@ namespace Admin.Desktop.Tools
                 GetHomeGroup(),
                 GetReportGroup(),
                 GetSystemGroup(),
-                GetUserInfoGroup(),
                 GetAbourGroup()
             };
             return menus;
@@ -63,39 +66,24 @@ namespace Admin.Desktop.Tools
                         PermissionName = IdentityPermissions.Roles.Default,
                         Content = typeof(RoleView).FullName,
                     },
-                }
-            };
-        }
-
-        private static NavDto GetUserInfoGroup()
-        {
-            return new NavDto
-            {
-                Id = Guid.NewGuid(),
-                Icon = "\xf2bd",
-                Name = "个人中心",
-                Type = NavType.Group,
-                //PermissionName = SystemPermissions.Users.Info,
-                Items = new List<NavDto>
-                {
                     new NavDto
                     {
                         Id = Guid.NewGuid(),
-                        Icon = "\xf007",
-                        Name = "基本资料",
+                        Icon = "\xe4da",
+                        Name = "租户管理",
                         Type = NavType.UserControl,
-                        //PermissionName = SystemPermissions.Users.EditInfo,
-                        Content = typeof(UserInfoView).FullName,
+                        PermissionName = TenantManagementPermissions.Tenants.Default,
+                        Content = typeof(TenantView).FullName,
                     },
                     new NavDto
                     {
                         Id = Guid.NewGuid(),
-                        Icon = "\xf084",
-                        Name = "修改密码",
+                        Icon = "\xf0e0",
+                        Name = "邮件服务",
                         Type = NavType.UserControl,
-                        //PermissionName = SystemPermissions.Users.ResetPassword,
-                        Content = typeof(EditUserPasswordView).FullName,
-                    }
+                        PermissionName = SettingManagementPermissions.Emailing,
+                        Content = typeof(EmailSettingView).FullName,
+                    },
                 }
             };
         }

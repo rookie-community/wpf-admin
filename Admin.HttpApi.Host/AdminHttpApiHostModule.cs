@@ -42,6 +42,7 @@ namespace Admin;
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(AdminApplicationModule),
     typeof(AdminEntityFrameworkCoreModule),
+    //typeof(AdminMongoDbModule),
     typeof(AbpIdentityAspNetCoreModule),
     typeof(AbpOpenIddictAspNetCoreModule),
     typeof(AbpSwashbuckleModule),

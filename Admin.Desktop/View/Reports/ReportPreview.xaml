@@ -12,10 +12,12 @@
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance Type=viewmodel:ReportPreviewVM}"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
+    Background="{DynamicResource RegionBrush}"
     Icon="pack://application:,,,/Resources/Images/Icons/Logo.png"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <Grid>
+    <hc:DialogContainer>
         <Preview:WpfPreviewControl x:Name="previewControl" />
-    </Grid>
+    </hc:DialogContainer>
 </hc:Window>

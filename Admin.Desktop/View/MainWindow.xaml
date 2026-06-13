@@ -17,7 +17,7 @@
     hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"
     Icon="pack://application:,,,/Resources/Images/Icons/Logo.png"
-    WindowStartupLocation="CenterScreen"
+    WindowStartupLocation="CenterOwner"
     WindowState="Maximized"
     mc:Ignorable="d">
     <hc:Window.NonClientAreaContent>
@@ -26,114 +26,234 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button
-                Name="ButtonConfig"
+            <hc:UniformSpacingPanel
+                Grid.Row="0"
+                Margin="10,0"
+                HorizontalAlignment="Left"
+                Spacing="10">
+                <hc:Shield
+                    HorizontalAlignment="Stretch"
+                    Status="{Binding Version}"
+                    Subject="版本"
+                    Color="#1182c3" />
+            </hc:UniformSpacingPanel>
+
+            <StackPanel
                 Grid.Column="1"
-                hc:IconElement.Geometry="{StaticResource ConfigGeometry}"
-                Click="ButtonConfig_OnClick"
-                Style="{StaticResource ButtonIcon}" />
-            <Popup
-                Name="PopupConfig"
-                Grid.Column="1"
-                AllowsTransparency="True"
-                HorizontalOffset="-200"
-                Placement="Right"
-                PlacementTarget="{Binding ElementName=ButtonConfig}"
-                StaysOpen="False"
-                VerticalOffset="25">
-                <Border
-                    Margin="16"
-                    Background="{DynamicResource SecondaryRegionBrush}"
-                    CornerRadius="4"
-                    Effect="{StaticResource EffectShadow2}">
-                    <StackPanel Orientation="Horizontal">
-                        <hc:UniformSpacingPanel
-                            MaxHeight="85"
-                            Margin="10"
-                            Button.Click="ButtonLangs_OnClick"
-                            ChildWrapping="Wrap"
-                            Orientation="Vertical"
-                            Spacing="10">
-                            <Button Style="{StaticResource ButtonCustom}" Tag="zh-cn">
-                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/cn.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="en">
-                                <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/en.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="fa">
+                Height="16"
+                Orientation="Horizontal">
+                <Menu Style="{StaticResource Menu.Small}">
+                    <MenuItem Header="主题">
+                        <MenuItem.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MenuItemBaseStyle}" TargetType="MenuItem">
+                                <Setter Property="Width" Value="100" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="{StaticResource FA_Solid}" Text="&#xf042;" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Command="{Binding SwitchThemeCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Default"
+                            Tag="{x:Static hc:SkinType.Default}">
+                            <MenuItem.Icon>
+                                <Border Background="White" BorderBrush="{DynamicResource BorderBrush}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                            Command="{Binding SwitchThemeCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Dark"
+                            Tag="{x:Static hc:SkinType.Dark}">
+                            <MenuItem.Icon>
+                                <Border Background="Black" BorderBrush="{DynamicResource BorderBrush}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                            Command="{Binding SwitchThemeCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Violet"
+                            Tag="{x:Static hc:SkinType.Violet}">
+                            <MenuItem.Icon>
+                                <Border Background="DarkViolet" BorderBrush="{DynamicResource BorderBrush}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{ex:Lang Key={x:Static langs:LangKeys.Language}}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MenuItemBaseStyle}" TargetType="MenuItem">
+                                <Setter Property="Width" Value="140" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="{StaticResource FA_Solid}" Text="&#xf1ab;" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="简体中文"
+                            Tag="zh-cn">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Resources/Images/Flag/cn.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="English"
+                            Tag="en">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Resources/Images/Flag/en.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  波斯语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="فارسی"
+                            IsEnabled="False"
+                            Tag="fa">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/fa.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="fr">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  法语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Français"
+                            IsEnabled="False"
+                            Tag="fr">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/fr.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="ca-ES">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  加泰罗尼亚语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Català"
+                            IsEnabled="False"
+                            Tag="ca-ES">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ca-Es.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="ja">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  日语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="日本語"
+                            IsEnabled="False"
+                            Tag="ja">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ja.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="ko-KR">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  韩语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="한국어"
+                            IsEnabled="False"
+                            Tag="ko-KR">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ko-KR.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="ru">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  俄语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Русский"
+                            IsEnabled="False"
+                            Tag="ru">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/ru.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="tr">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  土耳其语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Türkçe"
+                            IsEnabled="False"
+                            Tag="tr">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/tr.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="pt-BR">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  巴西葡萄牙语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Português (Brasil)"
+                            IsEnabled="False"
+                            Tag="pt-BR">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/pt-BR.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="pl">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  波兰语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Polski"
+                            IsEnabled="False"
+                            Tag="pl">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/pl.png" />
-                            </Button>
-                            <Button Style="{StaticResource ButtonCustom}" Tag="es">
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <!--  西班牙语  -->
+                        <MenuItem
+                            Command="{Binding SwitchLangCommand}"
+                            CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                            Header="Español"
+                            IsEnabled="False"
+                            Tag="es">
+                            <MenuItem.Icon>
                                 <Image Width="32" Source="pack://application:,,,/Resources/Images/Flag/es.png" />
-                            </Button>
-                        </hc:UniformSpacingPanel>
-                        <hc:Divider
-                            Margin="0,20"
-                            LineStrokeDashArray="2,2"
-                            LineStrokeThickness="2"
-                            Orientation="Vertical" />
-                        <StackPanel Margin="10" Button.Click="ButtonSkins_OnClick">
-                            <Button Style="{StaticResource ButtonCustom}" Tag="{x:Static hc:SkinType.Default}">
-                                <Border
-                                    Width="32"
-                                    Height="21"
-                                    Background="White"
-                                    BorderBrush="{DynamicResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="2" />
-                            </Button>
-                            <Button
-                                Margin="0,10,0,0"
-                                Style="{StaticResource ButtonCustom}"
-                                Tag="{x:Static hc:SkinType.Dark}">
-                                <Border
-                                    Width="32"
-                                    Height="21"
-                                    Background="Black"
-                                    BorderBrush="{DynamicResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="2" />
-                            </Button>
-                            <Button
-                                Margin="0,10,0,0"
-                                Style="{StaticResource ButtonCustom}"
-                                Tag="{x:Static hc:SkinType.Violet}">
-                                <Border
-                                    Width="32"
-                                    Height="21"
-                                    Background="DarkViolet"
-                                    BorderBrush="{DynamicResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="2" />
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Popup>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{Binding UserName}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MenuItemBaseStyle}" TargetType="MenuItem">
+                                <Setter Property="Width" Value="100" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                        <MenuItem.Icon>
+                            <TextBlock FontFamily="{StaticResource FA_Solid}" Text="&#xf007;" />
+                        </MenuItem.Icon>
+                        <MenuItem Command="{Binding MyProfileCommand}" Header="我的账户">
+                            <MenuItem.Icon>
+                                <TextBlock FontFamily="{StaticResource FA_Regular}" Text="&#xf013;" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{Binding LogoutCommand}" Header="注销">
+                            <MenuItem.Icon>
+                                <TextBlock FontFamily="{StaticResource FA_Regular}" Text="&#xf08b;" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
         </Grid>
     </hc:Window.NonClientAreaContent>
     <hc:DialogContainer>
@@ -200,7 +320,7 @@
                 Text="Admin Sample"
                 Visibility="Visible">
                 <hc:NotifyIcon.ContextMenu>
-                    <ContextMenu Width="140">
+                    <ContextMenu Width="140" Style="{StaticResource ContextMenu.Small}">
                         <MenuItem
                             hc:IconElement.Geometry="{StaticResource WindowsGeometry}"
                             Command="{Binding CurrentViewShowCommand}"
@@ -224,8 +344,14 @@
                     </ContextMenu>
                 </hc:NotifyIcon.ContextMenu>
                 <hc:Interaction.Triggers>
+                    <!--  单击托盘图标  -->
                     <hc:EventTrigger EventName="Click">
-                        <hc:EventToCommand Command="hc:ControlCommands.PushMainWindow2Top" />
+                        <hc:EventToCommand Command="{Binding CurrentViewShowCommand}" />
+                    </hc:EventTrigger>
+
+                    <!--  双击托盘图标  -->
+                    <hc:EventTrigger EventName="MouseDoubleClick">
+                        <!--<hc:EventToCommand Command="{Binding MouseCmd}" CommandParameter="MouseDoubleClick" />-->
                     </hc:EventTrigger>
                 </hc:Interaction.Triggers>
             </hc:NotifyIcon>

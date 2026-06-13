@@ -1,25 +1,50 @@
 ﻿using Admin.Desktop.View.Reports;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FastReport;
+using HandyControl.Controls;
+using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
 
 namespace Admin.Desktop.ViewModel.Reports
 {
     public partial class ReportPreviewVM : ObservableObject, ITransientDependency
     {
+        private readonly ILogger<ReportPreviewVM> _logger;
+
         [ObservableProperty]
-        private Report report = new Report();
+        public partial Report Report { get; set; } = new Report();
+
+        [ObservableProperty]
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
+
         public ReportPreview Owner { get; private set; } = null!;
 
-        public ReportPreviewVM()
+        public ReportPreviewVM(ILogger<ReportPreviewVM> logger)
         {
+            _logger = logger;
         }
 
-        public void InitialVM(ReportPreview owner, string reportName)
+        public async Task InitialAsync(ReportPreview owner, string reportName)
         {
-            Owner = owner;
-            Report.Load(reportName);
-            Report.PrepareAsync(Owner.previewControl);
+            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            try
+            {
+                await Task.Run(() =>
+                {
+                    Owner = owner;
+                    Report.Load(reportName);
+                    Report.PrepareAsync(Owner.previewControl);
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
         }
     }
 }

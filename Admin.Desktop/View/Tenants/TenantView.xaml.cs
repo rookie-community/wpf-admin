@@ -1,20 +1,21 @@
-﻿using Admin.Desktop.ViewModel.Users;
+﻿using Admin.Desktop.ViewModel.Tenants;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-namespace Admin.Desktop.View.Users
+namespace Admin.Desktop.View.Tenants
 {
     /// <summary>
-    /// UserInfoView.xaml 的交互逻辑
+    /// TenantView.xaml 的交互逻辑
     /// </summary>
-    public partial class UserInfoView : UserControl
+    public partial class TenantView : UserControl
     {
-        private readonly UserInfoVM vm;
-        private bool _isLoaded = false;
-        public UserInfoView()
+        private readonly TenantVM vm;
+        private bool _isLoaded;
+
+        public TenantView()
         {
             InitializeComponent();
-            vm = App.Current.Services.GetService<UserInfoVM>()!;
+            vm = App.Current.Services.GetService<TenantVM>()!;
             Loaded += async (s, e) =>
             {
                 if (_isLoaded)

@@ -13,6 +13,9 @@
     <Project Path="Admin.HttpApi.Client/Admin.HttpApi.Client.csproj" />
     <Project Path="Admin.HttpApi.Host/Admin.HttpApi.Host.csproj" />
     <Project Path="Admin.HttpApi/Admin.HttpApi.csproj" />
+    <Project Path="Admin.MongoDB/Admin.MongoDB.csproj">
+        <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="Admin.Quartz/Admin.Quartz.csproj" />
     <Project Path="Admin.Test/Admin.Test.csproj" />
 </Solution>

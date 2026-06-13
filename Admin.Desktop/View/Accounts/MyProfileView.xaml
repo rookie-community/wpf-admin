@@ -1,0 +1,113 @@
+﻿<UserControl
+    x:Class="Admin.Desktop.View.Accounts.MyProfileView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.View.Accounts"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Accounts"
+    d:DataContext="{d:DesignInstance Type=viewmodel:MyProfileVM}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
+    Background="{DynamicResource RegionBrush}"
+    mc:Ignorable="d">
+    <TabControl TabStripPlacement="Left">
+        <TabItem Header="更改密码">
+            <hc:UniformSpacingPanel
+                Margin="10"
+                Orientation="Vertical"
+                Spacing="10">
+                <hc:PasswordBox
+                    hc:InfoElement.Placeholder="请输入当前密码"
+                    hc:InfoElement.ShowClearButton="True"
+                    hc:InfoElement.Title="当前密码"
+                    hc:InfoElement.TitlePlacement="Top"
+                    IsSafeEnabled="False"
+                    MaxLength="16"
+                    ShowEyeButton="True"
+                    UnsafePassword="{Binding CurrentPassword}" />
+                <hc:PasswordBox
+                    hc:InfoElement.Placeholder="请输入新密码"
+                    hc:InfoElement.ShowClearButton="True"
+                    hc:InfoElement.Title="新密码"
+                    hc:InfoElement.TitlePlacement="Top"
+                    IsSafeEnabled="False"
+                    MaxLength="16"
+                    ShowEyeButton="True"
+                    UnsafePassword="{Binding NewPassword}" />
+                <hc:PasswordBox
+                    hc:InfoElement.Placeholder="请确认新密码"
+                    hc:InfoElement.ShowClearButton="True"
+                    hc:InfoElement.Title="确认新密码"
+                    hc:InfoElement.TitlePlacement="Top"
+                    IsSafeEnabled="False"
+                    MaxLength="16"
+                    ShowEyeButton="True"
+                    UnsafePassword="{Binding ConfirmPassword}" />
+                <hc:UniformSpacingPanel Spacing="10">
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource SaveGeometry}"
+                        Command="{Binding UpdatePasswordCommand}"
+                        Content="确认修改"
+                        Style="{DynamicResource ButtonPrimary}" />
+                </hc:UniformSpacingPanel>
+            </hc:UniformSpacingPanel>
+        </TabItem>
+        <TabItem Header="个人信息">
+            <hc:UniformSpacingPanel
+                Margin="10"
+                Orientation="Vertical"
+                Spacing="10">
+                <hc:TextBox
+                    hc:InfoElement.Necessary="True"
+                    hc:InfoElement.Title="用户名"
+                    hc:InfoElement.TitlePlacement="Top"
+                    MaxLength="20"
+                    Text="{Binding Profile.UserName}" />
+
+                <hc:Row Gutter="10">
+                    <hc:Col Span="12">
+                        <hc:TextBox
+                            hc:InfoElement.Title="名称"
+                            hc:InfoElement.TitlePlacement="Top"
+                            MaxLength="20"
+                            Text="{Binding Profile.Name}" />
+                    </hc:Col>
+                    <hc:Col Span="12">
+                        <hc:TextBox
+                            hc:InfoElement.Title="姓氏"
+                            hc:InfoElement.TitlePlacement="Top"
+                            MaxLength="20"
+                            Text="{Binding Profile.Surname}" />
+                    </hc:Col>
+                </hc:Row>
+
+                <hc:TextBox
+                    hc:InfoElement.Necessary="True"
+                    hc:InfoElement.Title="电子邮件"
+                    hc:InfoElement.TitlePlacement="Top"
+                    MaxLength="30"
+                    Text="{Binding Profile.Email}" />
+                <hc:TextBox
+                    hc:InfoElement.Title="电话号码"
+                    hc:InfoElement.TitlePlacement="Top"
+                    MaxLength="20"
+                    Text="{Binding Profile.PhoneNumber}" />
+                <hc:UniformSpacingPanel Spacing="10">
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource SaveGeometry}"
+                        Command="{Binding UpdateProfileCommand}"
+                        Content="确认修改"
+                        Style="{DynamicResource ButtonPrimary}" />
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource RotateLeftGeometry}"
+                        Command="{Binding ResetProfileCommand}"
+                        Content="重置" />
+                </hc:UniformSpacingPanel>
+            </hc:UniformSpacingPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>

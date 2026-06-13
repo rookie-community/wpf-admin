@@ -12,19 +12,18 @@ namespace Admin.Desktop.ViewModel
 {
     public partial class ConsoleVM : ObservableObject, ITransientDependency
     {
-        [ObservableProperty]
-        private ObservableCollection<LogInfo> logs = new ObservableCollection<LogInfo>();
+        private readonly ILogger<ConsoleVM> _logger;
 
         [ObservableProperty]
-        private string dialogContainerToken = Guid.NewGuid().ToString();
+        public partial ObservableCollection<LogInfo> Logs { get; set; } = new ObservableCollection<LogInfo>();
 
+        [ObservableProperty]
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
         public double[] Values1 { get; set; } =
         [2, 1, 3, 5, 3, 4, 6];
 
         public int[] Values2 { get; set; } =
             [4, 2, 5, 2, 4, 5, 3];
-
-        private readonly ILogger<ConsoleVM> _logger;
 
         public ConsoleView Owner { get; private set; } = null!;
 

@@ -1,21 +1,22 @@
-﻿using Admin.Desktop.ViewModel.Users;
+﻿using Admin.Desktop.ViewModel.Accounts;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-namespace Admin.Desktop.View.Users
+namespace Admin.Desktop.View.Accounts
 {
     /// <summary>
-    /// EditUserPassword.xaml 的交互逻辑
+    /// ManageView.xaml 的交互逻辑
     /// </summary>
-    public partial class EditUserPasswordView : UserControl
+    public partial class MyProfileView : UserControl
     {
-        private readonly EditUserPasswordVM vm;
+        private readonly MyProfileVM vm;
         private bool _isLoaded;
-        public EditUserPasswordView()
+
+        public MyProfileView()
         {
             InitializeComponent();
-            vm = App.Current.Services.GetService<EditUserPasswordVM>()!;
-            Loaded += (s, e) =>
+            vm = App.Current.Services.GetService<MyProfileVM>()!;
+            Loaded += async (s, e) =>
             {
                 if (_isLoaded)
                 {
@@ -23,7 +24,7 @@ namespace Admin.Desktop.View.Users
                     return;
                 }
                 _isLoaded = true;
-                vm.Initial(this);
+                await vm.InitialAsync(this);
             };
             DataContext = vm;
         }

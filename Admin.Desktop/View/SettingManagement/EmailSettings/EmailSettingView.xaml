@@ -1,0 +1,64 @@
+﻿<UserControl
+    x:Class="Admin.Desktop.View.SettingManagement.EmailSettings.EmailSettingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.View.SettingManagement.EmailSettings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.SettingManagement.EmailSettings"
+    d:DataContext="{d:DesignInstance Type=viewmodel:EmailSettingVM}"
+    d:DesignHeight="400"
+    d:DesignWidth="600"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
+    Background="{DynamicResource RegionBrush}"
+    mc:Ignorable="d">
+    <hc:DialogContainer>
+        <hc:UniformSpacingPanel
+            Margin="10"
+            Orientation="Vertical"
+            Spacing="10">
+            <hc:TextBox
+                hc:InfoElement.Necessary="True"
+                hc:InfoElement.Title="默认显示名称"
+                hc:InfoElement.TitlePlacement="Top"
+                IsReadOnly="True"
+                Text="{Binding EmailSettings.DefaultFromDisplayName}" />
+            <hc:TextBox
+                hc:InfoElement.Necessary="True"
+                hc:InfoElement.Title="默认发件人"
+                hc:InfoElement.TitlePlacement="Top"
+                IsReadOnly="True"
+                Text="{Binding EmailSettings.DefaultFromAddress}" />
+            <hc:TextBox
+                hc:InfoElement.Title="主机"
+                hc:InfoElement.TitlePlacement="Top"
+                MaxLength="20"
+                Text="{Binding EmailSettings.SmtpHost}" />
+            <hc:TextBox
+                hc:InfoElement.Title="端口"
+                hc:InfoElement.TitlePlacement="Top"
+                MaxLength="20"
+                Text="{Binding EmailSettings.SmtpPort}" />
+            <CheckBox Content="启用ssl" IsChecked="{Binding EmailSettings.SmtpEnableSsl}" />
+            <CheckBox Content="使用默认凭据" IsChecked="{Binding EmailSettings.SmtpUseDefaultCredentials}" />
+            <hc:Divider />
+            <hc:UniformSpacingPanel Spacing="10">
+                <Button Command="{Binding SendTestEmailCommand}" Style="{StaticResource ButtonDashedPrimary}">
+                    <hc:UniformSpacingPanel Spacing="4">
+                        <TextBlock
+                            Padding="2"
+                            FontFamily="{StaticResource FA_Regular}"
+                            Text="&#xf1d8;" />
+                        <TextBlock Text="发送测试邮件" />
+                    </hc:UniformSpacingPanel>
+                </Button>
+                <Button
+                    hc:IconElement.Geometry="{StaticResource SaveGeometry}"
+                    Command="{Binding SubmitCommand}"
+                    Content="保存"
+                    Style="{DynamicResource ButtonPrimary}" />
+            </hc:UniformSpacingPanel>
+        </hc:UniformSpacingPanel>
+    </hc:DialogContainer>
+</UserControl>
