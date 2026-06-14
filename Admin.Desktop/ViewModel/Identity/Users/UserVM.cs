@@ -1,4 +1,5 @@
-﻿using Admin.Desktop.View.Users;
+﻿using Admin.Desktop.View.Identity.Users;
+using Admin.Desktop.View.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -96,7 +97,13 @@ namespace Admin.Desktop.ViewModel.Users
         {
             try
             {
-                await SearchCommand.ExecuteAsync(null);
+                var view = new UserAddView();
+                var result = view.ShowDialog();
+                if (result == true)
+                {
+                    Growl.Success("新增成功");
+                    await SearchCommand.ExecuteAsync(null);
+                }
             }
             catch (Exception ex)
             {
@@ -110,7 +117,13 @@ namespace Admin.Desktop.ViewModel.Users
         {
             try
             {
-                await SearchCommand.ExecuteAsync(null);
+                var view = new UserEditView(user.Id);
+                var result = view.ShowDialog();
+                if (result == true)
+                {
+                    Growl.Success("更新成功");
+                    await SearchCommand.ExecuteAsync(null);
+                }
             }
             catch (Exception ex)
             {

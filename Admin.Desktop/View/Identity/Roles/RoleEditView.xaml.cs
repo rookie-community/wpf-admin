@@ -1,0 +1,24 @@
+﻿using Admin.Desktop.ViewModel.Identity.Roles;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
+
+namespace Admin.Desktop.View.Identity.Roles
+{
+    /// <summary>
+    /// RoleEditView.xaml 的交互逻辑
+    /// </summary>
+    public partial class RoleEditView : Window
+    {
+        private readonly RoleEditVM vm;
+        public RoleEditView(Guid roleId)
+        {
+            InitializeComponent();
+            vm = App.Current.Services.GetService<RoleEditVM>()!;
+            Loaded += (s, e) =>
+            {
+                vm.InitialAsync(this, roleId);
+            };
+            DataContext = vm;
+        }
+    }
+}
