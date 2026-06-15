@@ -67,13 +67,6 @@
                     Content="新增"
                     Style="{StaticResource ButtonDefault}"
                     Visibility="{Binding Buttons[Create]}" />
-                <Button
-                    hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                    Command="{Binding BatchDeleteCommand}"
-                    CommandParameter="{Binding ElementName=DG, Path=SelectedItems}"
-                    Content="批量删除"
-                    Style="{StaticResource ButtonDanger}"
-                    Visibility="{Binding Buttons[BatchDelete]}" />
             </hc:UniformSpacingPanel>
         </ToolBar>
         <hc:DialogContainer Grid.Row="2">
@@ -91,7 +84,7 @@
                     AutoGenerateColumns="False"
                     HeadersVisibility="All"
                     IsReadOnly="True"
-                    ItemsSource="{Binding Users}"
+                    ItemsSource="{Binding Tenants}"
                     RowHeaderWidth="60"
                     Style="{StaticResource DataGrid.Small}">
                     <DataGrid.RowHeaderTemplate>
@@ -104,7 +97,7 @@
                             Binding="{Binding Id}"
                             Header="Id"
                             Visibility="Hidden" />
-                        <DataGridTextColumn Binding="{Binding UserName}" Header="租户名称" />
+                        <DataGridTextColumn Binding="{Binding Name}" Header="租户名称" />
                         <DataGridTemplateColumn Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -118,10 +111,10 @@
                                             Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                         <Button
                                             hc:IconElement.Geometry="{StaticResource DropperGeometry}"
-                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.ManageFeatureCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             Content="功能"
-                                            Style="{StaticResource ButtonDefault.Small}"
+                                            Style="{StaticResource ButtonInfo.Small}"
                                             Visibility="{Binding Path=DataContext.BtnPairs[EditBtn], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                         <Button
                                             hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"

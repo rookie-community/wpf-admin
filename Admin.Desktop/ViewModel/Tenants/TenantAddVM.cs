@@ -1,40 +1,39 @@
-﻿using Admin.Desktop.View.Identity.Roles;
+﻿using Admin.Desktop.View.Tenants;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
-using Volo.Abp.Identity;
+using Volo.Abp.TenantManagement;
 
-namespace Admin.Desktop.ViewModel.Identity.Roles
+namespace Admin.Desktop.ViewModel.Tenants
 {
-    public partial class RoleAddVM : ObservableObject, ITransientDependency
+    public partial class TenantAddVM : ObservableObject, ITransientDependency
     {
-        private readonly IIdentityRoleAppService _identityRoleAppService;
-        private readonly ILogger<RoleAddVM> _logger;
+        private readonly ITenantAppService _tenantAppService;
+        private readonly ILogger<TenantAddVM> _logger;
 
         [ObservableProperty]
-        public partial string Name { get; set; } = string.Empty;
+        public partial string Name { get; set; } = null!;
 
         [ObservableProperty]
-        public partial bool IsDefault { get; set; }
+        public partial string Email { get; set; } = null!;
 
         [ObservableProperty]
-        public partial bool IsPublic { get; set; }
+        public partial string Password { get; set; } = null!;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
+        public TenantAddView Owner { get; private set; } = null!;
 
-        public RoleAddView Owner { get; private set; } = null!;
-
-        public RoleAddVM(IIdentityRoleAppService identityRoleAppService, ILogger<RoleAddVM> logger)
+        public TenantAddVM(ITenantAppService tenantAppService, ILogger<TenantAddVM> logger)
         {
-            _identityRoleAppService = identityRoleAppService;
+            _tenantAppService = tenantAppService;
             _logger = logger;
         }
 
-        internal void Initial(RoleAddView owner)
+        internal void Initial(TenantAddView owner)
         {
             Owner = owner;
         }
@@ -45,11 +44,11 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _identityRoleAppService.CreateAsync(new IdentityRoleCreateDto
+                var result = await _tenantAppService.CreateAsync(new TenantCreateDto
                 {
                     Name = Name,
-                    IsDefault = IsDefault,
-                    IsPublic = IsPublic,
+                    AdminEmailAddress = Email,
+                    AdminPassword = Password,
                 });
                 Owner.DialogResult = true;
                 Owner.Close();

@@ -34,7 +34,7 @@
                 <hc:Shield
                     HorizontalAlignment="Stretch"
                     Status="{Binding Version}"
-                    Subject="版本"
+                    Subject="{ex:Lang Key={x:Static langs:LangKeys.Version}}"
                     Color="#1182c3" />
             </hc:UniformSpacingPanel>
 

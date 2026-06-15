@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
+using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
@@ -46,7 +47,6 @@ namespace Admin.Desktop.ViewModel.Identity.Users
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
 
         public UserAddView Owner { get; private set; } = null!;
-
 
         public UserAddVM(IIdentityUserAppService identityUserAppService, ILogger<UserAddVM> logger)
         {

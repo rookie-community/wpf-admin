@@ -3,14 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 
 namespace Admin.Desktop.ViewModel.Identity.Roles
 {
@@ -69,7 +64,7 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _identityRoleAppService.UpdateAsync(Guid.Empty, new IdentityRoleUpdateDto
+                var result = await _identityRoleAppService.UpdateAsync(_roleId, new IdentityRoleUpdateDto
                 {
                     Name = Name,
                     IsDefault = IsDefault,

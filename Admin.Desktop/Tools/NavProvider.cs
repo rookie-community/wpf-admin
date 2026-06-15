@@ -1,7 +1,7 @@
 ﻿using Admin.Commons;
 using Admin.Desktop.View;
+using Admin.Desktop.View.Permissions;
 using Admin.Desktop.View.Reports;
-using Admin.Desktop.View.Roles;
 using Admin.Desktop.View.SettingManagement.EmailSettings;
 using Admin.Desktop.View.Tenants;
 using Admin.Desktop.View.Users;
@@ -51,20 +51,20 @@ namespace Admin.Desktop.Tools
                     new NavDto
                     {
                         Id = Guid.NewGuid(),
-                        Icon = "\xf007",
-                        Name = "用户管理",
-                        Type = NavType.UserControl,
-                        PermissionName = IdentityPermissions.Users.Default,
-                        Content = typeof(UserView).FullName,
-                    },
-                    new NavDto
-                    {
-                        Id = Guid.NewGuid(),
                         Icon = "\xf2b9",
                         Name = "角色管理",
                         Type = NavType.UserControl,
                         PermissionName = IdentityPermissions.Roles.Default,
                         Content = typeof(RoleView).FullName,
+                    },
+                    new NavDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Icon = "\xf007",
+                        Name = "用户管理",
+                        Type = NavType.UserControl,
+                        PermissionName = IdentityPermissions.Users.Default,
+                        Content = typeof(UserView).FullName,
                     },
                     new NavDto
                     {

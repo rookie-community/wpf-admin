@@ -1,0 +1,71 @@
+﻿<Window
+    x:Class="Admin.Desktop.View.Permissions.PermissionEditView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Admin.Desktop.View.Permissions"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Permissions"
+    Title="权限配置"
+    Width="600"
+    Height="400"
+    d:DataContext="{d:DesignInstance Type=viewmodel:PermissionEditVM}"
+    hc:Dialog.Token="{Binding DialogContainerToken}"
+    Background="{DynamicResource RegionBrush}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <hc:DialogContainer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+
+            <TabControl
+                Grid.Row="0"
+                Margin="5"
+                ItemsSource="{Binding PermissionGroups}"
+                SelectedIndex="0"
+                TabStripPlacement="Left">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayName}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <TreeView ItemsSource="{Binding Permissions}">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate>
+                                    <CheckBox
+                                        Content="{Binding DisplayName}"
+                                        IsChecked="{Binding IsGranted}"
+                                        IsEnabled="{Binding IsEditable}" />
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+
+            <hc:UniformSpacingPanel
+                Grid.Row="1"
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal"
+                Spacing="10">
+                <Button
+                    hc:IconElement.Geometry="{StaticResource SaveGeometry}"
+                    Command="{Binding SaveCommand}"
+                    Content="保存"
+                    Style="{StaticResource ButtonPrimary}" />
+                <Button
+                    hc:IconElement.Geometry="{StaticResource CloseGeometry}"
+                    Command="{Binding CancelCommand}"
+                    Content="取消"
+                    Style="{StaticResource ButtonDefault}" />
+            </hc:UniformSpacingPanel>
+        </Grid>
+    </hc:DialogContainer>
+</Window>

@@ -64,6 +64,7 @@ namespace Admin.Desktop.ViewModel.Accounts
                     CurrentPassword = CurrentPassword,
                     NewPassword = NewPassword,
                 });
+                Growl.Success("更新成功");
             }
             catch (Exception ex)
             {
@@ -90,6 +91,7 @@ namespace Admin.Desktop.ViewModel.Accounts
                     Email = Profile.Email,
                     PhoneNumber = Profile.PhoneNumber,
                 });
+                Growl.Success("更新成功");
             }
             catch (Exception ex)
             {

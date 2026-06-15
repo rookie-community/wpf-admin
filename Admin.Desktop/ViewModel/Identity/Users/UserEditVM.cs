@@ -99,6 +99,7 @@ namespace Admin.Desktop.ViewModel.Identity.Users
                     Password = CurrentPassword,
                     Email = User.Email,
                     PhoneNumber = User.PhoneNumber,
+                    IsActive = User.IsActive,
                     LockoutEnabled = User.LockoutEnabled,
                     RoleNames = roleNames,
                 });

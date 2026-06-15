@@ -1,8 +1,8 @@
-﻿using Admin.Desktop.ViewModel.Roles;
+﻿using Admin.Desktop.ViewModel.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-namespace Admin.Desktop.View.Roles
+namespace Admin.Desktop.View.Permissions
 {
     /// <summary>
     /// RoleView.xaml 的交互逻辑

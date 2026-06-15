@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Duende.IdentityModel.Client;
 using FastReport.Utils;
+using HandyControl.Controls;
 using HandyControl.Tools;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
@@ -50,6 +51,9 @@ namespace Admin.Desktop.ViewModel.Accounts
         public partial string CurrentLang { get; set; } = LangProvider.Culture.Name;
 
         [ObservableProperty]
+        public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
+
+        [ObservableProperty]
         public partial bool IsUploading { get; set; }
 
         public Login Owner { get; private set; } = null!;
@@ -82,6 +86,7 @@ namespace Admin.Desktop.ViewModel.Accounts
         private async Task SubmitAsync()
         {
             IsUploading = true;
+            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
                 ValidateAllProperties();
@@ -109,7 +114,7 @@ namespace Admin.Desktop.ViewModel.Accounts
                     UserName = UserName,
                     Password = Password,
                     //offline_access - 请求长期访问权限
-                    Scope = "Admin"// offline_access" //"YourApp"
+                    Scope = "Admin offline_access" //"YourApp"
                 };
 
                 var tokenResponse = await httpClient.RequestPasswordTokenAsync(tokenRequest);
@@ -145,6 +150,7 @@ namespace Admin.Desktop.ViewModel.Accounts
             finally
             {
                 IsUploading = false;
+                loadDialog.Close();
             }
         }
 

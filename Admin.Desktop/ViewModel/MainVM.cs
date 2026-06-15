@@ -22,6 +22,8 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Identity;
+using Volo.Abp.PermissionManagement;
 using MessageBox = HandyControl.Controls.MessageBox;
 using TabItem = HandyControl.Controls.TabItem;
 
@@ -30,6 +32,7 @@ namespace Admin.Desktop.ViewModel
     public partial class MainVM : ObservableRecipient, ITransientDependency
     {
         private readonly string TitalPrefix = "Admin";
+        private readonly IPermissionAppService _permissionAppService;
         private readonly ILogger<MainVM> _logger;
 
         [ObservableProperty]
@@ -53,8 +56,9 @@ namespace Admin.Desktop.ViewModel
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
         public MainWindow Owner { get; private set; } = null!;
 
-        public MainVM(ILogger<MainVM> logger)
+        public MainVM(IPermissionAppService permissionAppService, ILogger<MainVM> logger)
         {
+            _permissionAppService = permissionAppService;
             _logger = logger;
         }
 
@@ -66,15 +70,14 @@ namespace Admin.Desktop.ViewModel
                 Owner = owner;
                 UserName = App.CurrentUser.UserName;
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
-                await Task.Run(() =>
+
+                var navs = await BuiderNavItems("U", UserName);
+                NavItems = new ObservableCollection<NavDto>(navs);
+                var home = NavItems.FirstOrDefault(x => x.Type != NavType.Group);
+                if (home != null)
                 {
-                    NavItems = BuiderNavItems();
-                    var home = NavItems.FirstOrDefault(x => x.Type != NavType.Group);
-                    if (home != null)
-                    {
-                        SetCurrentTabItem(home);
-                    }
-                });
+                    SetCurrentTabItem(home);
+                }
             }
             catch (Exception ex)
             {
@@ -196,15 +199,15 @@ namespace Admin.Desktop.ViewModel
             Owner = null!;
         }
 
-        private ObservableCollection<NavDto> BuiderNavItems()
+        private async Task<List<NavDto>> BuiderNavItems(string providerName, string providerKey)
         {
             var allNavItems = NavProvider.GetNavConfigs();
-            //根据用户权限过滤菜单，待完善
-            //var permissionResult = permissionApplicationService.GetPermissionDefinitions().GetAwaiter().GetResult();
-            //var permissionNames = new List<string>();
-            //var navItems = FilterPermissionTree(allNavItems, node => string.IsNullOrEmpty(node.PermissionName) || permissionNames.Contains(node.PermissionName));
-            var navItems = FilterPermissionTree(allNavItems, node => true);
-            return new ObservableCollection<NavDto>(navItems);
+            //根据用户权限过滤菜单
+            var permissionResult = await _permissionAppService.GetAsync(providerName, providerKey);
+            //var permissionResult2 = await _permissionAppService.GetByGroupAsync(IdentityPermissions.GroupName,providerName, providerKey);
+            var permissionNames = permissionResult.Groups.SelectMany(x => x.Permissions).Select(x => x.Name).ToList();
+            var navItems = FilterPermissionTree(allNavItems, node => string.IsNullOrEmpty(node.PermissionName) || permissionNames.Contains(node.PermissionName));
+            return navItems;
         }
 
         public static List<NavDto> FilterPermissionTree(IReadOnlyList<NavDto> nodes, Func<NavDto, bool> condition)

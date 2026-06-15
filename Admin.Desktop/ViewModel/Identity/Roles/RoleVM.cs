@@ -1,5 +1,5 @@
 ﻿using Admin.Desktop.View.Identity.Roles;
-using Admin.Desktop.View.Roles;
+using Admin.Desktop.View.Permissions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
@@ -12,7 +12,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.Validation;
 using MessageBox = HandyControl.Controls.MessageBox;
 
-namespace Admin.Desktop.ViewModel.Roles
+namespace Admin.Desktop.ViewModel.Permissions
 {
     public partial class RoleVM : ObservableObject, ITransientDependency
     {
@@ -133,14 +133,13 @@ namespace Admin.Desktop.ViewModel.Roles
         [RelayCommand]
         private void EditPerm(IdentityRoleDto role)
         {
-            var view = new EditRolePermissionView(role.Id);
+            var view = new PermissionEditView("R", role.Name);
             var result = view.ShowDialog();
             if (result == true)
             {
-                MessageBox.Success("更新权限成功");
+                Growl.Success("更新权限成功");
             }
         }
-
 
         [RelayCommand]
         private async Task Delete(IdentityRoleDto role)

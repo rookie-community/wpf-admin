@@ -79,6 +79,52 @@ namespace Admin.Desktop.ViewModel.Tenants
         }
 
         [RelayCommand]
+        private async Task AddAsync()
+        {
+            try
+            {
+                var view = new TenantAddView();
+                var result = view.ShowDialog();
+                if (result == true)
+                {
+                    Growl.Success("新增成功");
+                    await SearchCommand.ExecuteAsync(null);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+        }
+
+        [RelayCommand]
+        private async Task EditAsync(TenantDto tenant)
+        {
+            try
+            {
+                var view = new TenantEditView(tenant.Id);
+                var result = view.ShowDialog();
+                if (result == true)
+                {
+                    Growl.Success("更新成功");
+                    await SearchCommand.ExecuteAsync(null);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+        }
+
+        [RelayCommand]
+        private void ManageFeature()
+        {
+            MessageBox.Warning("暂未开放");
+        }
+
+        [RelayCommand]
         private void Reset()
         {
             Name = string.Empty;

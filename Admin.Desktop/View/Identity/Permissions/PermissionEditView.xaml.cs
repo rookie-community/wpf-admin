@@ -1,20 +1,20 @@
-﻿using Admin.Desktop.ViewModel.Roles;
+﻿using Admin.Desktop.ViewModel.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
-namespace Admin.Desktop.View.Roles
+namespace Admin.Desktop.View.Permissions
 {
     /// <summary>
-    /// EditRolePermissionView.xaml 的交互逻辑
+    /// RolePermissionEditView.xaml 的交互逻辑
     /// </summary>
-    public partial class EditRolePermissionView : Window
+    public partial class PermissionEditView : Window
     {
-        private readonly EditRolePermissionVM vm;
+        private readonly PermissionEditVM vm;
         private bool _isLoaded = false;
-        public EditRolePermissionView(Guid roleId)
+        public PermissionEditView(string providerName, string providerKey)
         {
             InitializeComponent();
-            vm = App.Current.Services.GetService<EditRolePermissionVM>()!;
+            vm = App.Current.Services.GetService<PermissionEditVM>()!;
             Loaded += async (s, e) =>
             {
                 if (_isLoaded)
@@ -23,7 +23,7 @@ namespace Admin.Desktop.View.Roles
                     return;
                 }
                 _isLoaded = true;
-                await vm.InitialAsync(this, roleId);
+                await vm.InitialAsync(this, providerName, providerKey);
             };
             DataContext = vm;
         }

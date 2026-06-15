@@ -1,42 +1,52 @@
-﻿using Admin.Desktop.View.Identity.Roles;
+﻿using Admin.Desktop.View.Tenants;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
-using Volo.Abp.Identity;
+using Volo.Abp.TenantManagement;
 
-namespace Admin.Desktop.ViewModel.Identity.Roles
+namespace Admin.Desktop.ViewModel.Tenants
 {
-    public partial class RoleAddVM : ObservableObject, ITransientDependency
+    public partial class TenantEditVM : ObservableObject, ITransientDependency
     {
-        private readonly IIdentityRoleAppService _identityRoleAppService;
-        private readonly ILogger<RoleAddVM> _logger;
+        private readonly ITenantAppService _tenantAppService;
+        private readonly ILogger<TenantEditVM> _logger;
+        private Guid _tenantId;
 
         [ObservableProperty]
-        public partial string Name { get; set; } = string.Empty;
-
-        [ObservableProperty]
-        public partial bool IsDefault { get; set; }
-
-        [ObservableProperty]
-        public partial bool IsPublic { get; set; }
+        public partial string Name { get; set; } = null!;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
+        public TenantEditView Owner { get; private set; } = null!;
 
-        public RoleAddView Owner { get; private set; } = null!;
-
-        public RoleAddVM(IIdentityRoleAppService identityRoleAppService, ILogger<RoleAddVM> logger)
+        public TenantEditVM(ITenantAppService tenantAppService, ILogger<TenantEditVM> logger)
         {
-            _identityRoleAppService = identityRoleAppService;
+            _tenantAppService = tenantAppService;
             _logger = logger;
         }
 
-        internal void Initial(RoleAddView owner)
+        internal async Task InitialAsync(TenantEditView owner, Guid tenantId)
         {
-            Owner = owner;
+            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            try
+            {
+                Owner = owner;
+                _tenantId = tenantId;
+                var result = await _tenantAppService.GetAsync(tenantId);
+                Name = result.Name;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
         }
 
         [RelayCommand]
@@ -45,11 +55,9 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
             var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
             try
             {
-                var result = await _identityRoleAppService.CreateAsync(new IdentityRoleCreateDto
+                var result = await _tenantAppService.UpdateAsync(_tenantId, new TenantUpdateDto
                 {
                     Name = Name,
-                    IsDefault = IsDefault,
-                    IsPublic = IsPublic,
                 });
                 Owner.DialogResult = true;
                 Owner.Close();
