@@ -44,7 +44,7 @@ namespace Admin.Desktop.ViewModel.Identity.Users
 
         internal async Task InitialAsync(UserEditView owner, Guid userId)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -87,7 +87,7 @@ namespace Admin.Desktop.ViewModel.Identity.Users
         [RelayCommand]
         private async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var roleNames = Roles.Where(x => x.IsDefault).Select(x => x.Name).ToArray();

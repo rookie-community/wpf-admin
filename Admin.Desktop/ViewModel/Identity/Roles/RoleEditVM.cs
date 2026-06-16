@@ -37,7 +37,7 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
 
         internal async Task InitialAsync(RoleEditView owner, Guid roleId)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -61,7 +61,7 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
         [RelayCommand]
         private async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var result = await _identityRoleAppService.UpdateAsync(_roleId, new IdentityRoleUpdateDto

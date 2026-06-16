@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Permissions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Permissions"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Permissions"
     Title="权限配置"
     Width="600"
     Height="400"
@@ -36,8 +36,13 @@
                 <TabControl.ContentTemplate>
                     <DataTemplate>
                         <TreeView ItemsSource="{Binding Permissions}">
+                            <TreeView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource TreeViewItemBaseStyle}" TargetType="TreeViewItem">
+                                    <Setter Property="IsExpanded" Value="True" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
-                                <HierarchicalDataTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <CheckBox
                                         Content="{Binding DisplayName}"
                                         IsChecked="{Binding IsGranted}"

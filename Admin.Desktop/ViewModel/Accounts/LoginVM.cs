@@ -17,6 +17,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Reflection;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
 using MessageBox = HandyControl.Controls.MessageBox;
 
@@ -86,7 +87,7 @@ namespace Admin.Desktop.ViewModel.Accounts
         private async Task SubmitAsync()
         {
             IsUploading = true;
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 ValidateAllProperties();
@@ -141,6 +142,11 @@ namespace Admin.Desktop.ViewModel.Accounts
                 var view = new MainWindow();
                 view.Show();
                 Owner.Close();
+            }
+            catch (AbpRemoteCallException abpRemoteCallException)
+            {
+                _logger.LogException(abpRemoteCallException);
+                MessageBox.Error(abpRemoteCallException.Details, abpRemoteCallException.Message);
             }
             catch (Exception ex)
             {

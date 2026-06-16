@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Identity.Users"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Identity.Users"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Identity.Users"
     Title="编辑"
     Width="500"
     Height="520"

@@ -7,7 +7,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Reports"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Reports"
     d:DataContext="{d:DesignInstance Type=viewmodel:ReportDesignVM}"
     hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"

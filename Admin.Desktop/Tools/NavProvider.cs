@@ -1,5 +1,8 @@
 ﻿using Admin.Commons;
+using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.View;
+using Admin.Desktop.View.AuditLogs;
+using Admin.Desktop.View.Identity.OrganizationUnits;
 using Admin.Desktop.View.Permissions;
 using Admin.Desktop.View.Reports;
 using Admin.Desktop.View.SettingManagement.EmailSettings;
@@ -20,6 +23,7 @@ namespace Admin.Desktop.Tools
                 GetHomeGroup(),
                 GetReportGroup(),
                 GetSystemGroup(),
+                GetAuditLogGroup(),
                 GetAbourGroup()
             };
             return menus;
@@ -48,6 +52,15 @@ namespace Admin.Desktop.Tools
                 PermissionName = IdentityPermissions.GroupName,
                 Items = new List<NavDto>
                 {
+                    new NavDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Icon = "\xe4d5",
+                        Name = "组织机构",
+                        Type = NavType.UserControl,
+                        PermissionName = string.Empty,
+                        Content = typeof(OrganizationUnitView).FullName,
+                    },
                     new NavDto
                     {
                         Id = Guid.NewGuid(),
@@ -100,13 +113,25 @@ namespace Admin.Desktop.Tools
             };
         }
 
+        private static NavDto GetAuditLogGroup()
+        {
+            return new NavDto
+            {
+                Id = Guid.NewGuid(),
+                Icon = "\xf46d",
+                Name = "审计日志",
+                Type = NavType.UserControl,
+                Content = typeof(AuditLogView).FullName
+            };
+        }
+
         private static NavDto GetAbourGroup()
         {
             return new NavDto
             {
                 Id = Guid.NewGuid(),
                 Icon = "\xf05a",
-                Name = "关于",
+                Name = Lang.About,
                 Type = NavType.Url,
                 Content = "https://gitee.com/tzm2270969436",
             };

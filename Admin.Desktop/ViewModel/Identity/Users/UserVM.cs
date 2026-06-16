@@ -61,7 +61,7 @@ namespace Admin.Desktop.ViewModel.Users
 
         internal async Task InitialAsync(UserView owner)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -91,7 +91,7 @@ namespace Admin.Desktop.ViewModel.Users
         [RelayCommand]
         private async Task SearchAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 await LoadDataAsync();
@@ -234,7 +234,6 @@ namespace Admin.Desktop.ViewModel.Users
         [RelayCommand]
         private async Task PageChangedAsync(Tuple<int, int> pageArgs)
         {
-            MessageBox.Show($"{pageArgs.Item1}_{pageArgs.Item2}");
             PageIndex = pageArgs.Item1;
             PageSize = pageArgs.Item2;
             await SearchCommand.ExecuteAsync(null);

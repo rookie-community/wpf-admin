@@ -30,7 +30,7 @@ namespace Admin.Desktop.ViewModel.Tenants
 
         internal async Task InitialAsync(TenantEditView owner, Guid tenantId)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -52,7 +52,7 @@ namespace Admin.Desktop.ViewModel.Tenants
         [RelayCommand]
         private async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var result = await _tenantAppService.UpdateAsync(_tenantId, new TenantUpdateDto

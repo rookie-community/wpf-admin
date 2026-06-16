@@ -26,7 +26,7 @@ namespace Admin.Desktop.ViewModel.Reports
 
         public async Task InitialAsync(ReportPreview owner, string reportName)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 await Task.Run(() =>

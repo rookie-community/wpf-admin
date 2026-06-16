@@ -1,10 +1,10 @@
 ﻿using Admin.Desktop.View.Permissions;
+using Admin.Permissions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.PermissionManagement;
@@ -19,7 +19,7 @@ namespace Admin.Desktop.ViewModel.Permissions
         private string _providerKey = string.Empty;
 
         [ObservableProperty]
-        public partial ObservableCollection<PermissionGroupDto> PermissionGroups { get; set; } = new ObservableCollection<PermissionGroupDto>();
+        public partial ObservableCollection<PermissionGroupTreeDto> PermissionGroups { get; set; } = new ObservableCollection<PermissionGroupTreeDto>();
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
@@ -34,15 +34,18 @@ namespace Admin.Desktop.ViewModel.Permissions
 
         internal async Task InitialAsync(PermissionEditView owner, string providerName, string providerKey)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
                 _providerName = providerName;
                 _providerKey = providerKey;
+                //获取扁平权限分组
                 var result = await _permissionAppService.GetAsync(providerName, providerKey);
-                var groups = result.Groups;
-                PermissionGroups = new ObservableCollection<PermissionGroupDto>(groups);
+                var flatGroups = result.Groups;
+                // 转换为树形结构
+                var treeResult = PermissionTreeConverter.ConvertToTree(flatGroups);
+                PermissionGroups = new ObservableCollection<PermissionGroupTreeDto>(treeResult);
             }
             catch (Exception ex)
             {
@@ -58,10 +61,11 @@ namespace Admin.Desktop.ViewModel.Permissions
         [RelayCommand]
         public async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
-                var permissions = PermissionGroups.SelectMany(x => x.Permissions).Select(x => new UpdatePermissionDto
+                var permissionDtos = PermissionTreeConverter.ToFlatPermissionList(PermissionGroups.ToList());
+                var permissions = permissionDtos.Select(x => new UpdatePermissionDto
                 {
                     Name = x.Name,
                     IsGranted = x.IsGranted,

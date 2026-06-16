@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
 using Volo.Abp.PermissionManagement;
 using MessageBox = HandyControl.Controls.MessageBox;
@@ -33,6 +34,7 @@ namespace Admin.Desktop.ViewModel
     {
         private readonly string TitalPrefix = "Admin";
         private readonly IPermissionAppService _permissionAppService;
+        private readonly IIdentityUserAppService _identityUserAppService;
         private readonly ILogger<MainVM> _logger;
 
         [ObservableProperty]
@@ -56,22 +58,23 @@ namespace Admin.Desktop.ViewModel
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
         public MainWindow Owner { get; private set; } = null!;
 
-        public MainVM(IPermissionAppService permissionAppService, ILogger<MainVM> logger)
+        public MainVM(IPermissionAppService permissionAppService, IIdentityUserAppService identityUserAppService, ILogger<MainVM> logger)
         {
             _permissionAppService = permissionAppService;
+            _identityUserAppService = identityUserAppService;
             _logger = logger;
         }
 
         public async Task InitialAsync(MainWindow owner)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
                 UserName = App.CurrentUser.UserName;
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
 
-                var navs = await BuiderNavItems("U", UserName);
+                var navs = await BuiderNavItems();
                 NavItems = new ObservableCollection<NavDto>(navs);
                 var home = NavItems.FirstOrDefault(x => x.Type != NavType.Group);
                 if (home != null)
@@ -199,13 +202,37 @@ namespace Admin.Desktop.ViewModel
             Owner = null!;
         }
 
-        private async Task<List<NavDto>> BuiderNavItems(string providerName, string providerKey)
+        private async Task<List<NavDto>> BuiderNavItems()//(string providerName, string providerKey)
         {
             var allNavItems = NavProvider.GetNavConfigs();
-            //根据用户权限过滤菜单
-            var permissionResult = await _permissionAppService.GetAsync(providerName, providerKey);
+            var permissions = new List<PermissionGrantInfoDto>();
+            try
+            {
+                //根据用户权限过滤菜单
+                var userPermissionResult = await _permissionAppService.GetAsync("U", UserName);
+                permissions = userPermissionResult.Groups.SelectMany(x => x.Permissions).ToList();
+                var rolesResult = await _identityUserAppService.GetRolesAsync(App.CurrentUser.Id);
+                foreach (var role in rolesResult.Items)
+                {
+                    var permissionResult = await _permissionAppService.GetAsync("R", role.Name);
+                    var data = permissionResult.Groups.SelectMany(x => x.Permissions).ToList();
+                    permissions.AddRange(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                if (ex is AbpRemoteCallException abpRemoteCallException && !string.IsNullOrEmpty(abpRemoteCallException.Details))
+                {
+                    Growl.Warning(abpRemoteCallException.Details);
+                }
+                else
+                {
+                    Growl.Warning(ex.Message);
+                }
+            }
             //var permissionResult2 = await _permissionAppService.GetByGroupAsync(IdentityPermissions.GroupName,providerName, providerKey);
-            var permissionNames = permissionResult.Groups.SelectMany(x => x.Permissions).Select(x => x.Name).ToList();
+            var permissionNames = permissions.Where(x => x.IsGranted).DistinctBy(x => x.Name).Select(x => x.Name).ToList();
             var navItems = FilterPermissionTree(allNavItems, node => string.IsNullOrEmpty(node.PermissionName) || permissionNames.Contains(node.PermissionName));
             return navItems;
         }

@@ -50,7 +50,7 @@ namespace Admin.Desktop.ViewModel.Tenants
         [RelayCommand]
         private async Task SearchAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var result = await _tenantAppService.GetListAsync(new GetTenantsInput

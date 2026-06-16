@@ -27,7 +27,7 @@ namespace Admin.Desktop.ViewModel.Reports
 
         public async Task InitialAsync(ReportDesign owner, string? fileName = null)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;

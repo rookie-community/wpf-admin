@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
-using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Identity;
@@ -56,7 +55,7 @@ namespace Admin.Desktop.ViewModel.Identity.Users
 
         internal async Task InitialAsync(UserAddView owner)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -77,7 +76,7 @@ namespace Admin.Desktop.ViewModel.Identity.Users
         [RelayCommand]
         private async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var roleNames = Roles.Where(x => x.IsDefault).Select(x => x.Name).ToArray();

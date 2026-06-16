@@ -42,7 +42,7 @@ namespace Admin.Desktop.ViewModel.Identity.Roles
         [RelayCommand]
         private async Task SaveAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 var result = await _identityRoleAppService.CreateAsync(new IdentityRoleCreateDto

@@ -42,7 +42,7 @@ namespace Admin.Desktop.ViewModel.SettingManagement.EmailSettings
         [RelayCommand]
         public async Task SubmitAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 await _emailSettingsAppService.SendTestEmailAsync(EmailInput);

@@ -51,7 +51,7 @@ namespace Admin.Desktop.ViewModel.Accounts
         [RelayCommand]
         private async Task UpdatePasswordAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 ValidateAllProperties();
@@ -80,7 +80,7 @@ namespace Admin.Desktop.ViewModel.Accounts
         [RelayCommand]
         private async Task UpdateProfile()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 await _profileAppService.UpdateAsync(new UpdateProfileDto
@@ -112,7 +112,7 @@ namespace Admin.Desktop.ViewModel.Accounts
 
         private async Task LoadProfileAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Profile = await _profileAppService.GetAsync();

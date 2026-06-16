@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Identity.Roles"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Identity.Roles"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Identity.Roles"
     Title="新增角色"
     Width="300"
     Height="220"

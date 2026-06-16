@@ -30,7 +30,7 @@ namespace Admin.Desktop.ViewModel.SettingManagement.EmailSettings
 
         internal async Task InitialAsync(EmailSettingView owner)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
@@ -62,7 +62,7 @@ namespace Admin.Desktop.ViewModel.SettingManagement.EmailSettings
         [RelayCommand]
         public async Task SubmitAsync()
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 await _emailSettingsAppService.UpdateAsync(new UpdateEmailSettingsDto
@@ -73,6 +73,9 @@ namespace Admin.Desktop.ViewModel.SettingManagement.EmailSettings
                     SmtpPort = EmailSettings.SmtpPort,
                     SmtpEnableSsl = EmailSettings.SmtpEnableSsl,
                     SmtpUseDefaultCredentials = EmailSettings.SmtpUseDefaultCredentials,
+                    SmtpDomain = EmailSettings.SmtpDomain,
+                    SmtpUserName = EmailSettings.SmtpUserName,
+                    SmtpPassword = EmailSettings.SmtpPassword,
                 });
             }
             catch (Exception ex)

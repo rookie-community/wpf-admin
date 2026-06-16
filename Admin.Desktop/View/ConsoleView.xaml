@@ -8,7 +8,7 @@
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.View"
     d:DataContext="{d:DesignInstance Type=viewmodel:ConsoleVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"

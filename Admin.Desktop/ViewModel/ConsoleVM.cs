@@ -34,7 +34,7 @@ namespace Admin.Desktop.ViewModel
 
         internal async Task InitialAsync(ConsoleView owner)
         {
-            var loadDialog = Dialog.Show(new LoadingCircle(), DialogContainerToken);
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
                 Owner = owner;
