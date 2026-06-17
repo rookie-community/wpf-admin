@@ -7,7 +7,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Reports"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Reports"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
     Title="ReportPreview"
     Width="800"
     Height="450"
@@ -18,6 +18,9 @@
     WindowState="Maximized"
     mc:Ignorable="d">
     <hc:DialogContainer>
-        <Preview:WpfPreviewControl x:Name="previewControl" />
+        <Preview:WpfPreviewControl
+            x:Name="previewControl"
+            StatusbarVisible="True"
+            ToolbarVisible="True" />
     </hc:DialogContainer>
 </hc:Window>

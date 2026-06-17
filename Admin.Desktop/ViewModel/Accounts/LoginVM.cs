@@ -126,7 +126,6 @@ namespace Admin.Desktop.ViewModel.Accounts
                     return;
                 }
 
-
                 var handler = new JwtSecurityTokenHandler();
                 if (!handler.CanReadToken(tokenResponse.AccessToken))
                 {

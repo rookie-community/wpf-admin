@@ -9,7 +9,7 @@
     xmlns:langs="clr-namespace:Admin.Desktop.Resources.Langs"
     xmlns:local="clr-namespace:Admin.Desktop.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel"
     Title="{Binding Title}"
     Width="800"
     Height="450"

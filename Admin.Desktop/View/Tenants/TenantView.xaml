@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:Admin.Desktop.View.Tenants"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Tenants"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Tenants"
     d:DataContext="{d:DesignInstance Type=viewmodel:TenantVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"

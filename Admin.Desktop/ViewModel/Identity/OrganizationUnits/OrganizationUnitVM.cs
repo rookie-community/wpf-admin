@@ -24,13 +24,22 @@ namespace Admin.Desktop.ViewModel.Identity.OrganizationUnits
         public partial ObservableCollection<AuditLogDto> AuditLogs { get; set; } = new ObservableCollection<AuditLogDto>();
 
         [ObservableProperty]
-        public partial int PageIndex { get; set; } = 1;
+        public partial int UserPageIndex { get; set; } = 1;
 
         [ObservableProperty]
-        public partial long TotalCount { get; set; }
+        public partial long UserTotalCount { get; set; }
 
         [ObservableProperty]
-        public partial int PageSize { get; set; } = 30;
+        public partial int UserPageSize { get; set; } = 30;
+
+        [ObservableProperty]
+        public partial int RolePageIndex { get; set; } = 1;
+
+        [ObservableProperty]
+        public partial long RoleTotalCount { get; set; }
+
+        [ObservableProperty]
+        public partial int RolePageSize { get; set; } = 30;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
@@ -97,10 +106,18 @@ namespace Admin.Desktop.ViewModel.Identity.OrganizationUnits
         }
 
         [RelayCommand]
-        private async Task PageChangedAsync(Tuple<int, int> pageArgs)
+        private async Task UserPageChangedAsync(Tuple<int, int> pageArgs)
         {
-            PageIndex = pageArgs.Item1;
-            PageSize = pageArgs.Item2;
+            UserPageIndex = pageArgs.Item1;
+            UserPageSize = pageArgs.Item2;
+            await SearchCommand.ExecuteAsync(null);
+        }
+
+        [RelayCommand]
+        private async Task RolePageChangedAsync(Tuple<int, int> pageArgs)
+        {
+            RolePageIndex = pageArgs.Item1;
+            RolePageSize = pageArgs.Item2;
             await SearchCommand.ExecuteAsync(null);
         }
 
@@ -109,10 +126,10 @@ namespace Admin.Desktop.ViewModel.Identity.OrganizationUnits
             var result = await _auditLogAppService.GetListAsync(new GetAuditLogListInput
             {
                 UserName = Name,
-                SkipCount = (PageIndex - 1) * PageSize,
-                MaxResultCount = PageSize
+                SkipCount = (UserPageIndex - 1) * UserPageSize,
+                MaxResultCount = UserPageSize
             });
-            TotalCount = result.TotalCount;
+            UserTotalCount = result.TotalCount;
             AuditLogs = new ObservableCollection<AuditLogDto>(result.Items);
         }
     }

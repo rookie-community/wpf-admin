@@ -77,6 +77,7 @@ namespace Admin.Desktop.ViewModel.SettingManagement.EmailSettings
                     SmtpUserName = EmailSettings.SmtpUserName,
                     SmtpPassword = EmailSettings.SmtpPassword,
                 });
+                Growl.Success("保存成功");
             }
             catch (Exception ex)
             {

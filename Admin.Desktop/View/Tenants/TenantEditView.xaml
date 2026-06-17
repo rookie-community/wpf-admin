@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Tenants"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Tenants"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Tenants"
     Title="编辑租户"
     Width="300"
     Height="160"

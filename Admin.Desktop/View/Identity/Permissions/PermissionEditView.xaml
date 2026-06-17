@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Permissions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Permissions"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Permissions"
     Title="权限配置"
     Width="600"
     Height="400"

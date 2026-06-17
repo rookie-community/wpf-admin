@@ -7,18 +7,12 @@
 
 ## 主要特性
 - 基于 WPF 的桌面 UI（MVVM 模式）
-- .NET 8 目标框架
 - 模块化的视图与视图模型组织
 - 基于ABP vNext
 
-## 目录结构（重要项）
+## 目录结构
 - `Admin.Desktop` — WPF 客户端
 - `Admin.HttpApi.Host` — 接口服务端
-
-## 环境要求
-- Windows 10/11
-- .NET SDK 8.x 已安装（建议使用最新版 8）
-- Microsoft Visual Studio Community 2026（或等效支持 .NET 8 的 IDE）
 
 ## 贡献
 欢迎提交 Issue / Pull Request。请在提交前：

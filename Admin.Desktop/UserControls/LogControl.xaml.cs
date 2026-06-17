@@ -1,4 +1,6 @@
 ﻿using Admin.Commons;
+using HandyControl.Data;
+using HandyControl.Tools;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -78,29 +80,29 @@ namespace Admin.Desktop.UserControls
     {
         public SolidColorBrush BackgroundBrush => Level switch
         {
-            LogLevel.Information => (SolidColorBrush)Application.Current.TryFindResource("DarkSuccessBrush"),
-            LogLevel.Warning => (SolidColorBrush)Application.Current.TryFindResource("DarkWarningBrush"),
-            LogLevel.Error => (SolidColorBrush)Application.Current.TryFindResource("DarkDangerBrush"),
-            LogLevel.Critical => (SolidColorBrush)Application.Current.TryFindResource("DarkDangerBrush"),
-            _ => (SolidColorBrush)Application.Current.TryFindResource("DarkPrimaryBrush"),
+            LogLevel.Information => ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.DarkSuccessBrush),
+            LogLevel.Warning => ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.DarkWarningBrush),
+            LogLevel.Error => ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.DarkDangerBrush),
+            LogLevel.Critical => ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.DarkDangerBrush),
+            _ => ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.ReverseTextBrush),
         };
 
         public Style BorderTipStyle => Level switch
         {
-            LogLevel.Information => (Style)Application.Current.TryFindResource("BorderTipSuccess"),
-            LogLevel.Warning => (Style)Application.Current.TryFindResource("BorderTipWarning"),
-            LogLevel.Error => (Style)Application.Current.TryFindResource("BorderTipDanger"),
-            LogLevel.Critical => (Style)Application.Current.TryFindResource("BorderTipDanger"),
-            _ => (Style)Application.Current.TryFindResource("BorderTipInfo"),
+            LogLevel.Information => ResourceHelper.GetResource<Style>("BorderTipSuccess"),
+            LogLevel.Warning => ResourceHelper.GetResource<Style>("BorderTipWarning"),
+            LogLevel.Error => ResourceHelper.GetResource<Style>("BorderTipDanger"),
+            LogLevel.Critical => ResourceHelper.GetResource<Style>("BorderTipDanger"),
+            _ => ResourceHelper.GetResource<Style>("BorderTipInfo"),
         };
 
         public Style TextBlockStyle => Level switch
         {
-            LogLevel.Information => (Style)Application.Current.TryFindResource("TextBlockDefaultInfo"),
-            LogLevel.Warning => (Style)Application.Current.TryFindResource("TextBlockDefaultWarning"),
-            LogLevel.Error => (Style)Application.Current.TryFindResource("TextBlockDefaultAccent"),
-            LogLevel.Critical => (Style)Application.Current.TryFindResource("TextBlockDefaultDanger"),
-            _ => (Style)Application.Current.TryFindResource("TextBlockDefault")
+            LogLevel.Information => ResourceHelper.GetResource<Style>("TextBlockDefaultInfo"),
+            LogLevel.Warning => ResourceHelper.GetResource<Style>("TextBlockDefaultWarning"),
+            LogLevel.Error => ResourceHelper.GetResource<Style>("TextBlockDefaultAccent"),
+            LogLevel.Critical => ResourceHelper.GetResource<Style>("TextBlockDefaultDanger"),
+            _ => ResourceHelper.GetResource<Style>("TextBlockDefault")
         };
 
         public string LogMessages => $"[{CreateTime}]:{Messages}";

@@ -6,7 +6,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.SettingManagement.EmailSettings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.SettingManagement.EmailSettings"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.SettingManagement.EmailSettings"
     Title="发送测试邮件"
     Width="600"
     Height="340"

@@ -8,7 +8,7 @@
     xmlns:langs="clr-namespace:Admin.Desktop.Resources.Langs"
     xmlns:local="clr-namespace:Admin.Desktop.View.Accounts"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Accounts"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Accounts"
     Title="登录"
     Width="650"
     Height="450"

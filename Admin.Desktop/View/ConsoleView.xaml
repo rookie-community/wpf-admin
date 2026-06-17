@@ -8,7 +8,7 @@
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:Admin.Desktop.UserControls"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodel:ConsoleVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -102,7 +102,8 @@
                 Header="日志"
                 Style="{StaticResource GroupBoxTab.Small}">
                 <Border Background="{DynamicResource RegionBrush}" CornerRadius="4">
-                    <uc:LogControl ItemsSource="{Binding Logs}" />
+                    <!--<uc:LogControl ItemsSource="{Binding Logs}" />-->
+                    <uc:LogView x:Name="logControl" MaxLineCount="100" />
                 </Border>
             </GroupBox>
         </Grid>

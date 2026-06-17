@@ -7,12 +7,27 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:Admin.Desktop.View.Reports"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="clr-namespace:Admin.Desktop.View.Reports"
+    xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Reports"
     d:DataContext="{d:DesignInstance Type=viewmodel:ReportDesignVM}"
     hc:Dialog.Token="{Binding DialogContainerToken}"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
     <hc:DialogContainer>
-        <Design:WpfDesignerControl x:Name="designerControl" />
+        <Grid>
+            <Grid.Resources>
+                <!--  清空HC全局基础控件隐式样式，避免覆盖FR内置编辑器  -->
+                <Style TargetType="Button" />
+                <Style TargetType="TextBox" />
+                <Style TargetType="TextBlock" />
+                <Style TargetType="ScrollViewer" />
+                <Style TargetType="ToggleButton" />
+                <Style TargetType="Label" />
+                <Style TargetType="Border" />
+                <Style TargetType="ComboBox" />
+                <Style TargetType="hc:ComboBox" />
+                <Style TargetType="hc:TextBox" />
+            </Grid.Resources>
+            <Design:WpfDesignerControl x:Name="designerControl" Width="Auto" />
+        </Grid>
     </hc:DialogContainer>
 </UserControl>

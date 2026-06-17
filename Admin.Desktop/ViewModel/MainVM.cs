@@ -5,6 +5,7 @@ using Admin.Desktop.View;
 using Admin.Desktop.View.Accounts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FastReport.Utils;
 using HandyControl.Controls;
 using HandyControl.Data;
 using HandyControl.Tools;
@@ -133,16 +134,21 @@ namespace Admin.Desktop.ViewModel
                         app.Resources.MergedDictionaries.Add(item);
                     }
                 }
+
                 // 夜间深色
                 if (skinType == SkinType.Dark)
                 {
                     LiveCharts.DefaultSettings.AddDarkTheme();
+                    Config.UIStyle = UIStyle.Dark;
                 }
                 else
                 {
                     // 白天浅色
                     LiveCharts.DefaultSettings.AddLightTheme();
+                    // FastReport 
+                    Config.UIStyle = UIStyle.LightBlue;
                 }
+
                 Application.Current.MainWindow?.OnApplyTemplate();
             }
             catch (Exception ex)
@@ -355,10 +361,32 @@ namespace Admin.Desktop.ViewModel
 
                     if (navItem.Type == NavType.Url)
                     {
-                        tabItem.Content = new WebView2
+                        var webView = new WebView2
                         {
                             Source = new Uri(navItem.Content),
                         };
+
+                        var dialogContainer = new DialogContainer
+                        {
+                            Child = webView
+                        };
+                        var webViewToken = Guid.NewGuid().ToString();
+                        Dialog.SetToken(dialogContainer, webViewToken);
+                        webView.NavigationStarting += (s, e) =>
+                        {
+                            Dialog.Show<LoadingCircle>(webViewToken);
+                        };
+
+                        webView.NavigationCompleted += (s, e) =>
+                        {
+                            Dialog.Close(webViewToken);
+                            if (!e.IsSuccess)
+                            {
+                                Growl.Error($"[{navItem.Name}] {e.WebErrorStatus}");
+                            }
+                        };
+
+                        tabItem.Content = dialogContainer;
                         Title = $"{TitalPrefix} - {navItem.Name}";
                         TabItems.Add(tabItem);
                         TabSelectedIndex = TabItems.IndexOf(tabItem);

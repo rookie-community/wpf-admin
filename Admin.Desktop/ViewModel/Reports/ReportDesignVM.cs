@@ -1,10 +1,13 @@
 ﻿using Admin.Desktop.View.Reports;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FastReport;
+using FastReport.Design;
+using FastReport.Utils;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Volo.Abp.DependencyInjection;
+using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace Admin.Desktop.ViewModel.Reports
 {
@@ -31,7 +34,7 @@ namespace Admin.Desktop.ViewModel.Reports
             try
             {
                 Owner = owner;
-
+                InitialDesignerSettings();
                 await Task.Run(() =>
                 {
                     if (fileName == null)
@@ -59,11 +62,39 @@ namespace Admin.Desktop.ViewModel.Reports
             }
         }
 
-        public void InitialVM(ReportDesign owner, Stream stream)
+        public async Task InitialAsync(ReportDesign owner, Stream stream)
         {
-            Owner = owner;
-            Report.Load(stream);
-            Owner.designerControl.Report = Report;
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
+            try
+            {
+                Owner = owner;
+                InitialDesignerSettings();
+                await Task.Run(() =>
+                {
+                    Report.Load(stream);
+                    Owner.designerControl.Report = Report;
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
+        }
+
+        private void InitialDesignerSettings()
+        {
+            //配置是全局的，每次打开重新初始化一下，防止事件重复触发
+            Config.DesignerSettings = new DesignerSettings();
+            Config.DesignerSettings.CustomSaveReport += (s, e) =>
+            {
+                string template = e.Report.SaveToStringBase64();
+                MessageBox.Info("这是自定义保存方法");
+            };
         }
     }
 }
