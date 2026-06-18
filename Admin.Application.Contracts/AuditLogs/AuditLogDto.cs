@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 
 namespace Admin.AuditLogs
@@ -20,14 +19,5 @@ namespace Admin.AuditLogs
         public string Comments { get; set; } = string.Empty;
 
         public string ApplicationName { get; set; } = string.Empty;
-        public List<AuditLogActionDto> Actions { get; set; } = new();
-    }
-
-    public class AuditLogActionDto
-    {
-        public string ServiceName { get; set; } = string.Empty;
-        public string MethodName { get; set; } = string.Empty;
-        public string Parameters { get; set; } = string.Empty;
-        public long ExecutionDuration { get; set; }
     }
 }

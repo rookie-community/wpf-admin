@@ -30,7 +30,6 @@ namespace Admin.Desktop.ViewModel.Accounts
         private readonly ILogger<LoginVM> _logger;
 
         [ObservableProperty]
-        [CustomValidation(typeof(LoginVM), nameof(ValidateTenant))]
         public partial string Tenant { get; set; } = null!;
 
         [Required(ErrorMessage = "账号不能为空")]
@@ -115,14 +114,19 @@ namespace Admin.Desktop.ViewModel.Accounts
                     UserName = UserName,
                     Password = Password,
                     //offline_access - 请求长期访问权限
-                    Scope = "Admin offline_access" //"YourApp"
+                    Scope = "Admin offline_access", //"YourApp"
                 };
+
+                if (!string.IsNullOrEmpty(Tenant))
+                {
+                    tokenRequest.Headers.Add("__tenant", Tenant);
+                }
 
                 var tokenResponse = await httpClient.RequestPasswordTokenAsync(tokenRequest);
                 if (tokenResponse.IsError)
                 {
-                    MessageBox.Error($"Failed to get token: {tokenResponse.Error} - {tokenResponse.ErrorDescription}", "登录失败");
                     _logger.LogError("Failed to get token: {Error} - {ErrorDescription}", tokenResponse.Error, tokenResponse.ErrorDescription);
+                    MessageBox.Error($"Failed to get token: {tokenResponse.Error} - {tokenResponse.ErrorDescription}", "登录失败");
                     return;
                 }
 
@@ -159,12 +163,6 @@ namespace Admin.Desktop.ViewModel.Accounts
             }
         }
 
-        [RelayCommand]
-        private void Cancel()
-        {
-            Owner.Close();
-        }
-
         partial void OnCurrentLangChanged(string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -173,23 +171,11 @@ namespace Admin.Desktop.ViewModel.Accounts
                 ConfigHelper.Instance.SetLang(value);
                 LangProvider.Culture = new CultureInfo(value);
                 Res.LoadLocale(LangProvider.Culture);
+                //更新配置文件
                 var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 config.AppSettings.Settings["Language"].Value = value;
                 config.Save(ConfigurationSaveMode.Modified);
             }
-        }
-
-        public static ValidationResult ValidateTenant(string tenantValue, ValidationContext context)
-        {
-            var instance = (LoginVM)context.ObjectInstance;
-            if (string.IsNullOrWhiteSpace(tenantValue))
-            {
-                //租户为空，无需校验
-                return ValidationResult.Success!;
-            }
-            //校验租户是否存在
-            //todo
-            return new ValidationResult("租户功能暂未开放！");
         }
     }
 }

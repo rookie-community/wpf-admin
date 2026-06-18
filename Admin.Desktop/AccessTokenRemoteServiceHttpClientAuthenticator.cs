@@ -1,4 +1,6 @@
 ﻿using Admin.Desktop.Tools;
+using Admin.Desktop.Tools.Messages;
+using CommunityToolkit.Mvvm.Messaging;
 using Duende.IdentityModel.Client;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
@@ -61,6 +63,7 @@ namespace Admin.Desktop
                     // 此时需要让用户重新登录。
                     _logger.LogError("刷新令牌失败: {Error}", refreshResponse.Error);
                     // 导向用户重新登录的页面...
+                    WeakReferenceMessenger.Default.Send<LogoutMessage>();
                     return;
                 }
                 TokenManager.SetTokens(refreshResponse);

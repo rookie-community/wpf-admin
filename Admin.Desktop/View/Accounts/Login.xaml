@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:Admin.Desktop.View.Accounts"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodel="clr-namespace:Admin.Desktop.ViewModel.Accounts"
-    Title="登录"
+    Title="{ex:Lang Key={x:Static langs:LangKeys.Login}}"
     Width="650"
     Height="450"
     d:DataContext="{d:DesignInstance Type=viewmodel:LoginVM}"
@@ -96,11 +96,6 @@
                         Content="{ex:Lang Key={x:Static langs:LangKeys.Login}}"
                         IsChecked="{Binding IsUploading, Mode=TwoWay}"
                         Style="{StaticResource ToggleButtonLoadingPrimary}" />
-                    <Button
-                        Command="{Binding CancelCommand}"
-                        Content="取消"
-                        Style="{StaticResource ButtonDefault}"
-                        Visibility="Collapsed" />
                 </hc:UniformSpacingPanel>
             </hc:SimpleStackPanel>
             <TextBlock

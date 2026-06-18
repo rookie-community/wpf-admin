@@ -29,7 +29,7 @@ namespace Admin.Desktop.ViewModel.Permissions
         public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        public partial int PageSize { get; set; } = 30;
+        public partial int DataCountPerPage { get; set; } = 30;
 
         [ObservableProperty]
         public partial ObservableCollection<IdentityRoleDto> Roles { get; set; } = new ObservableCollection<IdentityRoleDto>();
@@ -60,14 +60,7 @@ namespace Admin.Desktop.ViewModel.Permissions
             var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
-                var result = await _identityRoleAppService.GetListAsync(new GetIdentityRolesInput
-                {
-                    Filter = Name,
-                    SkipCount = (PageIndex - 1) * PageSize,
-                    MaxResultCount = PageSize
-                });
-                TotalCount = result.TotalCount;
-                Roles = new ObservableCollection<IdentityRoleDto>(result.Items);
+                await LoadDataAsync();
             }
             catch (AbpValidationException abpEx)
             {
@@ -82,6 +75,12 @@ namespace Admin.Desktop.ViewModel.Permissions
             {
                 loadDialog.Close();
             }
+        }
+
+        [RelayCommand]
+        private async Task PageChangedAsync()
+        {
+            await SearchCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]
@@ -154,7 +153,7 @@ namespace Admin.Desktop.ViewModel.Permissions
                 }
                 loadDialog = Dialog.Show<LoadingCircle>();
                 await _identityRoleAppService.DeleteAsync(role.Id);
-                await SearchCommand.ExecuteAsync(null);
+                await LoadDataAsync();
             }
             catch (Exception ex)
             {
@@ -184,12 +183,12 @@ namespace Admin.Desktop.ViewModel.Permissions
                 {
                     return;
                 }
-                loadDialog = Dialog.Show<LoadingCircle>();
+                loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
                 foreach (var roleId in roleIds)
                 {
                     await _identityRoleAppService.DeleteAsync(roleId);
                 }
-                await SearchCommand.ExecuteAsync(null);
+                await LoadDataAsync();
             }
             catch (Exception ex)
             {
@@ -200,6 +199,18 @@ namespace Admin.Desktop.ViewModel.Permissions
             {
                 loadDialog?.Close();
             }
+        }
+
+        private async Task LoadDataAsync() 
+        {
+            var result = await _identityRoleAppService.GetListAsync(new GetIdentityRolesInput
+            {
+                Filter = Name,
+                SkipCount = (PageIndex - 1) * DataCountPerPage,
+                MaxResultCount = DataCountPerPage
+            });
+            TotalCount = result.TotalCount;
+            Roles = new ObservableCollection<IdentityRoleDto>(result.Items);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Admin.Desktop.ViewModel.Identity.OrganizationUnits;
+using Admin.OrganizationUnits;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Admin.Desktop.View.Identity.OrganizationUnits
@@ -27,6 +29,14 @@ namespace Admin.Desktop.View.Identity.OrganizationUnits
                 await vm.InitialAsync(this);
             };
             DataContext = vm;
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is OrganizationUnitDto selectedUnit)
+            {
+                vm.SelectedOrganizationUnit = selectedUnit;
+            }
         }
     }
 }

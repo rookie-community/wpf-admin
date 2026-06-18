@@ -33,7 +33,6 @@ namespace Admin.Desktop.Tools
         {
             return new NavDto
             {
-                Id = Guid.NewGuid(),
                 Icon = "\xf015;",
                 Name = "控制台",
                 Type = NavType.UserControl,
@@ -45,7 +44,6 @@ namespace Admin.Desktop.Tools
         {
             return new NavDto
             {
-                Id = Guid.NewGuid(),
                 Icon = "\xf013",
                 Name = "系统设置",
                 Type = NavType.Group,
@@ -54,7 +52,6 @@ namespace Admin.Desktop.Tools
                 {
                     new NavDto
                     {
-                        Id = Guid.NewGuid(),
                         Icon = "\xe4d5",
                         Name = "组织机构",
                         Type = NavType.UserControl,
@@ -63,7 +60,6 @@ namespace Admin.Desktop.Tools
                     },
                     new NavDto
                     {
-                        Id = Guid.NewGuid(),
                         Icon = "\xf2b9",
                         Name = "角色管理",
                         Type = NavType.UserControl,
@@ -72,7 +68,6 @@ namespace Admin.Desktop.Tools
                     },
                     new NavDto
                     {
-                        Id = Guid.NewGuid(),
                         Icon = "\xf007",
                         Name = "用户管理",
                         Type = NavType.UserControl,
@@ -81,7 +76,6 @@ namespace Admin.Desktop.Tools
                     },
                     new NavDto
                     {
-                        Id = Guid.NewGuid(),
                         Icon = "\xe4da",
                         Name = "租户管理",
                         Type = NavType.UserControl,
@@ -90,7 +84,6 @@ namespace Admin.Desktop.Tools
                     },
                     new NavDto
                     {
-                        Id = Guid.NewGuid(),
                         Icon = "\xf0e0",
                         Name = "邮件服务",
                         Type = NavType.UserControl,
@@ -105,7 +98,6 @@ namespace Admin.Desktop.Tools
         {
             return new NavDto
             {
-                Id = Guid.NewGuid(),
                 Icon = "\xf201",
                 Name = "报表设计",
                 Type = NavType.UserControl,
@@ -117,7 +109,6 @@ namespace Admin.Desktop.Tools
         {
             return new NavDto
             {
-                Id = Guid.NewGuid(),
                 Icon = "\xf46d",
                 Name = "审计日志",
                 Type = NavType.UserControl,
@@ -129,10 +120,10 @@ namespace Admin.Desktop.Tools
         {
             return new NavDto
             {
-                Id = Guid.NewGuid(),
                 Icon = "\xf05a",
-                Name = Lang.About,
-                Type = NavType.Url,
+                Name = "关于",
+                LangKey = LangKeys.About,
+                Type = NavType.Web,
                 Content = "https://gitee.com/tzm2270969436",
             };
         }

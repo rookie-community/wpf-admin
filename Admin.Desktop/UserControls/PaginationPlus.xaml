@@ -7,29 +7,40 @@
     xmlns:local="clr-namespace:Admin.Desktop.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="40"
-    d:DesignWidth="360"
+    d:DesignWidth="420"
     Background="{DynamicResource RegionBrush}"
     mc:Ignorable="d">
-    <StackPanel
+    <hc:UniformSpacingPanel
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
-        Orientation="Horizontal">
-        <!--  原生分页（内部封装，不对外暴露）  -->
+        Orientation="Horizontal"
+        Spacing="10">
+        <!--  底层Handy分页控件，完全绑定外层暴露属性  -->
         <hc:Pagination
             x:Name="PaginationMain"
-            IsJumpEnabled="True"
-            Visibility="Visible" />
+            VerticalAlignment="Center"
+            DataCountPerPage="{Binding DataCountPerPage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+            IsJumpEnabled="{Binding IsJumpEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+            MaxPageCount="{Binding MaxPageCount, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+            MaxPageInterval="{Binding MaxPageInterval, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+            Visibility="Visible"
+            PageIndex="{Binding PageIndex, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" />
 
-        <!--  总数量  -->
-        <TextBlock Margin="10,0" VerticalAlignment="Center">
+        <!--  总条数展示  -->
+        <TextBlock Padding="0,6" VerticalAlignment="Center">
             <Run Text="共" />
             <Run Text="&#x20;" />
             <Run Text="{Binding TotalCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             <Run Text="&#x20;" />
             <Run Text="条" />
         </TextBlock>
-        <!--  每页数量选择  -->
-        <hc:ComboBox ItemsSource="{Binding PageSizeOptions, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValue="{Binding PageSize, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}">
+
+        <!--  每页条数下拉选择器  -->
+        <hc:ComboBox
+            MinWidth="85"
+            VerticalAlignment="Center"
+            ItemsSource="{Binding LimitOptions, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            SelectedValue="{Binding DataCountPerPage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <hc:ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -40,5 +51,5 @@
                 </DataTemplate>
             </hc:ComboBox.ItemTemplate>
         </hc:ComboBox>
-    </StackPanel>
+    </hc:UniformSpacingPanel>
 </UserControl>

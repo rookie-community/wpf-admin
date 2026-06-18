@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Admin.OrganizationUnits
 {
     /// <summary>
-    /// 创建组织单元输入
+    /// 更新组织单元输入
     /// </summary>
-    public class CreateOrganizationUnitInput
+    public class UpdateOrganizationUnitInput
     {
         /// <summary>
-        /// 父级ID（null表示创建根机构）
+        /// 机构ID
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// 机构名称

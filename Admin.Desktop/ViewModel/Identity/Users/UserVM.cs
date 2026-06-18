@@ -35,7 +35,7 @@ namespace Admin.Desktop.ViewModel.Users
         public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        public partial int PageSize { get; set; } = 30;
+        public partial int DataCountPerPage { get; set; } = 30;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
@@ -232,10 +232,8 @@ namespace Admin.Desktop.ViewModel.Users
         }
 
         [RelayCommand]
-        private async Task PageChangedAsync(Tuple<int, int> pageArgs)
+        private async Task PageChangedAsync()
         {
-            PageIndex = pageArgs.Item1;
-            PageSize = pageArgs.Item2;
             await SearchCommand.ExecuteAsync(null);
         }
 
@@ -244,8 +242,8 @@ namespace Admin.Desktop.ViewModel.Users
             var result = await _identityUserAppService.GetListAsync(new GetIdentityUsersInput
             {
                 Filter = Name,
-                SkipCount = (PageIndex - 1) * PageSize,
-                MaxResultCount = PageSize
+                SkipCount = (PageIndex - 1) * DataCountPerPage,
+                MaxResultCount = DataCountPerPage
             });
             TotalCount = result.TotalCount;
             Users = new ObservableCollection<IdentityUserDto>(result.Items);

@@ -34,23 +34,90 @@
                     VerticalAlignment="Center"
                     ChildWrapping="Wrap"
                     Spacing="5">
-                    <hc:TextBox
-                        Width="180"
-                        hc:InfoElement.Placeholder="请输入"
+
+                    <hc:DateTimePicker
+                        MinWidth="200"
                         hc:InfoElement.ShowClearButton="True"
-                        hc:InfoElement.Title="状态码"
-                        hc:InfoElement.TitlePlacement="Left"
-                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-                    <hc:DatePicker
-                        Width="180"
                         hc:InfoElement.Title="开始日期"
                         hc:InfoElement.TitlePlacement="Left"
-                        SelectedDate="{Binding StartTime}" />
-                    <hc:DatePicker
-                        Width="180"
+                        SelectedDateTime="{Binding StartTime}"
+                        Style="{StaticResource DateTimePickerPlus}" />
+                    <hc:DateTimePicker
+                        MinWidth="200"
+                        hc:InfoElement.ShowClearButton="True"
                         hc:InfoElement.Title="结束日期"
                         hc:InfoElement.TitlePlacement="Left"
-                        SelectedDate="{Binding EndTime}" />
+                        SelectedDateTime="{Binding EndTime}"
+                        Style="{StaticResource DateTimePickerPlus}" />
+
+                    <hc:TextBox
+                        MinWidth="200"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="用户名"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding UserName}" />
+                    <hc:TextBox
+                        MinWidth="200"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="网址"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding Url}" />
+                    <hc:NumericUpDown
+                        MinWidth="200"
+                        hc:InfoElement.Title="最小耗时"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Maximum="65535"
+                        Minimum="0"
+                        Style="{StaticResource NumericUpDownPlus}"
+                        Value="{Binding MinDuration}" />
+
+                    <hc:NumericUpDown
+                        MinWidth="200"
+                        hc:InfoElement.Title="最大耗时"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Maximum="65535"
+                        Minimum="0"
+                        Style="{StaticResource NumericUpDownPlus}"
+                        Value="{Binding MaxDuration}" />
+
+                    <ComboBox
+                        MinWidth="200"
+                        hc:InfoElement.Title="HTTP 方法"
+                        hc:InfoElement.TitlePlacement="Left"
+                        SelectedValue="{Binding HttpMethod, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValuePath="Tag"
+                        Style="{StaticResource ComboBoxExtend}">
+                        <ComboBoxItem Content="-" Tag="" />
+                        <ComboBoxItem Content="GET" Tag="GET" />
+                        <ComboBoxItem Content="POST" Tag="POST" />
+                        <ComboBoxItem Content="DELETE" Tag="DELETE" />
+                        <ComboBoxItem Content="PUT" Tag="PUT" />
+                    </ComboBox>
+
+                    <ComboBox
+                        MinWidth="200"
+                        hc:InfoElement.Title="HTTP 状态码"
+                        hc:InfoElement.TitlePlacement="Left"
+                        DisplayMemberPath="Key"
+                        ItemsSource="{Binding HttpStatusCodes}"
+                        SelectedValue="{Binding HttpStatusCode, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValuePath="Value"
+                        Style="{StaticResource ComboBoxExtend}" />
+
+                    <hc:TextBox
+                        MinWidth="200"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="应用名称"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding ApplicationName}" />
+
+                    <hc:TextBox
+                        MinWidth="200"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="客户端IP地址"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Text="{Binding ClientIpAddress}" />
+
                     <Button
                         hc:IconElement.Geometry="{StaticResource SearchGeometry}"
                         Command="{Binding SearchCommand}"
@@ -82,9 +149,9 @@
             <DockPanel>
                 <uc:PaginationPlus
                     Margin="1"
+                    DataCountPerPage="{Binding DataCountPerPage}"
                     DockPanel.Dock="Bottom"
-                    PageChangedCommand="{Binding PageChangedCommand}"
-                    PageSize="{Binding PageSize}"
+                    PageUpdatedCommand="{Binding PageChangedCommand}"
                     TotalCount="{Binding TotalCount}"
                     PageIndex="{Binding PageIndex}" />
                 <DataGrid
@@ -156,7 +223,6 @@
                         </DataGridTemplateColumn>
 
                         <DataGridTextColumn Binding="{Binding Url}" Header="接口" />
-                        <DataGridTextColumn Binding="{Binding BrowserInfo}" Header="浏览器" />
                         <DataGridTextColumn Binding="{Binding UserName}" Header="用户" />
                         <DataGridTextColumn Binding="{Binding ClientIpAddress}" Header="IP地址" />
                         <DataGridTextColumn Binding="{Binding ExecutionTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Header="时间" />
@@ -169,11 +235,11 @@
                                     <hc:UniformSpacingPanel Spacing="5">
                                         <Button
                                             hc:IconElement.Geometry="{StaticResource InfoGeometry}"
-                                            Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.DetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             Content="详情"
                                             Style="{StaticResource ButtonDefault.Small}"
-                                            Visibility="{Binding Path=DataContext.BtnPerms[Edit], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                            Visibility="{Binding Path=DataContext.BtnPerms[Detail], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
                                     </hc:UniformSpacingPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

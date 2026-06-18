@@ -92,7 +92,7 @@ namespace Admin.Desktop.ViewModel.Reports
             Config.DesignerSettings = new DesignerSettings();
             Config.DesignerSettings.CustomSaveReport += (s, e) =>
             {
-                string template = e.Report.SaveToStringBase64();
+                var templateBase64 = e.Report.SaveToStringBase64();
                 MessageBox.Info("这是自定义保存方法");
             };
         }

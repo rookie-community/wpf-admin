@@ -35,7 +35,7 @@
                     ChildWrapping="Wrap"
                     Spacing="5">
                     <hc:TextBox
-                        Width="180"
+                        MinWidth="200"
                         hc:InfoElement.Placeholder="请输入租户名"
                         hc:InfoElement.ShowClearButton="True"
                         hc:InfoElement.Title="租户名"
@@ -73,9 +73,9 @@
             <DockPanel>
                 <uc:PaginationPlus
                     Margin="1"
+                    DataCountPerPage="{Binding DataCountPerPage}"
                     DockPanel.Dock="Bottom"
-                    PageChangedCommand="{Binding PageChangedCommand}"
-                    PageSize="{Binding PageSize}"
+                    PageUpdatedCommand="{Binding PageChangedCommand}"
                     TotalCount="{Binding TotalCount}"
                     PageIndex="{Binding PageIndex}" />
                 <DataGrid

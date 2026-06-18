@@ -24,9 +24,43 @@
 
             <DockPanel Grid.Column="0">
                 <ToolBar HorizontalAlignment="Right" DockPanel.Dock="Top">
-                    <Button hc:IconElement.Geometry="{StaticResource AddGeometry}" Content="添加根机构" />
+                    <Button
+                        hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                        Command="{Binding AddRootCommand}"
+                        Content="添加根机构" />
                 </ToolBar>
-                <TreeView />
+                <TreeView ItemsSource="{Binding OrganizationUnits}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding DisplayName}" />
+                                <hc:UniformSpacingPanel Margin="5,0" Spacing="3">
+                                    <Button
+                                        hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                        Command="{Binding DataContext.AddChildCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource ButtonPrimary.Small}"
+                                        ToolTip="添加子机构" />
+                                    <Button
+                                        hc:IconElement.Geometry="{StaticResource DropperGeometry}"
+                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource ButtonWarning.Small}"
+                                        ToolTip="编辑" />
+                                    <Button
+                                        hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource ButtonDanger.Small}"
+                                        ToolTip="删除" />
+                                </hc:UniformSpacingPanel>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </DockPanel>
 
             <GridSplitter
@@ -39,36 +73,38 @@
                 <TabItem Header="成员">
                     <DockPanel>
                         <ToolBar HorizontalAlignment="Right" DockPanel.Dock="Top">
-                            <Button hc:IconElement.Geometry="{StaticResource AddGeometry}" Content="添加成员" />
+                            <Button
+                                hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                Command="{Binding AddMemberCommand}"
+                                Content="添加成员" />
                         </ToolBar>
                         <uc:PaginationPlus
                             Margin="1"
+                            DataCountPerPage="{Binding UserDataCountPerPage}"
                             DockPanel.Dock="Bottom"
-                            PageChangedCommand="{Binding UserPageChangedCommand}"
-                            PageSize="{Binding UserPageSize}"
+                            PageUpdatedCommand="{Binding UserPageChangedCommand}"
                             TotalCount="{Binding UserTotalCount}"
                             PageIndex="{Binding UserPageIndex}" />
                         <DataGrid
                             hc:DataGridAttach.ShowRowNumber="True"
                             AutoGenerateColumns="False"
                             HeadersVisibility="All"
-                            ItemsSource="{Binding AuditLogs}"
+                            ItemsSource="{Binding Users}"
                             RowHeaderWidth="60"
                             Style="{StaticResource DataGrid.Small}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding UserName}" Header="用户名" />
-                                <DataGridTextColumn Header="邮件地址" />
+                                <DataGridTextColumn Binding="{Binding Email}" Header="邮件地址" />
                                 <DataGridTemplateColumn Header="操作">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <hc:UniformSpacingPanel Spacing="5">
                                                 <Button
                                                     hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    Command="{Binding DataContext.DeleteMemberCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                     CommandParameter="{Binding}"
                                                     Content="删除"
-                                                    Style="{StaticResource ButtonDanger.Small}"
-                                                    Visibility="{Binding Path=DataContext.BtnPerms[Delete], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                                    Style="{StaticResource ButtonDanger.Small}" />
                                             </hc:UniformSpacingPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -80,34 +116,37 @@
                 <TabItem Header="角色">
                     <DockPanel>
                         <ToolBar HorizontalAlignment="Right" DockPanel.Dock="Top">
-                            <Button hc:IconElement.Geometry="{StaticResource AddGeometry}" Content="添加角色" />
+                            <Button
+                                hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                Command="{Binding AddRoleCommand}"
+                                Content="添加角色" />
                         </ToolBar>
                         <uc:PaginationPlus
                             Margin="1"
+                            DataCountPerPage="{Binding RoleDataCountPerPage}"
                             DockPanel.Dock="Bottom"
-                            PageChangedCommand="{Binding RolePageChangedCommand}"
-                            PageSize="{Binding RolePageSize}"
+                            PageUpdatedCommand="{Binding RolePageChangedCommand}"
                             TotalCount="{Binding RoleTotalCount}"
                             PageIndex="{Binding RolePageIndex}" />
                         <DataGrid
                             hc:DataGridAttach.ShowRowNumber="True"
                             AutoGenerateColumns="False"
                             HeadersVisibility="All"
+                            ItemsSource="{Binding Roles}"
                             RowHeaderWidth="60"
                             Style="{StaticResource DataGrid.Small}">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding UserName}" Header="角色名称" />
+                                <DataGridTextColumn Binding="{Binding Name}" Header="角色名称" />
                                 <DataGridTemplateColumn Header="操作">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <hc:UniformSpacingPanel Spacing="5">
                                                 <Button
                                                     hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    Command="{Binding DataContext.DeleteRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                     CommandParameter="{Binding}"
                                                     Content="删除"
-                                                    Style="{StaticResource ButtonDanger.Small}"
-                                                    Visibility="{Binding Path=DataContext.BtnPerms[Delete], RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                                    Style="{StaticResource ButtonDanger.Small}" />
                                             </hc:UniformSpacingPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>

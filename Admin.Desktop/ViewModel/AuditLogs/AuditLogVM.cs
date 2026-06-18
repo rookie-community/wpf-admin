@@ -1,30 +1,58 @@
 ﻿using Admin.AuditLogs;
+using Admin.Desktop.UserControls;
 using Admin.Desktop.View.AuditLogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HandyControl.Controls;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Windows;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.Validation;
+using Volo.Abp.Http.Client;
 using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace Admin.Desktop.ViewModel.AuditLogs
 {
-    public partial class AuditLogVM : ObservableObject, ITransientDependency
+    public partial class AuditLogVM : ObservableValidator, ITransientDependency
     {
         private readonly IAuditLogAppService _auditLogAppService;
         private readonly ILogger<AuditLogVM> _logger;
-
-        [ObservableProperty]
-        public partial string Name { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial DateTime? StartTime { get; set; }
 
         [ObservableProperty]
         public partial DateTime? EndTime { get; set; }
+
+        [ObservableProperty]
+        public partial string UserName { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        public partial string Url { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        public partial int? MinDuration { get; set; }
+
+        [ObservableProperty]
+        [CustomValidation(typeof(AuditLogVM), nameof(ValidateDuration))]
+        public partial int? MaxDuration { get; set; }
+
+        [ObservableProperty]
+        public partial string HttpMethod { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        public partial HttpStatusCode? HttpStatusCode { get; set; }
+
+        [ObservableProperty]
+        public partial string ApplicationName { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        public partial string ClientIpAddress { get; set; } = string.Empty;
+
+        [ObservableProperty]
+        public partial Dictionary<string, HttpStatusCode?> HttpStatusCodes { get; set; } = new Dictionary<string, HttpStatusCode?>();
 
         [ObservableProperty]
         public partial ObservableCollection<AuditLogDto> AuditLogs { get; set; } = new ObservableCollection<AuditLogDto>();
@@ -36,7 +64,7 @@ namespace Admin.Desktop.ViewModel.AuditLogs
         public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        public partial int PageSize { get; set; } = 30;
+        public partial int DataCountPerPage { get; set; } = 30;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
@@ -58,7 +86,23 @@ namespace Admin.Desktop.ViewModel.AuditLogs
             try
             {
                 Owner = owner;
+                var httpStatusCodeList = new Dictionary<string, HttpStatusCode?>
+                {
+                    { "-", null }
+                };
+                var httpStatusCodeTemps = Enum.GetValues<HttpStatusCode>();
+                foreach (var item in httpStatusCodeTemps)
+                {
+                    var temp = $"{(int)item} - {item}";
+                    httpStatusCodeList.TryAdd(temp, item);
+                }
+                HttpStatusCodes = httpStatusCodeList;
                 await LoadDataAsync();
+            }
+            catch (AbpRemoteCallException abpRemoteCallException)
+            {
+                _logger.LogException(abpRemoteCallException);
+                MessageBox.Error(abpRemoteCallException.Details, abpRemoteCallException.Message);
             }
             catch (Exception ex)
             {
@@ -79,11 +123,10 @@ namespace Admin.Desktop.ViewModel.AuditLogs
             {
                 await LoadDataAsync();
             }
-            catch (AbpValidationException abpEx)
+            catch (AbpRemoteCallException abpEx)
             {
                 _logger.LogException(abpEx);
-                var errorMessages = abpEx.ValidationErrors.Select(x => x.ErrorMessage);
-                MessageBox.Error(string.Join('.', errorMessages), abpEx.Message);
+                MessageBox.Error(abpEx.Details, abpEx.Message);
             }
             catch (Exception ex)
             {
@@ -99,7 +142,16 @@ namespace Admin.Desktop.ViewModel.AuditLogs
         [RelayCommand]
         private void Reset()
         {
-            Name = string.Empty;
+            StartTime = default;
+            EndTime = default;
+            UserName = string.Empty;
+            Url = string.Empty;
+            MinDuration = 0;
+            MaxDuration = 0;
+            HttpMethod = string.Empty;
+            HttpStatusCode = default;
+            ApplicationName = string.Empty;
+            ClientIpAddress = string.Empty;
         }
 
         [RelayCommand]
@@ -109,23 +161,53 @@ namespace Admin.Desktop.ViewModel.AuditLogs
         }
 
         [RelayCommand]
-        private async Task PageChangedAsync(Tuple<int, int> pageArgs)
+        private void Detail(AuditLogDto auditLog)
         {
-            PageIndex = pageArgs.Item1;
-            PageSize = pageArgs.Item2;
+
+        }
+
+        [RelayCommand]
+        private async Task PageChangedAsync()
+        {
             await SearchCommand.ExecuteAsync(null);
         }
 
         private async Task LoadDataAsync()
         {
+            ValidateAllProperties();
+            if (HasErrors)
+            {
+                return;
+            }
+
             var result = await _auditLogAppService.GetListAsync(new GetAuditLogListInput
             {
-                UserName = Name,
-                SkipCount = (PageIndex - 1) * PageSize,
-                MaxResultCount = PageSize
+                StartTime = StartTime,
+                EndTime = EndTime,
+                UserName = UserName,
+                Url = Url,
+                MinDuration = MinDuration,
+                MaxDuration = MaxDuration,
+                HttpMethod = HttpMethod,
+                HttpStatusCode = HttpStatusCode,
+                ApplicationName = ApplicationName,
+                ClientIpAddress = ClientIpAddress,
+                SkipCount = (PageIndex - 1) * DataCountPerPage,
+                MaxResultCount = DataCountPerPage,
             });
             TotalCount = result.TotalCount;
             AuditLogs = new ObservableCollection<AuditLogDto>(result.Items);
+        }
+
+        public static ValidationResult ValidateDuration(int? maxDurationValue, ValidationContext context)
+        {
+            var instance = (AuditLogVM)context.ObjectInstance;
+            var minDurationValue = instance.MinDuration;
+            if (maxDurationValue.HasValue && minDurationValue.HasValue && maxDurationValue > 0 && minDurationValue > 0 && maxDurationValue < minDurationValue)
+            {
+                return new ValidationResult("最大耗时必须大于或等于最小耗时");
+            }
+            return ValidationResult.Success!;
         }
     }
 }

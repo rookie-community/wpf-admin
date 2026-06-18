@@ -28,7 +28,7 @@ namespace Admin.Desktop.ViewModel.Tenants
         public partial long TotalCount { get; set; }
 
         [ObservableProperty]
-        public partial int PageSize { get; set; } = 30;
+        public partial int DataCountPerPage { get; set; } = 30;
 
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
@@ -53,14 +53,7 @@ namespace Admin.Desktop.ViewModel.Tenants
             var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
             try
             {
-                var result = await _tenantAppService.GetListAsync(new GetTenantsInput
-                {
-                    Filter = Name,
-                    SkipCount = (PageIndex - 1) * PageSize,
-                    MaxResultCount = PageSize
-                });
-                TotalCount = result.TotalCount;
-                Tenants = new ObservableCollection<TenantDto>(result.Items);
+                await LoadDataAsync();
             }
             catch (AbpValidationException abpEx)
             {
@@ -125,18 +118,53 @@ namespace Admin.Desktop.ViewModel.Tenants
         }
 
         [RelayCommand]
+        private async Task DeleteAsync(TenantDto tenant)
+        {
+            var loadDialog = Dialog.Show<LoadingCircle>(DialogContainerToken);
+            try
+            {
+                await _tenantAppService.DeleteAsync(tenant.Id);
+                await LoadDataAsync();
+            }
+            catch (AbpValidationException abpEx)
+            {
+                var errorMessages = abpEx.ValidationErrors.Select(x => x.ErrorMessage);
+                MessageBox.Error(string.Join('.', errorMessages), abpEx.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                MessageBox.Error(ex.Message);
+            }
+            finally
+            {
+                loadDialog.Close();
+            }
+        }
+
+
+        [RelayCommand]
         private void Reset()
         {
             Name = string.Empty;
         }
 
         [RelayCommand]
-        private async Task PageChangedAsync(Tuple<int, int> pageArgs)
+        private async Task PageChangedAsync()
         {
-            MessageBox.Show($"{pageArgs.Item1}_{pageArgs.Item2}");
-            PageIndex = pageArgs.Item1;
-            PageSize = pageArgs.Item2;
             await SearchCommand.ExecuteAsync(null);
+        }
+
+        private async Task LoadDataAsync()
+        {
+            var result = await _tenantAppService.GetListAsync(new GetTenantsInput
+            {
+                Filter = Name,
+                SkipCount = (PageIndex - 1) * DataCountPerPage,
+                MaxResultCount = DataCountPerPage
+            });
+            TotalCount = result.TotalCount;
+            Tenants = new ObservableCollection<TenantDto>(result.Items);
         }
     }
 }

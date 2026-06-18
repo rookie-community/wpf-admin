@@ -48,12 +48,12 @@
                 <Button
                     hc:IconElement.Geometry="{StaticResource SaveGeometry}"
                     Command="{Binding SaveCommand}"
-                    Content="保存"
+                    Content="{x:Static hc:Lang.Confirm}"
                     Style="{StaticResource ButtonPrimary}" />
                 <Button
                     hc:IconElement.Geometry="{StaticResource CloseGeometry}"
                     Command="{Binding CancelCommand}"
-                    Content="取消"
+                    Content="{x:Static hc:Lang.Cancel}"
                     Style="{StaticResource ButtonDefault}" />
             </hc:UniformSpacingPanel>
         </Grid>

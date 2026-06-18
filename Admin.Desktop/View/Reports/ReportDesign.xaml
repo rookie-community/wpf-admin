@@ -16,18 +16,65 @@
         <Grid>
             <Grid.Resources>
                 <!--  清空HC全局基础控件隐式样式，避免覆盖FR内置编辑器  -->
-                <Style TargetType="Button" />
-                <Style TargetType="TextBox" />
+                <!--  文本展示类  -->
                 <Style TargetType="TextBlock" />
-                <Style TargetType="ScrollViewer" />
-                <Style TargetType="ToggleButton" />
                 <Style TargetType="Label" />
-                <Style TargetType="Border" />
+                <Style TargetType="Run" />
+
+                <!--  输入框类  -->
+                <Style TargetType="TextBox" />
+                <Style TargetType="PasswordBox" />
+                <Style TargetType="RichTextBox" />
+
+                <!--  按钮/切换控件  -->
+                <Style TargetType="Button" />
+                <Style TargetType="ToggleButton" />
+                <Style TargetType="CheckBox" />
+                <Style TargetType="RadioButton" />
+                <Style TargetType="RepeatButton" />
+
+                <!--  下拉选择  -->
                 <Style TargetType="ComboBox" />
-                <Style TargetType="hc:ComboBox" />
-                <Style TargetType="hc:TextBox" />
+                <Style TargetType="ComboBoxItem" />
+
+                <!--  容器/分组/边框  -->
+                <Style TargetType="Border" />
+                <Style TargetType="GroupBox" />
+                <Style TargetType="Expander" />
+                <Style TargetType="StackPanel" />
+                <Style TargetType="Grid" />
+                <Style TargetType="DockPanel" />
+                <Style TargetType="WrapPanel" />
+                <Style TargetType="UniformGrid" />
+
+                <!--  滚动条区域  -->
+                <Style TargetType="ScrollViewer" />
+                <Style TargetType="ScrollBar" />
+                <Style TargetType="Thumb" />
+
+                <!--  数据列表  -->
+                <Style TargetType="DataGrid" />
+                <Style TargetType="DataGridRow" />
+                <Style TargetType="DataGridCell" />
+                <Style TargetType="ListBox" />
+                <Style TargetType="ListBoxItem" />
+
+                <!--  分页标签  -->
+                <Style TargetType="TabControl" />
+                <Style TargetType="TabItem" />
+
+                <!--  进度、滑块  -->
+                <Style TargetType="Slider" />
+                <Style TargetType="ProgressBar" />
+
+                <!--  弹窗分割、提示  -->
+                <Style TargetType="Separator" />
+                <Style TargetType="ToolTip" />
+
+                <!--  日期选择  -->
+                <Style TargetType="DatePicker" />
             </Grid.Resources>
-            <Design:WpfDesignerControl x:Name="designerControl" Width="Auto" />
+            <Design:WpfDesignerControl x:Name="designerControl" />
         </Grid>
     </hc:DialogContainer>
 </UserControl>

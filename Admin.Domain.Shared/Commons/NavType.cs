@@ -20,6 +20,11 @@
         /// <summary>
         /// 网页链接
         /// </summary>
-        Url,
+        Web,
+
+        /// <summary>
+        /// 内容
+        /// </summary>
+        Content
     }
 }

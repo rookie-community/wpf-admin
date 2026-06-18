@@ -52,7 +52,7 @@
                         <Button
                             hc:IconElement.Geometry="{StaticResource SaveGeometry}"
                             Command="{Binding UpdatePasswordCommand}"
-                            Content="确认修改"
+                            Content="{x:Static hc:Lang.Confirm}"
                             Style="{DynamicResource ButtonPrimary}" />
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
@@ -101,7 +101,7 @@
                         <Button
                             hc:IconElement.Geometry="{StaticResource SaveGeometry}"
                             Command="{Binding UpdateProfileCommand}"
-                            Content="确认修改"
+                            Content="{x:Static hc:Lang.Confirm}"
                             Style="{DynamicResource ButtonPrimary}" />
                         <Button
                             hc:IconElement.Geometry="{StaticResource RotateLeftGeometry}"

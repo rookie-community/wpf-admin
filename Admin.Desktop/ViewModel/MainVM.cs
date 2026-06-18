@@ -1,10 +1,12 @@
 ﻿using Admin.Commons;
 using Admin.Desktop.Resources.Langs;
 using Admin.Desktop.Tools;
+using Admin.Desktop.Tools.Messages;
 using Admin.Desktop.View;
 using Admin.Desktop.View.Accounts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FastReport.Utils;
 using HandyControl.Controls;
 using HandyControl.Data;
@@ -14,10 +16,12 @@ using LiveChartsCore.SkiaSharpView;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Wpf;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Globalization;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Navigation;
@@ -31,7 +35,7 @@ using TabItem = HandyControl.Controls.TabItem;
 
 namespace Admin.Desktop.ViewModel
 {
-    public partial class MainVM : ObservableRecipient, ITransientDependency
+    public partial class MainVM : ObservableRecipient, IRecipient<NavDto>, IRecipient<LogoutMessage>, ITransientDependency
     {
         private readonly string TitalPrefix = "Admin";
         private readonly IPermissionAppService _permissionAppService;
@@ -55,8 +59,10 @@ namespace Admin.Desktop.ViewModel
 
         [ObservableProperty]
         public partial ObservableCollection<TabItem> TabItems { get; set; } = new ObservableCollection<TabItem>();
+
         [ObservableProperty]
         public partial string DialogContainerToken { get; set; } = Guid.NewGuid().ToString();
+
         public MainWindow Owner { get; private set; } = null!;
 
         public MainVM(IPermissionAppService permissionAppService, IIdentityUserAppService identityUserAppService, ILogger<MainVM> logger)
@@ -64,6 +70,7 @@ namespace Admin.Desktop.ViewModel
             _permissionAppService = permissionAppService;
             _identityUserAppService = identityUserAppService;
             _logger = logger;
+            IsActive = true;
         }
 
         public async Task InitialAsync(MainWindow owner)
@@ -97,9 +104,19 @@ namespace Admin.Desktop.ViewModel
         [RelayCommand]
         private void SwitchItem(NavDto navItem)
         {
-            if (navItem.Content == null)
+            if (navItem.Type == NavType.Group)
             {
-                //菜单为空，不做处理
+                if (Owner.NavigationView.ItemContainerGenerator.ContainerFromItem(navItem) is TreeViewItem treeViewItem)
+                {
+                    // 切换展开状态
+                    treeViewItem.IsExpanded = !treeViewItem.IsExpanded;
+                }
+                return;
+            }
+
+            if (navItem?.Content == null)
+            {
+                //菜单为空不做处理
                 return;
             }
             SetCurrentTabItem(navItem);
@@ -170,10 +187,11 @@ namespace Admin.Desktop.ViewModel
 
                 ConfigHelper.Instance.SetLang(langName);
                 LangProvider.Culture = new CultureInfo(langName);
-
-                //var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                //config.AppSettings.Settings["Language"].Value = langName;
-                //config.Save(ConfigurationSaveMode.Modified);
+                Res.LoadLocale(LangProvider.Culture);
+                //更新配置文件
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["Language"].Value = langName;
+                config.Save(ConfigurationSaveMode.Modified);
             }
             catch (Exception ex)
             {
@@ -202,13 +220,12 @@ namespace Admin.Desktop.ViewModel
             var view = new Login();
             view.Show();
 
-            //NotifyIcon.ShowBalloonTip("HandyControl", "内容", NotifyIconInfoType.Info, "");
             Owner.NotifyIconContextContent.Visibility = Visibility.Collapsed;
             Owner.Close();
             Owner = null!;
         }
 
-        private async Task<List<NavDto>> BuiderNavItems()//(string providerName, string providerKey)
+        private async Task<List<NavDto>> BuiderNavItems()
         {
             var allNavItems = NavProvider.GetNavConfigs();
             var permissions = new List<PermissionGrantInfoDto>();
@@ -277,7 +294,7 @@ namespace Admin.Desktop.ViewModel
                         return;
                     }
 
-                    if (string.IsNullOrWhiteSpace(navItem.Content))
+                    if (navItem.Content == null)
                     {
                         return;
                     }
@@ -287,18 +304,18 @@ namespace Admin.Desktop.ViewModel
                     if (tabItemIdx >= 0)
                     {
                         TabSelectedIndex = tabItemIdx;
-                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        Title = $"{TitalPrefix} - {navItem.DisplayName}";
                         return;
                     }
 
-                    var isHome = navItem.Content == typeof(ConsoleView).FullName;
+                    var isHome = navItem.Content.Equals(typeof(ConsoleView).FullName);
                     var tabHeaderText = new TextBlock();
                     if (!string.IsNullOrEmpty(navItem.Icon))
                     {
                         var iconRun = new Run
                         {
                             Text = navItem.Icon,
-                            Foreground = (Brush)Application.Current.TryFindResource("DarkInfoBrush"),
+                            Foreground = ResourceHelper.GetResource<SolidColorBrush>(ResourceToken.DarkInfoBrush),
                             FontFamily = (FontFamily)Application.Current.FindResource("FA_Regular"),
                         };
                         tabHeaderText.Inlines.Add(iconRun);
@@ -307,11 +324,23 @@ namespace Admin.Desktop.ViewModel
                             Text = "\u00A0",
                         });
                     }
-
-                    tabHeaderText.Inlines.Add(new Run
+                    var tabHeaderRun = new Run();
+                    if (!string.IsNullOrEmpty(navItem.LangKey))
                     {
-                        Text = navItem.Name,
-                    });
+                        // 直接绑定Dto的DisplayName，替代LangProvider.SetLang
+                        Binding displayNameBinding = new Binding(nameof(navItem.DisplayName))
+                        {
+                            Source = navItem,
+                            Mode = BindingMode.OneWay
+                        };
+                        tabHeaderRun.SetBinding(Run.TextProperty, displayNameBinding);
+                    }
+                    else
+                    {
+                        tabHeaderRun.Text = navItem.Name;
+                    }
+                    tabHeaderText.Inlines.Add(tabHeaderRun);
+
                     var tabItem = new TabItem
                     {
                         Header = tabHeaderText,
@@ -332,9 +361,18 @@ namespace Admin.Desktop.ViewModel
                         }
                     };
 
+                    if (navItem.Type == NavType.Content)
+                    {
+                        tabItem.Content = navItem.Content;
+                        Title = $"{TitalPrefix} - {navItem.DisplayName}";
+                        TabItems.Add(tabItem);
+                        TabSelectedIndex = TabItems.IndexOf(tabItem);
+                        return;
+                    }
+
                     if (navItem.Type == NavType.UserControl || navItem.Type == NavType.Page)
                     {
-                        var contentType = Type.GetType(navItem.Content);
+                        var contentType = Type.GetType(navItem.Content.ToString() ?? string.Empty);
                         var constructor = contentType?.GetConstructor(Type.EmptyTypes);
                         if (typeof(UserControl).IsAssignableFrom(contentType))
                         {
@@ -353,17 +391,17 @@ namespace Admin.Desktop.ViewModel
                             Growl.Error($"无法打开页面，类型错误：{navItem.Content}");
                             return;
                         }
-                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        Title = $"{TitalPrefix} - {navItem.DisplayName}";
                         TabItems.Add(tabItem);
                         TabSelectedIndex = TabItems.IndexOf(tabItem);
                         return;
                     }
 
-                    if (navItem.Type == NavType.Url)
+                    if (navItem.Type == NavType.Web)
                     {
                         var webView = new WebView2
                         {
-                            Source = new Uri(navItem.Content),
+                            Source = new Uri(navItem.Content.ToString() ?? string.Empty),
                         };
 
                         var dialogContainer = new DialogContainer
@@ -382,23 +420,38 @@ namespace Admin.Desktop.ViewModel
                             Dialog.Close(webViewToken);
                             if (!e.IsSuccess)
                             {
-                                Growl.Error($"[{navItem.Name}] {e.WebErrorStatus}");
+                                Growl.Error($"[{navItem.DisplayName}] {e.WebErrorStatus}");
                             }
                         };
 
                         tabItem.Content = dialogContainer;
-                        Title = $"{TitalPrefix} - {navItem.Name}";
+                        Title = $"{TitalPrefix} - {navItem.DisplayName}";
                         TabItems.Add(tabItem);
                         TabSelectedIndex = TabItems.IndexOf(tabItem);
                         return;
                     }
+
                 }, DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
                 _logger.LogException(ex);
-                Growl.Error($"打开页面失败：{ex.Message}");
+                Growl.Fatal($"打开页面失败：{ex.Message}");
             }
         }
+
+        #region Message 通知
+
+        public void Receive(NavDto message)
+        {
+            SwitchItemCommand.Execute(message);
+        }
+
+        public void Receive(LogoutMessage message)
+        {
+            LogoutCommand.Execute(null);
+        }
+
+        #endregion
     }
 }
